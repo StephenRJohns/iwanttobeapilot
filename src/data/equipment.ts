@@ -125,6 +125,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "The industry-standard EFB app. Charts, weather, flight planning, logbook. Required by most flight schools.",
     externalUrl: "https://foreflight.com",
     searchQuery: "ForeFlight aviation app",
+    imageUrl: "https://d32dgjuo8qzfhk.cloudfront.net/assets/1200x880_Releases.jpg",
   },
   {
     id: "garmin-pilot",
@@ -132,8 +133,9 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "external",
     name: "Garmin Pilot",
     description: "Full-featured EFB with excellent Garmin avionics integration.",
-    externalUrl: "https://buy.garmin.com/en-US/US/p/115856",
+    externalUrl: "https://www.garmin.com/en-US/p/115856",
     searchQuery: "Garmin Pilot aviation app",
+    imageUrl: "https://res.garmin.com/www/aviation/garmin-pilot/MCJT-78463/78463-banner-garmin-pilot-web-mobile.jpg",
   },
   {
     id: "sportys-pilottraining-app",
