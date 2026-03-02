@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" width="120" height="80">
+  <!-- Crown: white rounded top -->
+  <path d="M20 46 Q18 22 60 18 Q102 22 100 46 Z" fill="white"/>
+  <!-- Subtle crown shadow/shape -->
+  <path d="M25 46 Q23 26 60 22 Q97 26 95 46 Z" fill="#f0f4f8"/>
+
+  <!-- Hat band: dark navy -->
+  <rect x="18" y="44" width="84" height="10" rx="1" fill="#1a2f50"/>
+  <!-- Gold braid top stripe -->
+  <rect x="18" y="44" width="84" height="2.5" fill="#c9910a"/>
+  <!-- Gold braid bottom stripe -->
+  <rect x="18" y="51.5" width="84" height="2" fill="#c9910a"/>
+
+  <!-- Center badge: gold circle with anchor -->
+  <circle cx="60" cy="49" r="6" fill="#c9910a"/>
+  <circle cx="60" cy="49" r="4.5" fill="#1a2f50"/>
+  <!-- Anchor symbol -->
+  <line x1="60" y1="45.5" x2="60" y2="52.5" stroke="#c9910a" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="57" y1="47.5" x2="63" y2="47.5" stroke="#c9910a" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M57 52.5 Q58.5 54 60 52.5 Q61.5 54 63 52.5" fill="none" stroke="#c9910a" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Brim / visor: wide flat curved shape -->
+  <path d="M10 54 Q60 66 110 54 L106 58 Q60 70 14 58 Z" fill="#0d1e33"/>
+  <!-- Brim highlight edge -->
+  <path d="M10 54 Q60 62 110 54" fill="none" stroke="#2a4a70" stroke-width="1"/>
+</svg>

@@ -1,0 +1,346 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { isPro } from "@/lib/tier";
+import { PILOT_LEVELS } from "@/data/pilot-levels";
+
+const DPEMap = dynamic(() => import("./DPEMap"), { ssr: false });
+
+interface DPERecord {
+  id: string;
+  designeeNumber: string | null;
+  name: string;
+  state: string | null;
+  city: string | null;
+  phone: string | null;
+  email: string | null;
+  certificateTypes: string | null;
+  lat: number | null;
+  lng: number | null;
+  distance: number;
+  avgRating: number | null;
+  ratingCount: number;
+}
+
+interface PassRateRow {
+  id: string;
+  year: number;
+  certificateType: string;
+  examinerType: string;
+  taken: number;
+  passed: number;
+  passRate: number;
+}
+
+export default function DPEFinderClient() {
+  const { data: session } = useSession();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pro = session ? isPro(session as any) : false;
+
+  const [zip, setZip] = useState("");
+  const [radius, setRadius] = useState("50");
+  const [certType, setCertType] = useState("");
+  const [dpes, setDpes] = useState<DPERecord[]>([]);
+  const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);
+  const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState("");
+
+  const [passRates, setPassRates] = useState<PassRateRow[]>([]);
+  const [rateFilter, setRateFilter] = useState("");
+  const [certTypes, setCertTypes] = useState<string[]>([]);
+  const [loadingRates, setLoadingRates] = useState(false);
+
+  const [ratingTarget, setRatingTarget] = useState<string | null>(null);
+  const [ratingScore, setRatingScore] = useState(5);
+  const [submittingRating, setSubmittingRating] = useState(false);
+
+  useEffect(() => {
+    if (!pro) return;
+    fetch("/api/dpe/pass-rates?typesOnly=true")
+      .then((r) => r.json())
+      .then((d) => setCertTypes(d.types || []));
+  }, [pro]);
+
+  useEffect(() => {
+    if (!pro) return;
+    setLoadingRates(true);
+    const params = new URLSearchParams();
+    if (rateFilter) params.set("certificateType", rateFilter);
+    fetch(`/api/dpe/pass-rates?${params}`)
+      .then((r) => r.json())
+      .then((d) => setPassRates(d.data || []))
+      .finally(() => setLoadingRates(false));
+  }, [pro, rateFilter]);
+
+  async function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (!zip.trim()) return;
+    setSearching(true);
+    setSearchError("");
+    try {
+      const params = new URLSearchParams({ zip: zip.trim(), radius });
+      if (certType) params.set("certificateType", certType);
+      const res = await fetch(`/api/dpe/search?${params}`);
+      const data = await res.json();
+      if (!res.ok) {
+        setSearchError(data.error || "Search failed");
+        return;
+      }
+      setDpes(data.dpes || []);
+      setCenter(data.center || null);
+    } catch {
+      setSearchError("Search failed");
+    } finally {
+      setSearching(false);
+    }
+  }
+
+  async function submitRating() {
+    if (!ratingTarget) return;
+    setSubmittingRating(true);
+    await fetch("/api/ratings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ targetType: "dpe", targetId: ratingTarget, score: ratingScore }),
+    });
+    setSubmittingRating(false);
+    setRatingTarget(null);
+    // Refresh search to get updated ratings
+    handleSearch(new Event("submit") as unknown as React.FormEvent);
+  }
+
+  const certTypeOptions = Array.from(
+    new Set(PILOT_LEVELS.map((l) => l.certificateType).filter(Boolean))
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* Search panel */}
+      <div className="rounded-lg border border-border bg-card p-4">
+        <form onSubmit={handleSearch} className="flex flex-wrap gap-3 items-end">
+          <div className="flex-1 min-w-[140px]">
+            <label className="text-xs text-muted-foreground block mb-1">Zip Code</label>
+            <input
+              type="text"
+              value={zip}
+              onChange={(e) => setZip(e.target.value)}
+              placeholder="e.g. 90210"
+              maxLength={10}
+              className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground block mb-1">Radius</label>
+            <select
+              value={radius}
+              onChange={(e) => setRadius(e.target.value)}
+              className="bg-background border border-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+            >
+              <option value="25">25 mi</option>
+              <option value="50">50 mi</option>
+              <option value="100">100 mi</option>
+              <option value="200">200 mi</option>
+            </select>
+          </div>
+          <div className="flex-1 min-w-[160px]">
+            <label className="text-xs text-muted-foreground block mb-1">Certificate Type</label>
+            <select
+              value={certType}
+              onChange={(e) => setCertType(e.target.value)}
+              className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+            >
+              <option value="">All types</option>
+              {certTypeOptions.map((t) => (
+                <option key={t} value={t!}>{t}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="submit"
+            disabled={searching}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+          >
+            {searching && <Loader2 className="w-3 h-3 animate-spin" />}
+            Search
+          </button>
+        </form>
+        {searchError && (
+          <p className="text-xs text-red-400 mt-2">{searchError}</p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left: Results + Map */}
+        <div className="space-y-4">
+          {dpes.length > 0 && center && (
+            <div className="h-64 rounded-lg overflow-hidden border border-border">
+              <DPEMap dpes={dpes} center={center} />
+            </div>
+          )}
+
+          {dpes.length === 0 && !searching && zip && (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              No DPEs found. Try expanding your radius.
+            </p>
+          )}
+
+          <div className="space-y-2">
+            {dpes.map((dpe) => (
+              <div key={dpe.id} className="rounded-lg border border-border bg-card p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-sm">{dpe.name}</h3>
+                    {(dpe.city || dpe.state) && (
+                      <p className="text-xs text-muted-foreground">
+                        {[dpe.city, dpe.state].filter(Boolean).join(", ")} — {dpe.distance.toFixed(1)} mi
+                      </p>
+                    )}
+                    {dpe.certificateTypes && (
+                      <p className="text-xs text-muted-foreground mt-1">{dpe.certificateTypes}</p>
+                    )}
+                    <div className="flex gap-3 mt-1 flex-wrap">
+                      {dpe.phone && (
+                        <a href={`tel:${dpe.phone}`} className="text-xs text-primary hover:underline">
+                          {dpe.phone}
+                        </a>
+                      )}
+                      {dpe.email && (
+                        <a href={`mailto:${dpe.email}`} className="text-xs text-primary hover:underline">
+                          {dpe.email}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    {dpe.ratingCount > 0 ? (
+                      <div className="text-xs text-muted-foreground">
+                        ★ {dpe.avgRating?.toFixed(1)} ({dpe.ratingCount})
+                      </div>
+                    ) : (
+                      <div className="text-xs text-muted-foreground">No ratings</div>
+                    )}
+                    {pro && (
+                      <button
+                        onClick={() => setRatingTarget(dpe.id)}
+                        className="text-xs text-primary hover:underline mt-1 block"
+                      >
+                        Rate DPE
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Rating modal inline */}
+                {ratingTarget === dpe.id && (
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <p className="text-xs text-muted-foreground mb-2">Your rating:</p>
+                    <div className="flex items-center gap-2">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => setRatingScore(s)}
+                          className={`text-lg transition-colors ${s <= ratingScore ? "text-primary" : "text-muted-foreground"}`}
+                        >
+                          ★
+                        </button>
+                      ))}
+                      <button
+                        onClick={submitRating}
+                        disabled={submittingRating}
+                        className="ml-3 text-xs px-3 py-1 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+                      >
+                        {submittingRating ? "Saving..." : "Submit"}
+                      </button>
+                      <button
+                        onClick={() => setRatingTarget(null)}
+                        className="text-xs text-muted-foreground hover:text-foreground"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: FAA Pass Rates */}
+        <div>
+          <div className="rounded-lg border border-border bg-card p-4">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h2 className="text-sm font-semibold">FAA Pass Rates</h2>
+              {pro && (
+                <select
+                  value={rateFilter}
+                  onChange={(e) => setRateFilter(e.target.value)}
+                  className="bg-background border border-border rounded-md px-2 py-1 text-xs outline-none focus:border-primary transition-colors"
+                >
+                  <option value="">All certificates</option>
+                  {certTypes.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            {!pro ? (
+              <div className="text-center py-8">
+                <p className="text-sm text-muted-foreground mb-3">
+                  FAA aggregate pass rate data is a Pro feature.
+                </p>
+                <a
+                  href="/pricing"
+                  className="text-sm text-primary hover:underline"
+                >
+                  Upgrade to Pro →
+                </a>
+              </div>
+            ) : loadingRates ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+              </div>
+            ) : passRates.length === 0 ? (
+              <p className="text-xs text-muted-foreground text-center py-8">No data available.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-border text-muted-foreground">
+                      <th className="text-left py-2 pr-3 font-medium">Year</th>
+                      <th className="text-left py-2 pr-3 font-medium">Certificate</th>
+                      <th className="text-left py-2 pr-3 font-medium">Examiner</th>
+                      <th className="text-right py-2 pr-3 font-medium">Taken</th>
+                      <th className="text-right py-2 pr-3 font-medium">Passed</th>
+                      <th className="text-right py-2 font-medium">Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {passRates.map((row) => (
+                      <tr key={row.id} className="border-b border-border/50 hover:bg-muted/20">
+                        <td className="py-1.5 pr-3">{row.year}</td>
+                        <td className="py-1.5 pr-3 max-w-[120px] truncate">{row.certificateType}</td>
+                        <td className="py-1.5 pr-3">{row.examinerType}</td>
+                        <td className="py-1.5 pr-3 text-right">{row.taken.toLocaleString()}</td>
+                        <td className="py-1.5 pr-3 text-right">{row.passed.toLocaleString()}</td>
+                        <td className={`py-1.5 text-right font-medium ${
+                          row.passRate >= 0.8 ? "text-green-400" :
+                          row.passRate >= 0.6 ? "text-amber-400" : "text-red-400"
+                        }`}>
+                          {(row.passRate * 100).toFixed(1)}%
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

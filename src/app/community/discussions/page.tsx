@@ -1,0 +1,48 @@
+import Link from "next/link";
+import { db } from "@/lib/db";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Discussions",
+};
+
+export default async function DiscussionsPage() {
+  const categories = await db.discussionCategory.findMany({
+    orderBy: { order: "asc" },
+    include: {
+      _count: { select: { posts: true } },
+    },
+  });
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-4">Discussion Categories</h2>
+
+      {categories.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No categories available yet.</p>
+      ) : (
+        <div className="space-y-2">
+          {categories.map((cat) => (
+            <Link
+              key={cat.id}
+              href={`/community/discussions/${cat.slug}`}
+              className="block rounded-lg border border-border bg-card p-4 hover:border-primary/30 transition-colors"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="font-medium text-sm">{cat.name}</h3>
+                  {cat.description && (
+                    <p className="text-xs text-muted-foreground mt-0.5">{cat.description}</p>
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground shrink-0">
+                  {cat._count.posts} {cat._count.posts === 1 ? "post" : "posts"}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

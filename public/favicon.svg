@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#8ac8f5"/>
+
+  <!-- Crown — large puffy white dome, overhangs band on sides -->
+  <path d="M 2,19 Q 1,4 16,4 Q 31,4 30,19 Z" fill="white"/>
+  <!-- Subtle crown highlight -->
+  <path d="M 5,17 Q 10,8 16,7 Q 22,8 27,17" fill="none" stroke="#e8eef4" stroke-width="1.5"/>
+
+  <!-- Wide black band -->
+  <rect x="2" y="18" width="28" height="8" rx="0.5" fill="#111827"/>
+
+  <!-- Thick gold braid stripe — center of band -->
+  <rect x="2" y="20.5" width="28" height="3" fill="#d4a017"/>
+  <!-- Thin gold piping at very top of band -->
+  <rect x="2" y="18" width="28" height="1" fill="#d4a017"/>
+
+  <!-- Gold wings badge on crown -->
+  <!-- Left wing arcs -->
+  <path d="M 15,13.5 Q 11,11 7,13" fill="none" stroke="#d4a017" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M 15,14.5 Q 11,13 8,15" fill="none" stroke="#d4a017" stroke-width="0.7" stroke-linecap="round"/>
+  <!-- Right wing arcs -->
+  <path d="M 17,13.5 Q 21,11 25,13" fill="none" stroke="#d4a017" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M 17,14.5 Q 21,13 24,15" fill="none" stroke="#d4a017" stroke-width="0.7" stroke-linecap="round"/>
+  <!-- Center emblem -->
+  <circle cx="16" cy="14" r="2" fill="#d4a017"/>
+  <circle cx="16" cy="14" r="1.2" fill="#111827"/>
+
+  <!-- Black brim — extends wider than band, curves down -->
+  <path d="M 1,26 Q 16,31 31,26 L 30,27.5 Q 16,32 2,27.5 Z" fill="#0d0d0d"/>
+
+  <!-- Gold laurel on brim — left branch -->
+  <path d="M 3,27 Q 5,25.5 7,26 Q 8,25.5 10,26.5" fill="none" stroke="#d4a017" stroke-width="0.9" stroke-linecap="round"/>
+  <!-- Gold laurel on brim — right branch -->
+  <path d="M 22,26.5 Q 24,25.5 26,26 Q 27,25.5 29,27" fill="none" stroke="#d4a017" stroke-width="0.9" stroke-linecap="round"/>
+</svg>

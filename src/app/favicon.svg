@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="6" fill="#0f1623"/>
+  <!-- Airplane silhouette in amber -->
+  <path d="M16 4 L19 12 L28 14 L19 16 L20 26 L16 24 L12 26 L13 16 L4 14 L13 12 Z" fill="#f59e0b"/>
+</svg>
