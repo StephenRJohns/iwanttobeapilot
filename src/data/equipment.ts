@@ -11,6 +11,8 @@ export interface EquipmentItem {
   sportysUrl?: string;   // full product page URL on sportys.com
   // Generic external (NavLogPro, ForeFlight, etc.)
   externalUrl?: string;
+  // Optional explicit product image URL (overrides auto-lookup)
+  imageUrl?: string;
 }
 
 export const AFFILIATE_TAG = process.env.NEXT_PUBLIC_AMAZON_AFFILIATE_TAG || "iwanttobeapilot-20";

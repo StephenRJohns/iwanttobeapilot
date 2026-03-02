@@ -80,6 +80,17 @@ function ItemCard({
   isProUser: boolean;
 }) {
   const url = getAffiliateUrl(item);
+  const [imgFailed, setImgFailed] = useState(false);
+
+  // Resolve the best available image URL:
+  // 1. Explicit imageUrl on the item (e.g. Sporty's CDN)
+  // 2. Direct Amazon CDN (works without an affiliate account)
+  // 3. Fall through to placeholder
+  const imgSrc = item.imageUrl
+    ? item.imageUrl
+    : item.asin
+    ? `https://images-na.ssl-images-amazon.com/images/P/${item.asin}.01._SL250_.jpg`
+    : null;
 
   return (
     <div className="relative rounded-lg border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors flex flex-col">
@@ -92,16 +103,17 @@ function ItemCard({
         className="relative block h-44 bg-white flex items-center justify-center overflow-hidden"
       >
         {item.vendor === "sportys" && (
-          <div className="absolute top-2 left-2 bg-blue-700/90 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded">
+          <div className="absolute top-2 left-2 bg-blue-700/90 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded z-10">
             Sporty&apos;s
           </div>
         )}
-        {item.asin ? (
+        {imgSrc && !imgFailed ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={`https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${item.asin}&Format=_SL250_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=${AFFILIATE_TAG}`}
+            src={imgSrc}
             alt={item.name}
             className="h-full w-full object-contain p-3"
+            onError={() => setImgFailed(true)}
           />
         ) : item.vendor === "sportys" ? (
           <div className="flex flex-col items-center gap-2 text-blue-700">
