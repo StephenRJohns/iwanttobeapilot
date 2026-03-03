@@ -105,9 +105,9 @@ export const metadata: Metadata = {
     site: "@iwanttobeapilot",
   },
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/captains-hat.svg",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   robots: {
     index: true,
