@@ -6,11 +6,11 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 
 const publicNavLinks = [
+  { href: "/pricing", label: "Pricing" },
   { href: "/schools", label: "Schools" },
   { href: "/resources", label: "Resources" },
   { href: "/equipment", label: "Equipment" },
   { href: "/costs", label: "Costs" },
-  { href: "/pricing", label: "Pricing" },
 ];
 
 const authNavLinks = [
