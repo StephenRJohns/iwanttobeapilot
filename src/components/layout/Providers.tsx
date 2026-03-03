@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { SessionProvider, useSession, signOut } from "next-auth/react";
 import { Toaster } from "@/components/ui/toast";
 import MaintenanceGate from "@/components/layout/MaintenanceGate";
+import { ThemeProvider } from "@/components/layout/ThemeProvider";
 
 function SessionMonitor() {
   const { data: session, status } = useSession();
@@ -29,11 +30,13 @@ function SessionMonitor() {
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider refetchInterval={5 * 60}>
-      <SessionMonitor />
-      <MaintenanceGate>
-        {children}
-      </MaintenanceGate>
-      <Toaster />
+      <ThemeProvider>
+        <SessionMonitor />
+        <MaintenanceGate>
+          {children}
+        </MaintenanceGate>
+        <Toaster />
+      </ThemeProvider>
     </SessionProvider>
   );
 }

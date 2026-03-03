@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { PILOT_LEVELS, CAREER_PATH_IDS, HOBBY_PATH_IDS } from "@/data/pilot-levels";
-import { EQUIPMENT_ITEMS, AFFILIATE_TAG, getAffiliateUrl } from "@/data/equipment";
+import { EQUIPMENT_ITEMS, getAffiliateUrl, getVendorLabel } from "@/data/equipment";
 import { formatCurrency } from "@/lib/utils";
 
 interface UserProgress {
@@ -216,6 +216,20 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
                     <div className="mt-2 rounded-lg border border-border bg-card/50 p-4 space-y-4 text-sm">
                       <div>
                         <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
+                          What You Will Learn
+                        </p>
+                        <ul className="space-y-1">
+                          {level.whatYouWillLearn.map((item, i) => (
+                            <li key={i} className="flex items-start gap-2 text-xs">
+                              <span className="text-primary shrink-0 mt-0.5">✦</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
                           Next Steps
                         </p>
                         <ol className="space-y-1">
@@ -238,36 +252,26 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
                             <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
                               Recommended Gear
                             </p>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <ul className="space-y-1">
                               {products.map(product => (
-                                <a
-                                  key={product.id}
-                                  href={getAffiliateUrl(product)}
-                                  target="_blank"
-                                  rel="noopener noreferrer sponsored"
-                                  data-asin={product.asin}
-                                  className="rounded-md border border-border bg-background hover:border-primary/40 transition-colors overflow-hidden flex flex-col"
-                                >
-                                  <div className="bg-white h-20 flex items-center justify-center p-1">
-                                    {product.asin ? (
-                                      // eslint-disable-next-line @next/next/no-img-element
-                                      <img
-                                        src={`https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=${AFFILIATE_TAG}`}
-                                        alt={product.name}
-                                        className="h-full w-full object-contain"
-                                      />
-                                    ) : (
-                                      <span className="text-2xl opacity-20">✈</span>
-                                    )}
-                                  </div>
-                                  <div className="p-1.5">
-                                    <p className="text-[10px] leading-tight text-muted-foreground line-clamp-2">{product.name}</p>
-                                  </div>
-                                </a>
+                                <li key={product.id}>
+                                  <a
+                                    href={getAffiliateUrl(product)}
+                                    target="_blank"
+                                    rel="noopener noreferrer sponsored"
+                                    data-asin={product.asin}
+                                    className="flex items-center justify-between gap-3 rounded px-2 py-1.5 border border-border bg-background hover:border-primary/40 hover:bg-primary/5 transition-colors"
+                                  >
+                                    <span className="text-xs text-foreground truncate">{product.name}</span>
+                                    <span className="text-[10px] text-muted-foreground shrink-0 whitespace-nowrap">
+                                      {getVendorLabel(product)} →
+                                    </span>
+                                  </a>
+                                </li>
                               ))}
-                            </div>
+                            </ul>
                             <p className="text-[10px] text-muted-foreground/50 mt-1">
-                              Amazon affiliate links — helps support the site at no extra cost to you.
+                              Some links are affiliate links — helps support the site at no extra cost to you.
                             </p>
                           </div>
                         );

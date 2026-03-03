@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/components/ui/toast";
+import { useTheme } from "@/components/layout/ThemeProvider";
 
 interface UserSettings {
   name: string | null;
@@ -30,6 +31,7 @@ const GOAL_OPTIONS = [
 
 export default function SettingsPage() {
   const { data: session, update } = useSession();
+  const { theme, setTheme } = useTheme();
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -144,6 +146,35 @@ export default function SettingsPage() {
       <div>
         <h1 className="text-2xl font-bold">Settings</h1>
       </div>
+
+      {/* Appearance */}
+      <section className="rounded-lg border border-border bg-card p-5">
+        <h2 className="text-sm font-semibold mb-4">Appearance</h2>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm">Theme</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Choose your preferred color scheme</p>
+          </div>
+          <div className="flex items-center gap-1 rounded-lg border border-border p-1">
+            <button
+              onClick={() => setTheme("light")}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                theme === "light" ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Light
+            </button>
+            <button
+              onClick={() => setTheme("dark")}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                theme === "dark" ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Dark
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* Profile */}
       <section className="rounded-lg border border-border bg-card p-5">

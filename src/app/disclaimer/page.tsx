@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Aviation Disclaimer",
-  description: "Important aviation safety disclaimer for I Want To Be A Pilot.",
-  robots: { index: false, follow: false },
+  description: "Important aviation safety disclaimer for I Want To Be A Pilot. All content is educational only — not official FAA guidance, flight instruction, legal, or medical advice.",
+  robots: { index: true, follow: false },
 };
 
 export default function DisclaimerPage() {
@@ -109,6 +109,10 @@ export default function DisclaimerPage() {
             <a href="mailto:support@iwanttobeapilot.online" className="text-primary hover:underline">
               support@iwanttobeapilot.online
             </a>
+            {" "}or review our{" "}
+            <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>
+            {" "}and{" "}
+            <a href="/terms" className="text-primary hover:underline">Terms of Service</a>
             .
           </p>
         </section>

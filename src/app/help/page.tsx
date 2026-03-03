@@ -110,7 +110,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
       },
       {
         q: "How does the Progress Timeline work?",
-        a: "The Progress Timeline (in Dashboard) shows a visual roadmap of all pilot certification levels. At each level you can mark milestones as complete and expand the card to see step-by-step guidance on what to do next. It tracks your journey from student pilot to whatever goal you set.",
+        a: "The Progress Timeline (in Dashboard) shows a visual roadmap of all pilot certification levels. Expand any level card to see a \"What You Will Learn\" summary, recommended gear for that stage, step-by-step milestone guidance, and next steps. Check off milestones as you complete them. It tracks your journey from student pilot to whatever goal you set.",
       },
       {
         q: "How does the DPE Finder work?",
@@ -151,7 +151,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "How do I cancel my subscription?",
         a: (
           <>
-            Go to <Link href="/settings" className="text-primary hover:underline">Settings</Link> and click &ldquo;Manage Billing&rdquo; to access the Stripe billing portal, where you can cancel your subscription. Your Pro access continues through the end of the current billing period.
+            Go to <Link href="/settings" className="text-primary hover:underline">Settings</Link> and click &ldquo;Manage Subscription&rdquo; to access the Stripe billing portal, where you can cancel your subscription. Your Pro access continues through the end of the current billing period.
           </>
         ),
       },
@@ -164,6 +164,14 @@ const sections: { title: string; items: FAQItem[] }[] = [
         a: (
           <>
             Go to the <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> page and scroll to the &ldquo;Have a promo code?&rdquo; section. Enter your code and click Apply. If valid, your account will be upgraded to Pro immediately.
+          </>
+        ),
+      },
+      {
+        q: "How do I switch between light and dark mode?",
+        a: (
+          <>
+            Go to <Link href="/settings" className="text-primary hover:underline">Settings</Link> and find the &ldquo;Appearance&rdquo; section at the top. Click &ldquo;Light&rdquo; or &ldquo;Dark&rdquo; to switch themes. Your preference is saved in your browser and persists across visits.
           </>
         ),
       },

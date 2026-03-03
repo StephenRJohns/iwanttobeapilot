@@ -6,6 +6,7 @@ export interface PilotLevel {
   estimatedCost: { min: number; max: number };
   salaryRange: { min: number; max: number; unit: string } | null;
   typicalCareer: boolean;
+  whatYouWillLearn: string[];
   nextSteps: string[];
   faaRequirements: string[];
   certificateType: string;
@@ -22,7 +23,22 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: null,
     typicalCareer: false,
     certificateType: "Sport Pilot",
-    recommendedProductIds: ["sportys-learn-to-fly", "rugged-air-ra950", "phak", "mechanical-e6b"],
+    recommendedProductIds: [
+      "sportys-learn-to-fly", "sportys-pilottraining-app",
+      "rugged-air-ra950", "sportys-headset", "david-clark-h10",
+      "phak", "afh", "far-aim", "gleim-ppl",
+      "mechanical-e6b", "plotter",
+      "navlogpro", "foreflight",
+      "sporty-kneeboard", "ipad-mini",
+    ],
+    whatYouWillLearn: [
+      "Basic aircraft control — pitch, roll, and yaw",
+      "Takeoffs, landings, and traffic pattern operations",
+      "VFR weather interpretation and go/no-go decisions",
+      "Basic navigation using sectional charts",
+      "Airspace classes and rules of the air",
+      "Emergency procedures and safety of flight",
+    ],
     faaRequirements: [
       "Minimum 20 hours flight time (sport) or 40 hours (recreational)",
       "Pass FAA written knowledge test",
@@ -47,7 +63,22 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: null,
     typicalCareer: false,
     certificateType: "Private",
-    recommendedProductIds: ["sportys-learn-to-fly", "rugged-air-ra950", "phak", "gleim-ppl"],
+    recommendedProductIds: [
+      "sportys-learn-to-fly", "sportys-pilottraining-app",
+      "rugged-air-ra950", "sportys-headset", "david-clark-h10",
+      "phak", "afh", "far-aim", "gleim-ppl", "sheppard-air",
+      "mechanical-e6b", "plotter",
+      "navlogpro", "foreflight",
+      "sporty-kneeboard", "ipad-mini", "sportys-flight-bag",
+    ],
+    whatYouWillLearn: [
+      "Pre-flight inspection and aircraft airworthiness",
+      "Cockpit familiarization and avionics operation",
+      "Radio communications with ATC and other traffic",
+      "Fundamental flight maneuvers — turns, climbs, descents",
+      "Introduction to cross-country flight planning",
+      "How to use an E6B and sectional charts",
+    ],
     faaRequirements: [
       "Be at least 16 years old (14 for gliders/balloons)",
       "Read, speak, and understand English",
@@ -70,7 +101,23 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: null,
     typicalCareer: false,
     certificateType: "Private",
-    recommendedProductIds: ["sportys-learn-to-fly", "david-clark-h10", "ipad-mini", "gleim-ppl"],
+    recommendedProductIds: [
+      "sportys-learn-to-fly", "sportys-checkride-prep", "sportys-pilottraining-app",
+      "rugged-air-ra950", "david-clark-h10", "sportys-headset",
+      "phak", "afh", "far-aim", "gleim-ppl", "sheppard-air",
+      "mechanical-e6b", "asr-e6b", "plotter",
+      "navlogpro", "foreflight", "garmin-pilot",
+      "ipad-mini", "ram-ipad-mount", "thigh-board", "sporty-kneeboard",
+      "sportys-flight-bag",
+    ],
+    whatYouWillLearn: [
+      "Solo flight — taking off and landing on your own",
+      "Cross-country navigation using VORs, GPS, and pilotage",
+      "Night flying operations and lighting requirements",
+      "Hood time — flying by reference to instruments",
+      "ATC communication across multiple airspace types",
+      "Emergency procedures, forced landings, and aeronautical decision making",
+    ],
     faaRequirements: [
       "Minimum 40 hours total flight time (35 in Part 141)",
       "20 hours with instructor, 10 hours solo",
@@ -97,7 +144,21 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: null,
     typicalCareer: true,
     certificateType: "Instrument",
-    recommendedProductIds: ["sportys-instrument-course", "foggles", "stratus-3", "ipad-mini"],
+    recommendedProductIds: [
+      "sportys-instrument-course", "sportys-pilottraining-app",
+      "bose-a20", "david-clark-h10",
+      "foggles", "stratus-3", "dual-xgps170",
+      "foreflight", "garmin-pilot",
+      "ipad-mini", "ipad-air", "ram-ipad-mount",
+    ],
+    whatYouWillLearn: [
+      "Flying solely by reference to cockpit instruments",
+      "ILS, VOR, RNAV/GPS, and non-precision approaches",
+      "Holding patterns, procedure turns, and missed approaches",
+      "Filing and flying IFR flight plans with ATC",
+      "Interpreting weather products — METARs, TAFs, SIGMETs, AIRMETs",
+      "Unusual attitude recovery under the hood",
+    ],
     faaRequirements: [
       "Hold Private Pilot Certificate",
       "50 hours cross-country as PIC",
@@ -124,7 +185,22 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: { min: 40000, max: 80000, unit: "/year" },
     typicalCareer: true,
     certificateType: "Commercial",
-    recommendedProductIds: ["sportys-commercial-course", "lightspeed-zulu3", "ipad-air", "brightline-bags"],
+    recommendedProductIds: [
+      "sportys-commercial-course", "sportys-pilottraining-app",
+      "lightspeed-zulu3", "bose-a20",
+      "ipad-air", "ram-ipad-mount",
+      "stratus-3", "foreflight", "garmin-pilot",
+      "brightline-bags", "sportys-flight-bag",
+      "maui-jim-sunglasses",
+    ],
+    whatYouWillLearn: [
+      "Commercial maneuvers — chandelles, lazy eights, eights on pylons",
+      "Complex aircraft systems — retractable gear, constant-speed prop",
+      "High-performance aircraft operations",
+      "Advanced aerodynamics and aircraft performance",
+      "Part 119/135 commercial operations regulations",
+      "Passenger handling and professional airmanship standards",
+    ],
     faaRequirements: [
       "250 total flight hours (150 in Part 141)",
       "100 hours in powered aircraft, 50 hours in airplanes",
@@ -151,7 +227,20 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: null,
     typicalCareer: true,
     certificateType: "Multi-Engine Class",
-    recommendedProductIds: ["lightspeed-zulu3", "brightline-bags", "ipad-air", "stratus-3"],
+    recommendedProductIds: [
+      "lightspeed-zulu3", "bose-a20",
+      "ipad-air", "ram-ipad-mount",
+      "stratus-3", "foreflight", "garmin-pilot",
+      "brightline-bags", "maui-jim-sunglasses",
+    ],
+    whatYouWillLearn: [
+      "Multi-engine aerodynamics and Vmc (minimum control speed)",
+      "Engine-out procedures and single-engine approach to landing",
+      "Twin-engine aircraft systems — fuel, electrical, hydraulics",
+      "Accelerate-stop and accelerate-go distance calculations",
+      "Identifying and combating asymmetric thrust",
+      "Emergency procedures specific to multi-engine operations",
+    ],
     faaRequirements: [
       "Hold at least a Private Pilot Certificate",
       "No minimum flight hours required (added to existing cert)",
@@ -174,7 +263,21 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: { min: 35000, max: 70000, unit: "/year" },
     typicalCareer: true,
     certificateType: "CFI",
-    recommendedProductIds: ["sportys-cfi-course", "bose-a30", "ipad-air", "brightline-bags"],
+    recommendedProductIds: [
+      "sportys-cfi-course",
+      "bose-a30", "bose-a20", "lightspeed-zulu3",
+      "ipad-air", "ram-ipad-mount",
+      "stratus-3", "foreflight",
+      "brightline-bags", "maui-jim-sunglasses",
+    ],
+    whatYouWillLearn: [
+      "Fundamentals of Instruction (FOI) — how people learn",
+      "Teaching flight maneuvers from the right seat",
+      "Developing lesson plans and structured syllabi",
+      "Recognizing and correcting common student errors",
+      "Flight instructor practical test standards (PTS/ACS)",
+      "Effective aeronautical decision making coaching techniques",
+    ],
     faaRequirements: [
       "Hold Commercial Pilot Certificate",
       "Hold Instrument Rating",
@@ -200,7 +303,20 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: { min: 40000, max: 75000, unit: "/year" },
     typicalCareer: true,
     certificateType: "CFI",
-    recommendedProductIds: ["sportys-firc", "bose-a30", "foggles", "stratus-3"],
+    recommendedProductIds: [
+      "sportys-firc",
+      "bose-a30", "bose-a20",
+      "foggles", "stratus-3", "dual-xgps170",
+      "ipad-air", "foreflight",
+    ],
+    whatYouWillLearn: [
+      "Teaching instrument procedures and approaches from the right seat",
+      "Designing effective instrument ground lessons",
+      "Simulating IMC with view-limiting devices",
+      "Teaching unusual attitude recognition and recovery",
+      "CFII-specific oral examination topics and standards",
+      "Building student confidence in actual IMC conditions",
+    ],
     faaRequirements: [
       "Hold CFI Certificate",
       "Hold Instrument Rating",
@@ -222,7 +338,20 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: { min: 60000, max: 120000, unit: "/year" },
     typicalCareer: true,
     certificateType: "Commercial",
-    recommendedProductIds: ["bose-a30", "ipad-air", "brightline-bags", "oakley-aviator"],
+    recommendedProductIds: [
+      "bose-a30", "bose-proflight-2", "lightspeed-zulu3",
+      "ipad-air", "ram-ipad-mount",
+      "stratus-3", "foreflight", "garmin-pilot",
+      "brightline-bags", "oakley-aviator", "maui-jim-sunglasses",
+    ],
+    whatYouWillLearn: [
+      "Part 135 on-demand charter regulations and compliance",
+      "Crew resource management (CRM) for single-pilot IFR",
+      "High-performance and pressurized aircraft systems",
+      "Charter dispatch, weight and balance, and performance planning",
+      "Passenger briefings and professional service standards",
+      "Company indoctrination training and check airman requirements",
+    ],
     faaRequirements: [
       "Commercial Pilot Certificate + Instrument Rating",
       "500+ total hours typical employer requirement",
@@ -246,7 +375,20 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: { min: 50000, max: 110000, unit: "/year" },
     typicalCareer: true,
     certificateType: "ATP",
-    recommendedProductIds: ["bose-a30", "brightline-bags", "ipad-air", "maui-jim-sunglasses"],
+    recommendedProductIds: [
+      "bose-a30", "bose-proflight-2",
+      "ipad-air", "ram-ipad-mount",
+      "foreflight", "garmin-pilot",
+      "brightline-bags", "maui-jim-sunglasses", "oakley-aviator", "sportys-shirt",
+    ],
+    whatYouWillLearn: [
+      "Turboprop and regional jet systems and normal procedures",
+      "Airline transport procedures and sterile cockpit rules",
+      "Line-oriented flight training (LOFT) and CRM",
+      "Advanced weather decision making and divert planning",
+      "ATP knowledge test topics — systems, regs, met, performance",
+      "Type rating aircraft-specific procedures and limitations",
+    ],
     faaRequirements: [
       "1500 total flight hours (1000 with military, 1250 Part 141 4-year)",
       "ATP Certificate (Airline Transport Pilot)",
@@ -273,7 +415,19 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: { min: 130000, max: 500000, unit: "/year" },
     typicalCareer: true,
     certificateType: "ATP",
-    recommendedProductIds: ["bose-a30", "brightline-bags", "ipad-air", "oakley-aviator"],
+    recommendedProductIds: [
+      "bose-a30", "bose-proflight-2",
+      "ipad-air", "foreflight",
+      "brightline-bags", "oakley-aviator", "maui-jim-sunglasses", "sportys-shirt",
+    ],
+    whatYouWillLearn: [
+      "Wide-body and advanced jet aircraft systems",
+      "International and oceanic operations (ETOPS, NAT tracks)",
+      "Advanced CRM and threat and error management (TEM)",
+      "Type rating aircraft-specific procedures and limitations",
+      "Union contracts, seniority bidding, and quality of life planning",
+      "Simulator training — abnormals, emergencies, and line checks",
+    ],
     faaRequirements: [
       "ATP Certificate",
       "Typically 3,000–5,000+ total hours",
@@ -298,7 +452,19 @@ export const PILOT_LEVELS: PilotLevel[] = [
     salaryRange: { min: 120000, max: 450000, unit: "/year" },
     typicalCareer: true,
     certificateType: "ATP",
-    recommendedProductIds: ["bose-a30", "brightline-bags", "ipad-air", "oakley-aviator"],
+    recommendedProductIds: [
+      "bose-a30", "bose-proflight-2",
+      "ipad-air", "foreflight",
+      "brightline-bags", "oakley-aviator", "maui-jim-sunglasses", "sportys-shirt",
+    ],
+    whatYouWillLearn: [
+      "Cargo-specific operations and dangerous goods regulations",
+      "Night operations, low-visibility procedures, and RVR minima",
+      "Heavy aircraft performance, weight limits, and CG management",
+      "International cargo routing and customs requirements",
+      "Freighter aircraft systems and cargo loading procedures",
+      "Fatigue risk management for overnight and long-haul operations",
+    ],
     faaRequirements: [
       "ATP Certificate",
       "Typically 3,000–5,000+ total hours",

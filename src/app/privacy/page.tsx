@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Privacy Policy for I Want To Be A Pilot.",
-  robots: { index: false, follow: false },
+  description: "Privacy Policy for I Want To Be A Pilot (iwanttobeapilot.online). Learn how we collect, use, and protect your personal information.",
+  robots: { index: true, follow: false },
 };
 
 export default function PrivacyPage() {
@@ -98,7 +98,11 @@ export default function PrivacyPage() {
               <a href="https://resend.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">resend.com/privacy</a>
             </li>
             <li>
-              <strong className="text-foreground">Amazon Associates / Sporty&apos;s</strong> — affiliate links on the Equipment page. Clicking these links may set third-party cookies subject to their privacy policies.
+              <strong className="text-foreground">Google Maps / Places API</strong> — used to search and display flight school locations.{" "}
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">policies.google.com/privacy</a>
+            </li>
+            <li>
+              <strong className="text-foreground">Amazon Associates / Sporty&apos;s</strong> — affiliate links on the Equipment page and training timeline. Clicking these links may set third-party cookies subject to their privacy policies.
             </li>
           </ul>
         </section>
@@ -109,6 +113,7 @@ export default function PrivacyPage() {
           <ul className="list-disc list-inside space-y-2 text-muted-foreground">
             <li><strong className="text-foreground">Session cookies:</strong> Secure, HTTP-only cookies used exclusively for authentication. These are required for the Service to function.</li>
             <li><strong className="text-foreground">CSRF tokens:</strong> Short-lived tokens to prevent cross-site request forgery.</li>
+            <li><strong className="text-foreground">Theme preference:</strong> Your light/dark mode choice is stored in your browser&apos;s <code className="text-xs bg-muted px-1 py-0.5 rounded">localStorage</code> under the key <code className="text-xs bg-muted px-1 py-0.5 rounded">theme</code>. This is local to your device and is never transmitted to our servers.</li>
           </ul>
           <p className="text-muted-foreground mt-2">
             We do not use advertising cookies, tracking pixels, or third-party analytics services. Third-party affiliate links (Amazon, Sporty&apos;s) may set their own cookies when you click them; we do not control those cookies.
@@ -152,7 +157,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="font-semibold text-base mb-3">10. California Residents (CCPA)</h2>
           <p className="text-muted-foreground">
-            California residents have additional rights under the California Consumer Privacy Act (CCPA), including the right to know what personal information we collect, the right to delete your personal information, and the right to opt out of the sale of personal information. We do not sell personal information. To exercise your rights, contact us at support@iwanttobeapilot.online.
+            California residents have additional rights under the California Consumer Privacy Act (CCPA), including the right to know what personal information we collect, the right to delete your personal information, and the right to opt out of the sale of personal information. We do not sell personal information. To exercise your rights, contact us at privacy@iwanttobeapilot.online.
           </p>
         </section>
 
@@ -174,8 +179,8 @@ export default function PrivacyPage() {
           <h2 className="font-semibold text-base mb-3">13. Contact</h2>
           <p className="text-muted-foreground">
             Privacy questions or requests? Contact us at{" "}
-            <a href="mailto:support@iwanttobeapilot.online" className="text-primary hover:underline">
-              support@iwanttobeapilot.online
+            <a href="mailto:privacy@iwanttobeapilot.online" className="text-primary hover:underline">
+              privacy@iwanttobeapilot.online
             </a>
             .
           </p>

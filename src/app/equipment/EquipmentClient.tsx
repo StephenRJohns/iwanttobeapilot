@@ -226,11 +226,12 @@ function SuggestModal({ onClose }: { onClose: () => void }) {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1">Link (optional)</label>
+              <label className="block text-xs font-medium mb-1">Link to product <span className="text-destructive">*</span></label>
               <input
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 type="url"
+                required
                 placeholder="https://..."
                 className="w-full rounded border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary"
               />
@@ -245,7 +246,7 @@ function SuggestModal({ onClose }: { onClose: () => void }) {
               </button>
               <button
                 type="submit"
-                disabled={status === "submitting" || !name.trim()}
+                disabled={status === "submitting" || !name.trim() || !url.trim()}
                 className="text-xs rounded px-3 py-1.5 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
               >
                 {status === "submitting" ? "Sending…" : "Submit Suggestion"}

@@ -12,15 +12,14 @@ import HelpPanel from "@/components/help/HelpPanel";
 const navLinks = [
   { href: "/schools", label: "Schools" },
   { href: "/resources", label: "Resources" },
-  { href: "/equipment", label: "Equipment" },
   { href: "/costs", label: "Costs" },
+  { href: "/equipment", label: "Equipment" },
 ];
 
 const authNavLinks = [
-  { href: "/dashboard", label: "Progress" },
-  { href: "/dpe-finder", label: "DPE Finder" },
+  { href: "/dpe-finder", label: "DPEs" },
   { href: "/community/stories", label: "Stories" },
-  { href: "/community/discussions", label: "Discussions" },
+  { href: "/community/discussions", label: "Forums" },
 ];
 
 export default function Header() {
@@ -35,7 +34,14 @@ export default function Header() {
   const isAdminUser = (sessionData?.user as any)?.role === "admin";
 
   const allNavLinks = isLoggedIn
-    ? [...navLinks, ...authNavLinks]
+    ? [
+        { href: "/schools", label: "Schools" },
+        { href: "/resources", label: "Resources" },
+        { href: "/costs", label: "Costs" },
+        { href: "/dashboard", label: "Progress" },
+        { href: "/equipment", label: "Equipment" },
+        ...authNavLinks,
+      ]
     : navLinks;
 
   const pricingActive = pathname === "/pricing";
@@ -72,16 +78,18 @@ export default function Header() {
 
             {/* Pricing — pinned left, outside the centered nav group */}
             {!isAuthPage && (
-              <Link
-                href="/pricing"
-                className={`hidden md:inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold transition-colors ml-2 ${
-                  pricingActive
-                    ? "bg-amber-400/15 text-amber-400"
-                    : "text-amber-400 hover:bg-amber-400/10"
-                }`}
-              >
-                Pricing
-              </Link>
+              <>
+                <Link
+                  href="/pricing"
+                  className={`hidden md:inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold transition-colors ml-2 ${
+                    pricingActive
+                      ? "bg-amber-400/15 text-amber-400"
+                      : "text-amber-400 hover:bg-amber-400/10"
+                  }`}
+                >
+                  Pricing
+                </Link>
+              </>
             )}
           </div>
 
@@ -112,38 +120,38 @@ export default function Header() {
             <div className="hidden md:flex items-center gap-1">
               {isLoggedIn ? (
                 <>
-                  <Link
-                    href="/settings"
-                    className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                      pathname === "/settings"
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
-                  >
-                    Settings
-                  </Link>
                   {isAdminUser && (
                     <Link
                       href="/admin"
                       className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                         pathname.startsWith("/admin")
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          ? "bg-red-900/30 text-red-400"
+                          : "text-red-500/70 hover:bg-red-900/20 hover:text-red-400"
                       }`}
                     >
                       Admin
                     </Link>
                   )}
+                  <Link
+                    href="/settings"
+                    className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                      pathname === "/settings"
+                        ? "bg-amber-400/15 text-amber-400"
+                        : "text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400"
+                    }`}
+                  >
+                    Settings
+                  </Link>
                   <button
                     onClick={() => setHelpOpen(true)}
-                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                     aria-label="Help"
                   >
                     <HelpCircle className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => signOut({ callbackUrl: window.location.origin + "/" })}
-                    className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                    className="rounded-md px-3 py-2 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                   >
                     Sign Out
                   </button>
@@ -152,7 +160,7 @@ export default function Header() {
                 <>
                   <button
                     onClick={() => setHelpOpen(true)}
-                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                     aria-label="Help"
                   >
                     <HelpCircle className="w-4 h-4" />
@@ -217,30 +225,30 @@ export default function Header() {
             <div className="border-t border-border pt-2 mt-2 space-y-1">
               {isLoggedIn ? (
                 <>
-                  <Link
-                    href="/settings"
-                    onClick={() => setMobileOpen(false)}
-                    className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
-                      pathname === "/settings"
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
-                  >
-                    Settings
-                  </Link>
                   {isAdminUser && (
                     <Link
                       href="/admin"
                       onClick={() => setMobileOpen(false)}
                       className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                         pathname.startsWith("/admin")
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          ? "bg-red-900/30 text-red-400"
+                          : "text-red-500/70 hover:bg-red-900/20 hover:text-red-400"
                       }`}
                     >
                       Admin
                     </Link>
                   )}
+                  <Link
+                    href="/settings"
+                    onClick={() => setMobileOpen(false)}
+                    className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                      pathname === "/settings"
+                        ? "bg-amber-400/15 text-amber-400"
+                        : "text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400"
+                    }`}
+                  >
+                    Settings
+                  </Link>
                   <button
                     onClick={() => { setMobileOpen(false); setHelpOpen(true); }}
                     className="block w-full text-left rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
@@ -252,7 +260,7 @@ export default function Header() {
                       setMobileOpen(false);
                       signOut({ callbackUrl: window.location.origin + "/" });
                     }}
-                    className="block w-full text-left rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                    className="block w-full text-left rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                   >
                     Sign Out
                   </button>

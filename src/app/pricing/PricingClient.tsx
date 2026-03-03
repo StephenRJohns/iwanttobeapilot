@@ -296,7 +296,10 @@ export default function PricingClient() {
       {/* Promo code */}
       {!isProUser && (
         <div className="max-w-md mx-auto border border-border rounded-lg p-5">
-          <h3 className="text-sm font-semibold mb-3">Have a promo code?</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold">Have a promo code?</h3>
+            <Link href="/help#billing" className="text-xs text-primary hover:underline">Billing FAQ →</Link>
+          </div>
           <form onSubmit={handlePromo} className="flex gap-2">
             <input
               type="text"
