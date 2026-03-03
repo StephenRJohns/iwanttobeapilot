@@ -15,7 +15,7 @@ export interface EquipmentItem {
   imageUrl?: string;
 }
 
-export const AFFILIATE_TAG = process.env.NEXT_PUBLIC_AMAZON_AFFILIATE_TAG || "iwanttobeapilot-20";
+export const AFFILIATE_TAG = process.env.NEXT_PUBLIC_AMAZON_AFFILIATE_TAG || "";
 export const SPORTYS_AFF_ID = process.env.NEXT_PUBLIC_SPORTYS_AFFILIATE_ID || "";
 
 export function getAffiliateUrl(item: EquipmentItem): string {
