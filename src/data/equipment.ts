@@ -11,7 +11,7 @@ export interface EquipmentItem {
   sportysUrl?: string;   // full product page URL on sportys.com
   // Generic external (NavLogPro, ForeFlight, etc.)
   externalUrl?: string;
-  // Optional explicit product image URL (overrides auto-lookup)
+  // Optional explicit product image URL (must be self-hosted or licensed)
   imageUrl?: string;
 }
 
@@ -127,7 +127,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "The industry-standard EFB app. Charts, weather, flight planning, logbook. Required by most flight schools.",
     externalUrl: "https://foreflight.com",
     searchQuery: "ForeFlight aviation app",
-    imageUrl: "https://d32dgjuo8qzfhk.cloudfront.net/assets/1200x880_Releases.jpg",
   },
   {
     id: "garmin-pilot",
@@ -137,7 +136,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Full-featured EFB with excellent Garmin avionics integration.",
     externalUrl: "https://www.garmin.com/en-US/p/115856",
     searchQuery: "Garmin Pilot aviation app",
-    imageUrl: "https://res.garmin.com/www/aviation/garmin-pilot/MCJT-78463/78463-banner-garmin-pilot-web-mobile.jpg",
   },
   {
     id: "sportys-pilottraining-app",
@@ -158,7 +156,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Bose's latest flagship ANR headset. Best-in-class noise cancellation, Bluetooth, and comfort. The gold standard for serious pilots.",
     asin: "B0BVBVPSX6",
     searchQuery: "Bose A30 aviation headset",
-    imageUrl: "https://cdn.aircraftspruce.com/cache/400-400-/catalog/graphics/b/a30_o.jpg",
   },
   {
     id: "bose-a20",
@@ -186,7 +183,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Premium ANR headset loved by professional pilots. Outstanding comfort and clarity.",
     asin: "B01N6YC6EY",
     searchQuery: "Lightspeed Zulu 3 aviation headset",
-    imageUrl: "https://cdn.aircraftspruce.com/cache/400-400-/catalog/graphics/1/11-14868.jpg",
   },
   {
     id: "david-clark-h10",
@@ -196,7 +192,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "The classic passive headset. Durable and reliable. Many pilots start and end their careers with David Clark.",
     asin: "B0011Z9PM2",
     searchQuery: "David Clark H10-13.4 headset",
-    imageUrl: "https://www.aircraftspruce.com/catalog/graphics/11-03815.jpg",
   },
   {
     id: "rugged-air-ra950",
@@ -206,7 +201,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Budget-friendly ANR headset. Great for student pilots who want ANR without the premium price.",
     asin: "B00SLY70MS",
     searchQuery: "Rugged Air RA950 aviation headset student",
-    imageUrl: "https://www.aircraftspruce.com/catalog/graphics/13-09294.jpg",
   },
   {
     id: "sportys-headset",
@@ -227,7 +221,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Modular flight bag system loved by professional pilots. Customizable and TSA-carry-on compliant.",
     asin: "B01GEHGX6M",
     searchQuery: "BrightLine Bags Flex B4 Swift flight bag pilot modular",
-    imageUrl: "https://brightlinebags.s3-us-west-1.amazonaws.com/media/Products/b4-swift-1/B4_01_1200.jpg",
   },
   {
     id: "sportys-flight-bag",
@@ -246,7 +239,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Sleek, modern flight bag with great organization and rolling carry-on option.",
     asin: "B00YYK3UCM",
     searchQuery: "Flight Outfitters Lift flight bag",
-    imageUrl: "https://www.aircraftspruce.com/catalog/graphics/3/13-25616a.jpg",
   },
 
   // ── Books & Study Materials ───────────────────────────────────────────────
@@ -258,7 +250,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "The FAA's official PPL bible. Essential reading for every pilot. Also available free on FAA.gov.",
     asin: "1644253461",
     searchQuery: "Pilot's Handbook Aeronautical Knowledge FAA",
-    imageUrl: "https://cdn11.bigcommerce.com/s-m5qljysoqy/images/stencil/500x659/products/4717/2826/8083-25C__48108.1689108353.1280.1280__06253.1729533996.jpg?c=1",
   },
   {
     id: "afh",
@@ -268,7 +259,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Official FAA guide to flying maneuvers and procedures. Required knowledge for PPL checkride.",
     asin: "1644250683",
     searchQuery: "Airplane Flying Handbook FAA",
-    imageUrl: "https://cdn11.bigcommerce.com/s-m5qljysoqy/images/stencil/500x659/products/4323/1706/8083-3C__07740.1642784925.1280.1280__71899.1642787755.jpg?c=1",
   },
   {
     id: "far-aim",
@@ -296,7 +286,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Guaranteed to pass or your money back. The most efficient FAA written test prep available.",
     externalUrl: "https://www.sheppardair.com",
     searchQuery: "Sheppard Air FAA written test",
-    imageUrl: "https://www.sheppardair.com/im/slider1.jpg",
   },
   {
     id: "sportys-checkride-prep",
@@ -344,7 +333,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "External GPS receiver for accurate position on tablets that don't have built-in GPS.",
     asin: "B008RYZU38",
     searchQuery: "Dual XGPS170 GPS receiver iPad aviation",
-    imageUrl: "https://www.dualav.com/wp-content/uploads/2023/05/xgps170.jpg",
   },
 
   // ── Tablet & Cockpit Accessories ──────────────────────────────────────────
@@ -356,7 +344,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Industry-standard mount system. Attaches to yoke, suction cup, or panel with rock-solid stability.",
     asin: "B09K4PBSCQ",
     searchQuery: "RAM mount iPad cockpit yoke aviation",
-    imageUrl: "https://www.aircraftspruce.com/catalog/graphics/1/11-19217.jpg",
   },
   {
     id: "sporty-kneeboard",
@@ -375,7 +362,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Clip-on thigh board for checklist, charts, and notes. Essential for any cockpit.",
     asin: "B07GBGDF8R",
     searchQuery: "pilot thigh board kneeboard cockpit",
-    imageUrl: "https://cdn.aircraftspruce.com/cache/400-400-/catalog/graphics/3/13-23896a.jpg",
   },
 
   // ── Clothing & Sun Protection ─────────────────────────────────────────────
@@ -387,7 +373,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Polarized lenses in neutral grey — recommended for pilots to avoid distortion of cockpit instruments and traffic.",
     asin: "B003416YMA",
     searchQuery: "Maui Jim neutral grey polarized sunglasses pilot",
-    imageUrl: "https://flightsunglasses.com/cdn/shop/products/stingrayHCL.png?v=1559005121",
   },
   {
     id: "oakley-aviator",
@@ -397,7 +382,6 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Lightweight wraparound with anti-reflective coating. Great cockpit visibility.",
     asin: "B07CZN2BFT",
     searchQuery: "Oakley pilot sunglasses aviation",
-    imageUrl: "https://shadessunglasses.com/cdn/shop/products/oo4060-22_grande.jpg?v=1697808852",
   },
   {
     id: "sportys-shirt",

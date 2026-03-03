@@ -81,11 +81,9 @@ function ItemCard({
   const url = getAffiliateUrl(item);
   const [imgFailed, setImgFailed] = useState(false);
 
-  const imgSrc = item.imageUrl
-    ? item.imageUrl
-    : item.asin
-    ? `https://images-na.ssl-images-amazon.com/images/P/${item.asin}.01._SL250_.jpg`
-    : null;
+  // Only use self-hosted or explicitly licensed imageUrl values.
+  // Never hotlink third-party CDNs (Amazon, retailer CDNs, etc.) — TOS violation.
+  const imgSrc = item.imageUrl ?? null;
 
   return (
     <div className="relative rounded-lg border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors flex flex-col">
@@ -118,7 +116,14 @@ function ItemCard({
             <span className="text-xs font-medium text-blue-700/70">Sporty&apos;s Pilot Shop</span>
           </div>
         ) : (
-          <span className="text-xs text-muted-foreground/50">No Image Available</span>
+          <div className="flex flex-col items-center gap-2 text-muted-foreground/40">
+            <svg viewBox="0 0 24 24" className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="m21 15-5-5L5 21"/>
+            </svg>
+            <span className="text-xs font-medium">No Image Available</span>
+          </div>
         )}
       </a>
 
