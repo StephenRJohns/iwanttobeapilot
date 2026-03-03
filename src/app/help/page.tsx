@@ -18,7 +18,21 @@ const sections: { title: string; items: FAQItem[] }[] = [
     items: [
       {
         q: "What is I Want To Be A Pilot?",
-        a: "I Want To Be A Pilot is a free educational resource for anyone who wants to pursue aviation. It covers everything from finding a flight school near you to estimating the full cost of becoming an airline captain. A Pro subscription unlocks additional tools like the progress timeline, DPE finder, community forums, and pilot stories.",
+        a: (
+          <>
+            I Want To Be A Pilot is a free educational resource for anyone who wants to pursue aviation. It covers everything from finding a flight school near you to estimating the full cost of becoming an airline captain. A Pro subscription unlocks additional tools like the progress timeline, DPE finder, community forums, and pilot stories. Read more on the{" "}
+            <Link href="/about" className="text-primary hover:underline">About</Link> page.
+          </>
+        ),
+      },
+      {
+        q: "Who built this site?",
+        a: (
+          <>
+            The site was built by a parent who watched two kids go through pilot training and wanted to create a resource that would have made their journeys easier — clear information about costs, timelines, schools, examiners, and careers, all in one place. See the{" "}
+            <Link href="/about" className="text-primary hover:underline">About</Link> page for the full story.
+          </>
+        ),
       },
       {
         q: "How do I get help on a specific page?",

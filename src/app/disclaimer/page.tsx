@@ -15,7 +15,7 @@ export default function DisclaimerPage() {
       <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-5 mb-8">
         <p className="text-sm font-semibold text-amber-400 mb-1">Educational Use Only</p>
         <p className="text-sm text-muted-foreground">
-          I Want To Be A Pilot is an educational resource only. Nothing on this site constitutes official FAA guidance, professional flight instruction, legal advice, or medical advice. Aviation is a safety-critical activity — always consult qualified professionals.
+          I Want To Be A Pilot is an independent educational resource built by a private individual — not a flight school, aviation authority, or licensed flight instructor. Nothing on this site constitutes official FAA guidance, professional flight instruction, legal advice, or medical advice. Aviation is a safety-critical activity — always consult qualified professionals and official sources before making any training, financial, or flight-related decisions.
         </p>
       </div>
 

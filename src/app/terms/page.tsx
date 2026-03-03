@@ -27,7 +27,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-semibold text-base mb-3">2. Description of Service</h2>
           <p className="text-muted-foreground">
-            I Want To Be A Pilot is an educational web application that provides information about pilot training, flight schools, aviation equipment, career paths, and community features for aspiring and current pilots. The Service offers both free and paid (&ldquo;Pro&rdquo;) tiers.
+            I Want To Be A Pilot is an educational web application that provides information about pilot training, flight schools, aviation equipment, career paths, and community features for aspiring and current pilots. The Service offers both free and paid (&ldquo;Pro&rdquo;) tiers. For background on why this site was built, see the <a href="/about" className="text-primary hover:underline">About</a> page.
           </p>
           <p className="text-muted-foreground mt-2">
             <strong className="text-foreground">All content is for educational and informational purposes only.</strong> Nothing on this Service constitutes official FAA guidance, professional flight instruction, legal advice, or financial advice. See our Aviation Disclaimer for full details.
@@ -102,6 +102,9 @@ export default function TermsPage() {
           <h2 className="font-semibold text-base mb-3">8. Affiliate Links and Sponsored Content</h2>
           <p className="text-muted-foreground">
             The Equipment page contains affiliate links to Amazon and Sporty&apos;s Pilot Shop. When you click an affiliate link and make a qualifying purchase, we may earn a small commission at no additional cost to you. We only recommend products we believe are useful for pilots. Affiliate relationships do not influence our editorial content. All product images on the Equipment page are either self-hosted with permission or replaced with a &ldquo;No Image Available&rdquo; placeholder; we do not hotlink third-party product CDNs.
+          </p>
+          <p className="text-muted-foreground mt-2">
+            Interactive maps on this site use the Leaflet open-source library and OpenStreetMap tile data, which is &copy; OpenStreetMap contributors and made available under the Open Database License (ODbL). Map data is used for display purposes only and is not reproduced, redistributed, or modified by us.
           </p>
         </section>
 

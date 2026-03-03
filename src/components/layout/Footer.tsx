@@ -24,6 +24,7 @@ export default function Footer() {
         </div>
         <div className="flex flex-col items-center gap-2">
           <div className="flex items-center gap-4">
+            <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
             <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
             <Link href="/disclaimer" className="hover:text-foreground transition-colors">Disclaimer</Link>

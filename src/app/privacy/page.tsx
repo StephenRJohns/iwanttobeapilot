@@ -98,8 +98,8 @@ export default function PrivacyPage() {
               <a href="https://resend.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">resend.com/privacy</a>
             </li>
             <li>
-              <strong className="text-foreground">Google Maps / Places API</strong> — used to search and display flight school locations.{" "}
-              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">policies.google.com/privacy</a>
+              <strong className="text-foreground">Leaflet / OpenStreetMap</strong> — interactive maps for flight school and DPE locations use the Leaflet library with OpenStreetMap tile data. No account or API key is required; map tiles are fetched directly from OpenStreetMap servers. See{" "}
+              <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">openstreetmap.org/copyright</a>.
             </li>
             <li>
               <strong className="text-foreground">Amazon Associates / Sporty&apos;s</strong> — affiliate links on the Equipment page and training timeline. Clicking these links may set third-party cookies subject to their privacy policies.

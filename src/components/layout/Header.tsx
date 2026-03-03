@@ -72,7 +72,7 @@ export default function Header() {
               className="flex items-center gap-2 text-foreground transition-colors hover:text-primary font-bold text-base tracking-tight"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/favicon.svg" alt="" width={28} height={28} className="shrink-0" />
+              <img src="/images/pilot_logo.png" alt="" width={28} height={28} className="shrink-0" />
               I Want To Be A Pilot
             </Link>
 

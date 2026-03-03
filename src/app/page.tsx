@@ -196,6 +196,24 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Founder story */}
+      <section className="py-14 px-4 sm:px-6 border-t border-border">
+        <div className="max-w-2xl mx-auto text-center">
+          <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+            This site was built by a parent who watched two kids go through pilot training and
+            wanted to create the resource that would have made their journeys easier — clear
+            information about costs, timelines, schools, and what a career in aviation actually
+            looks like, all in one place.
+          </p>
+          <Link
+            href="/about"
+            className="text-xs text-primary hover:underline"
+          >
+            Read the full story →
+          </Link>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 px-4 sm:px-6 border-t border-border">
         <div className="max-w-2xl mx-auto text-center">

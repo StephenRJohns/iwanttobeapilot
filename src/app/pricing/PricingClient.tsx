@@ -37,6 +37,7 @@ export default function PricingClient() {
   const [promoError, setPromoError] = useState("");
   const [promoSuccess, setPromoSuccess] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
   const [navlogCode, setNavlogCode] = useState("");
   const [navlogLoading, setNavlogLoading] = useState(false);
   const [navlogError, setNavlogError] = useState("");
@@ -67,6 +68,7 @@ export default function PricingClient() {
     }
 
     setCheckoutLoading(true);
+    setCheckoutError("");
     try {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
@@ -78,10 +80,10 @@ export default function PricingClient() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert("Failed to start checkout. Please try again.");
+        setCheckoutError("Failed to start checkout. Please try again.");
       }
     } catch {
-      alert("Failed to start checkout. Please try again.");
+      setCheckoutError("Failed to start checkout. Please try again.");
     }
     setCheckoutLoading(false);
   }
@@ -289,6 +291,9 @@ export default function PricingClient() {
                 "Start with Pro"
               )}
             </button>
+            {checkoutError && (
+              <p className="text-xs text-destructive mt-2 text-center">{checkoutError}</p>
+            )}
           </div>
         </div>
       )}
