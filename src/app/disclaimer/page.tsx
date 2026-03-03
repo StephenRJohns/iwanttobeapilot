@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Aviation Disclaimer",
+  description: "Important aviation safety disclaimer for I Want To Be A Pilot.",
+  robots: { index: false, follow: false },
 };
 
 export default function DisclaimerPage() {

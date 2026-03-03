@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "My Progress Timeline",
+  description: "Track your pilot training milestones from student pilot to airline captain.",
+  robots: { index: false },
 };
 
 export default async function DashboardPage() {

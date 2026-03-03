@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "student pilot",
     "flight training",
   ],
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://iwanttobeapilot.online"),
   alternates: {
     canonical: "/",
   },
@@ -62,6 +62,23 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "I Want To Be A Pilot",
+  url: "https://iwanttobeapilot.online",
+  description:
+    "Everything you need to become a pilot. Find flight schools, explore costs and timelines, connect with DPEs, and track your progress.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: "https://iwanttobeapilot.online/schools?zip={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -69,6 +86,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${inter.variable} min-h-screen bg-background text-foreground antialiased font-sans`}
       >

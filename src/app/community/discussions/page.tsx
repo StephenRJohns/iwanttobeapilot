@@ -3,7 +3,14 @@ import { db } from "@/lib/db";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Discussions",
+  title: "Pilot Training Discussion Forums",
+  description:
+    "Connect with other aspiring pilots. Ask questions, share experiences, and get advice on flight training, certifications, and careers.",
+  openGraph: {
+    title: "Pilot Training Discussion Forums",
+    description:
+      "Connect with other pilots. Ask questions and get advice on flight training and aviation careers.",
+  },
 };
 
 export default async function DiscussionsPage() {

@@ -5,7 +5,14 @@ import DPEFinderClient from "./DPEFinderClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "DPE Finder",
+  title: "DPE Finder — Find Designated Pilot Examiners Near You",
+  description:
+    "Find FAA Designated Pilot Examiners (DPEs) near you. View checkride pass rate data to choose the right examiner for your practical test.",
+  openGraph: {
+    title: "DPE Finder — Find Designated Pilot Examiners Near You",
+    description:
+      "Find FAA Designated Pilot Examiners near you and compare checkride pass rates.",
+  },
 };
 
 async function getDpeSyncStatus(): Promise<{

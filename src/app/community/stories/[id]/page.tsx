@@ -11,8 +11,19 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const story = await db.story.findUnique({ where: { id }, select: { title: true } });
-  return { title: story?.title || "Story" };
+  const story = await db.story.findUnique({
+    where: { id },
+    select: { title: true, body: true },
+  });
+  if (!story) return { title: "Story" };
+  const description = story.body
+    ? story.body.replace(/\s+/g, " ").trim().slice(0, 160)
+    : "A pilot training story shared on I Want To Be A Pilot.";
+  return {
+    title: story.title,
+    description,
+    openGraph: { title: story.title, description },
+  };
 }
 
 export default async function StoryDetailPage({ params }: Props) {

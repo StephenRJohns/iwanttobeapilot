@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
+  description: "Terms of Service for I Want To Be A Pilot.",
+  robots: { index: false, follow: false },
 };
 
 export default function TermsPage() {
