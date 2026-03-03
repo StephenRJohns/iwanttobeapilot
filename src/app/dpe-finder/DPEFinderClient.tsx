@@ -26,13 +26,12 @@ interface DPERecord {
 }
 
 interface PassRateRow {
-  id: string;
   year: number;
   certificateType: string;
   examinerType: string;
   taken: number;
   passed: number;
-  passRate: number;
+  passRate: string; // formatted by MCP as "85.0%"
 }
 
 export default function DPEFinderClient() {
@@ -61,7 +60,7 @@ export default function DPEFinderClient() {
     if (!pro) return;
     fetch("/api/dpe/pass-rates?typesOnly=true")
       .then((r) => r.json())
-      .then((d) => setCertTypes(d.types || []));
+      .then((d) => setCertTypes(d.certificateTypes || []));
   }, [pro]);
 
   useEffect(() => {
@@ -71,7 +70,7 @@ export default function DPEFinderClient() {
     if (rateFilter) params.set("certificateType", rateFilter);
     fetch(`/api/dpe/pass-rates?${params}`)
       .then((r) => r.json())
-      .then((d) => setPassRates(d.data || []))
+      .then((d) => setPassRates(d.records || []))
       .finally(() => setLoadingRates(false));
   }, [pro, rateFilter]);
 
@@ -319,18 +318,18 @@ export default function DPEFinderClient() {
                     </tr>
                   </thead>
                   <tbody>
-                    {passRates.map((row) => (
-                      <tr key={row.id} className="border-b border-border/50 hover:bg-muted/20">
+                    {passRates.map((row, i) => (
+                      <tr key={`${row.year}-${row.certificateType}-${row.examinerType}-${i}`} className="border-b border-border/50 hover:bg-muted/20">
                         <td className="py-1.5 pr-3">{row.year}</td>
                         <td className="py-1.5 pr-3 max-w-[120px] truncate">{row.certificateType}</td>
                         <td className="py-1.5 pr-3">{row.examinerType}</td>
                         <td className="py-1.5 pr-3 text-right">{row.taken.toLocaleString()}</td>
                         <td className="py-1.5 pr-3 text-right">{row.passed.toLocaleString()}</td>
                         <td className={`py-1.5 text-right font-medium ${
-                          row.passRate >= 0.8 ? "text-green-400" :
-                          row.passRate >= 0.6 ? "text-amber-400" : "text-red-400"
+                          parseFloat(row.passRate) >= 80 ? "text-green-400" :
+                          parseFloat(row.passRate) >= 60 ? "text-amber-400" : "text-red-400"
                         }`}>
-                          {(row.passRate * 100).toFixed(1)}%
+                          {row.passRate}
                         </td>
                       </tr>
                     ))}

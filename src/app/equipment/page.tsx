@@ -123,7 +123,7 @@ function ItemCard({
             <span className="text-xs font-medium text-blue-700/70">Sporty&apos;s Pilot Shop</span>
           </div>
         ) : (
-          <span className="text-4xl opacity-20">✈</span>
+          <span className="text-xs text-muted-foreground/50">No Image Available</span>
         )}
       </a>
 
