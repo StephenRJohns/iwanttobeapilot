@@ -7,8 +7,9 @@ import { useSession, signOut } from "next-auth/react";
 import { HelpCircle } from "lucide-react";
 import HelpPanel from "@/components/help/HelpPanel";
 
-const publicNavLinks = [
-  { href: "/pricing", label: "Pricing" },
+// Pricing is rendered separately, always pinned to the far left outside
+// the centered nav group so it doesn't shift the other items.
+const navLinks = [
   { href: "/schools", label: "Schools" },
   { href: "/resources", label: "Resources" },
   { href: "/equipment", label: "Equipment" },
@@ -34,39 +35,57 @@ export default function Header() {
   const isAdminUser = (sessionData?.user as any)?.role === "admin";
 
   const allNavLinks = isLoggedIn
-    ? [...publicNavLinks, ...authNavLinks]
-    : publicNavLinks;
+    ? [...navLinks, ...authNavLinks]
+    : navLinks;
+
+  const pricingActive = pathname === "/pricing";
 
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
-          {/* Mobile hamburger */}
-          {!isAuthPage && (
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Toggle menu"
+
+          {/* ── LEFT: hamburger (mobile) + logo + Pricing ── */}
+          <div className="flex items-center gap-1">
+            {!isAuthPage && (
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Toggle menu"
+              >
+                {mobileOpen ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                )}
+              </button>
+            )}
+
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-foreground transition-colors hover:text-primary font-bold text-base tracking-tight"
             >
-              {mobileOpen ? (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-              )}
-            </button>
-          )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/favicon.svg" alt="" width={28} height={28} className="shrink-0" />
+              I Want To Be A Pilot
+            </Link>
 
-          {/* Brand */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-foreground transition-colors hover:text-primary font-bold text-base tracking-tight"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/favicon.svg" alt="" width={28} height={28} className="shrink-0" />
-            I Want To Be A Pilot
-          </Link>
+            {/* Pricing — pinned left, outside the centered nav group */}
+            {!isAuthPage && (
+              <Link
+                href="/pricing"
+                className={`hidden md:inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold transition-colors ml-2 ${
+                  pricingActive
+                    ? "bg-amber-400/15 text-amber-400"
+                    : "text-amber-400 hover:bg-amber-400/10"
+                }`}
+              >
+                Pricing
+              </Link>
+            )}
+          </div>
 
-          {/* Desktop nav links */}
+          {/* ── CENTER: main nav links ── */}
           {!isAuthPage && (
             <nav className="hidden md:flex items-center gap-0.5">
               {allNavLinks.map(({ href, label }) => {
@@ -88,7 +107,7 @@ export default function Header() {
             </nav>
           )}
 
-          {/* Right side */}
+          {/* ── RIGHT: auth buttons ── */}
           {!isAuthPage && (
             <div className="hidden md:flex items-center gap-1">
               {isLoggedIn ? (
@@ -157,7 +176,7 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Mobile drawer */}
+      {/* ── Mobile drawer ── */}
       {!isAuthPage && mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div
@@ -165,6 +184,19 @@ export default function Header() {
             onClick={() => setMobileOpen(false)}
           />
           <nav className="fixed top-14 left-0 bottom-0 w-64 bg-card border-r border-border p-4 space-y-1 overflow-y-auto">
+            {/* Pricing first, amber styled */}
+            <Link
+              href="/pricing"
+              onClick={() => setMobileOpen(false)}
+              className={`block rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
+                pricingActive
+                  ? "bg-amber-400/15 text-amber-400"
+                  : "text-amber-400 hover:bg-amber-400/10"
+              }`}
+            >
+              Pricing
+            </Link>
+
             {allNavLinks.map(({ href, label }) => {
               const isActive = pathname === href || pathname.startsWith(`${href}/`);
               return (
