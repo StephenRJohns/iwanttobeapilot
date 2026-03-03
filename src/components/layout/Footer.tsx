@@ -19,7 +19,6 @@ export default function Footer() {
         <div className="font-medium">I Want To Be A Pilot</div>
         <div className="flex items-center gap-4">
           <span>Your path to the cockpit.</span>
-          <Link href="/help" className="hover:text-foreground transition-colors">Help</Link>
           <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
           <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
           <Link href="/disclaimer" className="hover:text-foreground transition-colors">Disclaimer</Link>

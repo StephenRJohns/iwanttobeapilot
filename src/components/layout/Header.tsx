@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { HelpCircle } from "lucide-react";
+import HelpPanel from "@/components/help/HelpPanel";
 
 const publicNavLinks = [
   { href: "/pricing", label: "Pricing" },
@@ -24,6 +26,7 @@ export default function Header() {
   const pathname = usePathname();
   const { status, data: sessionData } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   const isLoggedIn = status === "authenticated";
   const isAuthPage = pathname.startsWith("/auth/");
@@ -113,6 +116,13 @@ export default function Header() {
                     </Link>
                   )}
                   <button
+                    onClick={() => setHelpOpen(true)}
+                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                    aria-label="Help"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                  </button>
+                  <button
                     onClick={() => signOut({ callbackUrl: "/" })}
                     className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                   >
@@ -121,6 +131,13 @@ export default function Header() {
                 </>
               ) : (
                 <>
+                  <button
+                    onClick={() => setHelpOpen(true)}
+                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                    aria-label="Help"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                  </button>
                   <Link
                     href="/auth/signin"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
@@ -193,6 +210,12 @@ export default function Header() {
                     </Link>
                   )}
                   <button
+                    onClick={() => { setMobileOpen(false); setHelpOpen(true); }}
+                    className="block w-full text-left rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                  >
+                    Help
+                  </button>
+                  <button
                     onClick={() => {
                       setMobileOpen(false);
                       signOut({ callbackUrl: "/" });
@@ -204,6 +227,12 @@ export default function Header() {
                 </>
               ) : (
                 <>
+                  <button
+                    onClick={() => { setMobileOpen(false); setHelpOpen(true); }}
+                    className="block w-full text-left rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                  >
+                    Help
+                  </button>
                   <Link
                     href="/auth/signin"
                     onClick={() => setMobileOpen(false)}
@@ -224,6 +253,9 @@ export default function Header() {
           </nav>
         </div>
       )}
+
+      {/* Help panel */}
+      <HelpPanel open={helpOpen} onClose={() => setHelpOpen(false)} />
     </>
   );
 }
