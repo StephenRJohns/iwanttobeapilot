@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { isPro } from "@/lib/tier";
+import { isAdmin } from "@/lib/tier";
 import { getPassRates, listCertificateTypes } from "@/lib/dpe-mcp";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +13,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    if (!isPro(session)) {
+    if (!isPro(session) && !isAdmin(session)) {
       return NextResponse.json({ error: "Pro subscription required" }, { status: 403 });
     }
 

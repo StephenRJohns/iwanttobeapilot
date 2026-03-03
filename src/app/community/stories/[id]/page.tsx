@@ -30,7 +30,7 @@ export default async function StoryDetailPage({ params }: Props) {
     levels = JSON.parse(story.pilotLevels) as string[];
   } catch {}
 
-  const author = story.user.name || story.user.email;
+  const author = story.user.name || story.user.email || "";
   const initials = getInitials(author);
 
   return (

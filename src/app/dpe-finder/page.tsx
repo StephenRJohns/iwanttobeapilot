@@ -96,7 +96,17 @@ export default async function DPEFinderPage() {
         </div>
       </div>
 
-      <DPEFinderClient />
+      {/* Data availability notice */}
+      <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 mb-2 text-sm text-amber-300">
+        <p className="font-medium mb-0.5">DPE directory data is temporarily unavailable</p>
+        <p className="text-amber-300/80 text-xs leading-relaxed">
+          We&apos;re waiting on an FAA data release to populate the examiner directory. The search
+          and map are disabled until real data is available. FAA aggregate pass rates (below) are
+          unaffected.
+        </p>
+      </div>
+
+      <DPEFinderClient directoryDisabled />
     </div>
   );
 }

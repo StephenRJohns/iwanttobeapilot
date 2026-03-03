@@ -1,5 +1,6 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import fs from "fs/promises";
+import path from "path";
+import os from "os";
 
 export interface PassRateRecord {
   year: number;
@@ -23,81 +24,92 @@ export interface GetPassRatesResult {
   records: PassRateRecord[];
 }
 
-// Simple in-memory cache with TTL
-interface CacheEntry<T> {
-  data: T;
-  expiresAt: number;
-}
-const cache = new Map<string, CacheEntry<unknown>>();
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_FILE = path.join(os.homedir(), ".cache", "dpe-data-unifier", "data.json");
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
-function getCached<T>(key: string): T | null {
-  const entry = cache.get(key) as CacheEntry<T> | undefined;
-  if (entry && entry.expiresAt > Date.now()) return entry.data;
-  cache.delete(key);
-  return null;
+interface RawRecord {
+  year: number;
+  certificateType: string;
+  examinerType: string;
+  taken: number;
+  passed: number;
+  passRate: number;
 }
 
-function setCached<T>(key: string, data: T): void {
-  cache.set(key, { data, expiresAt: Date.now() + CACHE_TTL_MS });
+interface CacheFile {
+  lastUpdated: string;
+  records: RawRecord[];
+  availableYears: number[];
 }
 
-async function callMcpTool<T>(toolName: string, params: Record<string, unknown> = {}): Promise<T> {
-  const mcpPath = process.env.DPE_MCP_PATH;
-  if (!mcpPath) throw new Error("DPE_MCP_PATH environment variable not set");
+// In-memory cache with TTL
+let memCache: { data: CacheFile; loadedAt: number } | null = null;
 
-  const transport = new StdioClientTransport({
-    command: "node",
-    args: [mcpPath],
-  });
-
-  const client = new Client(
-    { name: "iwanttobeapilot", version: "1.0.0" },
-    { capabilities: {} }
-  );
-
-  try {
-    await client.connect(transport);
-    const result = await client.callTool({ name: toolName, arguments: params });
-    const textContent = (result.content as Array<{ type: string; text: string }>).find(
-      (c) => c.type === "text"
-    );
-    if (!textContent) throw new Error("No text content in MCP response");
-    return JSON.parse(textContent.text) as T;
-  } finally {
-    await client.close();
+async function loadCache(): Promise<CacheFile> {
+  if (memCache && Date.now() - memCache.loadedAt < 5 * 60 * 1000) {
+    return memCache.data;
   }
+  const raw = await fs.readFile(CACHE_FILE, "utf8");
+  const data = JSON.parse(raw) as CacheFile;
+  memCache = { data, loadedAt: Date.now() };
+  return data;
 }
 
 export async function getPassRates(params: GetPassRatesParams = {}): Promise<GetPassRatesResult> {
-  const cacheKey = `pass_rates:${JSON.stringify(params)}`;
-  const cached = getCached<GetPassRatesResult>(cacheKey);
-  if (cached) return cached;
+  const cache = await loadCache();
 
-  const result = await callMcpTool<GetPassRatesResult>("get_pass_rates", params as Record<string, unknown>);
-  setCached(cacheKey, result);
-  return result;
+  let records = cache.records;
+
+  if (params.year !== undefined) {
+    records = records.filter((r) => r.year === params.year);
+  }
+  if (params.certificate_type) {
+    const q = params.certificate_type.toLowerCase();
+    records = records.filter((r) => r.certificateType.toLowerCase().includes(q));
+  }
+  if (params.examiner_type) {
+    records = records.filter((r) => r.examinerType === params.examiner_type);
+  }
+
+  // Sort: year desc, cert type asc, examiner type asc
+  records = [...records].sort((a, b) => {
+    if (b.year !== a.year) return b.year - a.year;
+    if (a.certificateType !== b.certificateType)
+      return a.certificateType.localeCompare(b.certificateType);
+    return a.examinerType.localeCompare(b.examinerType);
+  });
+
+  const formatted: PassRateRecord[] = records.map((r) => ({
+    year: r.year,
+    certificateType: r.certificateType,
+    examinerType: r.examinerType as PassRateRecord["examinerType"],
+    taken: r.taken,
+    passed: r.passed,
+    failed: r.taken - r.passed,
+    passRate: `${r.passRate.toFixed(1)}%`,
+  }));
+
+  return {
+    count: formatted.length,
+    dataLastUpdated: cache.lastUpdated,
+    records: formatted,
+  };
 }
 
 export async function listYears(): Promise<{ availableYears: number[]; dataLastUpdated: string }> {
-  const cacheKey = "list_years";
-  const cached = getCached<{ availableYears: number[]; dataLastUpdated: string }>(cacheKey);
-  if (cached) return cached;
-
-  const result = await callMcpTool<{ availableYears: number[]; dataLastUpdated: string }>("list_years");
-  setCached(cacheKey, result);
-  return result;
+  const cache = await loadCache();
+  return {
+    availableYears: cache.availableYears,
+    dataLastUpdated: cache.lastUpdated,
+  };
 }
 
 export async function listCertificateTypes(year?: number): Promise<{ certificateTypes: string[] }> {
-  const cacheKey = `cert_types:${year ?? "all"}`;
-  const cached = getCached<{ certificateTypes: string[] }>(cacheKey);
-  if (cached) return cached;
-
-  const result = await callMcpTool<{ certificateTypes: string[] }>(
-    "list_certificate_types",
-    year ? { year } : {}
-  );
-  setCached(cacheKey, result);
-  return result;
+  const cache = await loadCache();
+  let records = cache.records;
+  if (year !== undefined) {
+    records = records.filter((r) => r.year === year);
+  }
+  const types = [...new Set(records.map((r) => r.certificateType))].sort();
+  return { certificateTypes: types };
 }

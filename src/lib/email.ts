@@ -1,11 +1,15 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend() {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
 const FROM = process.env.RESEND_FROM_EMAIL ?? "noreply@iwanttobeapilot.com";
 const APP_NAME = "I Want To Be A Pilot";
 
 export async function sendVerificationEmail(email: string, code: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: `${APP_NAME} – Verify your email`,
@@ -20,7 +24,7 @@ export async function sendVerificationEmail(email: string, code: string) {
 }
 
 export async function sendPasswordResetEmail(email: string, code: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: `${APP_NAME} – Reset your password`,
@@ -35,7 +39,7 @@ export async function sendPasswordResetEmail(email: string, code: string) {
 }
 
 export async function sendWelcomeEmail(email: string, name: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: `Welcome to ${APP_NAME}!`,

@@ -34,10 +34,11 @@ interface PassRateRow {
   passRate: string; // formatted by MCP as "85.0%"
 }
 
-export default function DPEFinderClient() {
+export default function DPEFinderClient({ directoryDisabled = false }: { directoryDisabled?: boolean }) {
   const { data: session } = useSession();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pro = session ? isPro(session as any) : false;
+  const s = session as any;
+  const pro = session ? (isPro(s) || s?.user?.role === "admin") : false;
 
   const [zip, setZip] = useState("");
   const [radius, setRadius] = useState("50");
@@ -70,7 +71,10 @@ export default function DPEFinderClient() {
     if (rateFilter) params.set("certificateType", rateFilter);
     fetch(`/api/dpe/pass-rates?${params}`)
       .then((r) => r.json())
-      .then((d) => setPassRates(d.records || []))
+      .then((d) => {
+        if (d.error) console.error("Pass rates API error:", d.error);
+        setPassRates(d.records || []);
+      })
       .finally(() => setLoadingRates(false));
   }, [pro, rateFilter]);
 
@@ -118,7 +122,7 @@ export default function DPEFinderClient() {
   return (
     <div className="space-y-6">
       {/* Search panel */}
-      <div className="rounded-lg border border-border bg-card p-4">
+      <div className={`rounded-lg border border-border bg-card p-4 ${directoryDisabled ? "opacity-40 pointer-events-none select-none" : ""}`}>
         <form onSubmit={handleSearch} className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[140px]">
             <label className="text-xs text-muted-foreground block mb-1">Zip Code</label>
@@ -173,7 +177,7 @@ export default function DPEFinderClient() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Results + Map */}
-        <div className="space-y-4">
+        <div className={`space-y-4 ${directoryDisabled ? "opacity-40 pointer-events-none select-none" : ""}`}>
           {dpes.length > 0 && center && (
             <div className="h-64 rounded-lg overflow-hidden border border-border">
               <DPEMap dpes={dpes} center={center} />

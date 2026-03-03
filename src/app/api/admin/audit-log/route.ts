@@ -27,7 +27,6 @@ export async function GET(req: NextRequest) {
         orderBy: { createdAt: "desc" },
         skip,
         take: limit,
-        include: { user: { select: { name: true, email: true } } },
       }),
       db.auditLog.count({ where }),
     ]);
