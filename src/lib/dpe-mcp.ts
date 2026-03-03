@@ -25,6 +25,7 @@ export interface GetPassRatesResult {
 }
 
 const CACHE_FILE = path.join(os.homedir(), ".cache", "dpe-data-unifier", "data.json");
+const BUNDLED_FILE = path.join(process.cwd(), "src", "data", "dpe-data.json");
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 interface RawRecord {
@@ -49,7 +50,13 @@ async function loadCache(): Promise<CacheFile> {
   if (memCache && Date.now() - memCache.loadedAt < 5 * 60 * 1000) {
     return memCache.data;
   }
-  const raw = await fs.readFile(CACHE_FILE, "utf8");
+  let filePath = CACHE_FILE;
+  try {
+    await fs.access(CACHE_FILE);
+  } catch {
+    filePath = BUNDLED_FILE;
+  }
+  const raw = await fs.readFile(filePath, "utf8");
   const data = JSON.parse(raw) as CacheFile;
   memCache = { data, loadedAt: Date.now() };
   return data;
