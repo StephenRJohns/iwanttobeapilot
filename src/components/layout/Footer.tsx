@@ -9,7 +9,9 @@ export default function Footer() {
 
   if (isAuthPage) return null;
 
-  const year = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
+  const startYear = 2026;
+  const copyrightYear = currentYear > startYear ? `${startYear}–${currentYear}` : `${startYear}`;
 
   return (
     <footer className="border-t border-border py-6 mt-8">
@@ -17,11 +19,12 @@ export default function Footer() {
         <div className="font-medium">I Want To Be A Pilot</div>
         <div className="flex items-center gap-4">
           <span>Your path to the cockpit.</span>
+          <Link href="/help" className="hover:text-foreground transition-colors">Help</Link>
           <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
           <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
           <Link href="/disclaimer" className="hover:text-foreground transition-colors">Disclaimer</Link>
         </div>
-        <div>&copy; {year} All rights reserved.</div>
+        <div>&copy; {copyrightYear} All rights reserved.</div>
       </div>
     </footer>
   );
