@@ -21,6 +21,10 @@ const sections: { title: string; items: FAQItem[] }[] = [
         a: "I Want To Be A Pilot is a free educational resource for anyone who wants to pursue aviation. It covers everything from finding a flight school near you to estimating the full cost of becoming an airline captain. A Pro subscription unlocks additional tools like the progress timeline, DPE finder, community forums, and pilot stories.",
       },
       {
+        q: "How do I get help on a specific page?",
+        a: "Every page has a contextual help panel. Click the question mark icon (?) in the top-right corner of the navigation bar — next to Sign In or Sign Out — to open a panel with tips specific to the page you're on.",
+      },
+      {
         q: "Do I need an account to use the site?",
         a: (
           <>

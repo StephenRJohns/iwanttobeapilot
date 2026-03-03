@@ -101,7 +101,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-semibold text-base mb-3">8. Affiliate Links and Sponsored Content</h2>
           <p className="text-muted-foreground">
-            The Equipment page contains affiliate links to Amazon and Sporty&apos;s Pilot Shop. When you click an affiliate link and make a qualifying purchase, we may earn a small commission at no additional cost to you. We only recommend products we believe are useful for pilots. Affiliate relationships do not influence our editorial content.
+            The Equipment page contains affiliate links to Amazon and Sporty&apos;s Pilot Shop. When you click an affiliate link and make a qualifying purchase, we may earn a small commission at no additional cost to you. We only recommend products we believe are useful for pilots. Affiliate relationships do not influence our editorial content. All product images on the Equipment page are either self-hosted with permission or replaced with a &ldquo;No Image Available&rdquo; placeholder; we do not hotlink third-party product CDNs.
           </p>
         </section>
 

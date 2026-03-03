@@ -21,9 +21,10 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 - Curated list of gear pilots need: aviation headsets, flight bags, kneeboard apps, E6B calculators, sectional charts, foggles, iPads, iPad holders, thigh boards, sunglasses, sunscreen, clothes, luggage, and more
 - Include NavLogPro (navlogpro.training) and PlaneFacts (planefacts.online) as featured tools
 - Include ForeFlight, Garmin Pilot, and other popular apps
-- Product images and affiliate links via Amazon Associates and Sporty's Pilot Shop
-- Infrastructure for Amazon Associates affiliate tag (tag set via NEXT_PUBLIC_AMAZON_AFFILIATE_TAG env var)
-- Pro users can rate and review equipment items
+- Product images: ONLY self-hosted images under /public/images/ (owner-permitted). Never hotlink Amazon CDN, Sporty's BigCommerce CDN, or any third-party retailer CDN — TOS violation. Items without a licensed image show a styled "No Image Available" placeholder.
+- Affiliate links via Amazon Associates and Sporty's Pilot Shop
+- Amazon affiliate tag via NEXT_PUBLIC_AMAZON_AFFILIATE_TAG env var (no hardcoded fallback)
+- Pro users can rate equipment items (1–5 stars)
 
 ### Cost & Timeline Estimator
 - Show estimate time (months), cost range, and salary range for each certification level
@@ -117,16 +118,26 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 - Amazon affiliate tag via env var only (no hardcoded fallback)
 - NavLogPro and PlaneFacts screenshots permitted (owner of both sites)
 - FAA data: public domain per 17 U.S.C. § 105
-- Terms of Service, Privacy Policy, Aviation Disclaimer, and Help pages in footer
+- Equipment images: self-hosted only under /public/images/ — all external CDN hotlinks removed
+- Third-party trademarks (Garmin, Sporty's, ForeFlight, etc.): nominative use only for product identification; covered in Terms
+- react-leaflet: Hippocratic License 2.1 (ethics clause, non-copyleft, low risk for legitimate use)
+- IP audit completed March 2026 — overall COMPLIANT
+- Footer: Terms of Service, Privacy Policy, Aviation Disclaimer links; copyright auto-increments from 2026
+- Full Help & FAQ at /help; contextual per-page help via HelpPanel.tsx (HelpCircle icon in header)
 
 ---
 
-## Design
+## Navigation & UI
 - Dark theme only (html class="dark")
 - TailwindCSS v4 (CSS-first config, no tailwind.config.js)
 - Radix UI primitives
-- Text-only navigation (no icons in nav bar)
-- Responsive with mobile hamburger menu
+- Header: sticky top bar with hamburger (mobile), logo, Pricing link (pinned far left outside centered nav, amber/yellow color), centered nav links, right-side auth buttons
+- Pricing link styled amber-400 (text + hover bg-amber-400/10, active bg-amber-400/15) — always leftmost, not part of centered nav layout
+- Text-only navigation links (no icons except HelpCircle)
+- HelpCircle icon (?) in header right side — left of Sign Out (logged in) or left of Sign In (logged out) — opens contextual slide-in help panel
+- Contextual help panel (HelpPanel.tsx): slides in from right, shows page-specific help based on usePathname(), covers every route
+- Responsive with mobile hamburger drawer; Pricing is first item in drawer (amber styled)
+- Sign Out uses window.location.origin + "/" as callbackUrl (avoids NEXTAUTH_URL port mismatch in dev)
 
 ---
 
