@@ -142,7 +142,7 @@ export default function Header() {
                     <HelpCircle className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => signOut({ callbackUrl: "/" })}
+                    onClick={() => signOut({ callbackUrl: window.location.origin + "/" })}
                     className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                   >
                     Sign Out
@@ -250,7 +250,7 @@ export default function Header() {
                   <button
                     onClick={() => {
                       setMobileOpen(false);
-                      signOut({ callbackUrl: "/" });
+                      signOut({ callbackUrl: window.location.origin + "/" });
                     }}
                     className="block w-full text-left rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                   >
