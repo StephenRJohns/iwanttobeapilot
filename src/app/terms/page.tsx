@@ -91,7 +91,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-semibold text-base mb-3">7. Intellectual Property</h2>
           <p className="text-muted-foreground">
-            The Service, including its design, code, text, graphics, logos, and compilation of content (excluding User Content), is the property of Stephen Johns and protected by applicable intellectual property laws. You may not copy, reproduce, distribute, modify, or create derivative works of any part of the Service without our express written permission.
+            The Service, including its design, code, text, graphics, logos, and compilation of content (excluding User Content), is the property of JJJJJ Enterprises, LLC and protected by applicable intellectual property laws. You may not copy, reproduce, distribute, modify, or create derivative works of any part of the Service without our express written permission.
           </p>
           <p className="text-muted-foreground mt-2">
             FAA data, civil airmen statistics, and other government records used in this Service are public domain under 17 U.S.C. § 105. Third-party product names, logos, and trademarks are the property of their respective owners and are used for identification purposes only.
@@ -139,7 +139,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-semibold text-base mb-3">12. Indemnification</h2>
           <p className="text-muted-foreground">
-            You agree to indemnify, defend, and hold harmless Stephen Johns and his agents from and against any claims, liabilities, damages, losses, and expenses, including reasonable attorneys&apos; fees, arising out of or in any way connected with your access to or use of the Service, your violation of these Terms, or your User Content.
+            You agree to indemnify, defend, and hold harmless JJJJJ Enterprises, LLC and its agents from and against any claims, liabilities, damages, losses, and expenses, including reasonable attorneys&apos; fees, arising out of or in any way connected with your access to or use of the Service, your violation of these Terms, or your User Content.
           </p>
         </section>
 
