@@ -70,6 +70,61 @@ export const authConfig: NextAuthConfig = {
     error: "/auth/signin",
   },
   callbacks: {
+    async signIn({ user, account }) {
+      // For OAuth providers (Google), find or create the user in the DB
+      if (account?.provider === "google") {
+        try {
+          const { db } = await import("@/lib/db");
+          const email = user.email;
+          if (!email) return false;
+
+          let dbUser = await db.user.findUnique({ where: { email } });
+
+          if (!dbUser) {
+            // Create new user for first-time Google sign-in
+            dbUser = await db.user.create({
+              data: {
+                email,
+                name: user.name,
+                image: user.image,
+                emailVerified: new Date(),
+                tier: "free",
+                role: "user",
+                status: "active",
+              },
+            });
+          }
+
+          // Upsert the Account link
+          const existing = await db.account.findFirst({
+            where: { provider: "google", providerAccountId: account.providerAccountId },
+          });
+          if (!existing) {
+            await db.account.create({
+              data: {
+                userId: dbUser.id,
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                access_token: account.access_token as string | undefined,
+                refresh_token: account.refresh_token as string | undefined,
+                expires_at: account.expires_at as number | undefined,
+                token_type: account.token_type as string | undefined,
+                scope: account.scope as string | undefined,
+                id_token: account.id_token as string | undefined,
+              },
+            });
+          }
+
+          // Stash the DB id on the user object so the jwt callback gets it
+          user.id = dbUser.id;
+        } catch (err) {
+          console.error("[auth] Google signIn callback error:", err);
+          return false;
+        }
+      }
+      return true;
+    },
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
