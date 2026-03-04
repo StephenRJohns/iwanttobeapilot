@@ -49,9 +49,9 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <div className="mx-auto flex h-44 max-w-7xl items-center justify-between px-4 sm:px-6">
 
-          {/* ── LEFT: hamburger (mobile) + logo + Pricing ── */}
+          {/* ── LEFT: logo + nav links ── */}
           <div className="flex items-center gap-1">
             {!isAuthPage && (
               <button
@@ -67,21 +67,17 @@ export default function Header() {
               </button>
             )}
 
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-foreground transition-colors hover:text-primary font-bold text-base tracking-tight"
-            >
+            <Link href="/" className="shrink-0 flex items-center mr-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/pilot_logo.png" alt="" width={28} height={28} className="shrink-0" />
-              I Want To Be A Pilot
+              <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-40 w-auto" />
             </Link>
 
-            {/* Pricing — pinned left, outside the centered nav group */}
+            {/* Nav links start immediately to the right of the logo */}
             {!isAuthPage && (
-              <>
+              <nav className="hidden md:flex items-center gap-0.5">
                 <Link
                   href="/pricing"
-                  className={`hidden md:inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold transition-colors ml-2 ${
+                  className={`rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
                     pricingActive
                       ? "bg-amber-400/15 text-amber-400"
                       : "text-amber-400 hover:bg-amber-400/10"
@@ -89,31 +85,25 @@ export default function Header() {
                 >
                   Pricing
                 </Link>
-              </>
+                {allNavLinks.map(({ href, label }) => {
+                  const isActive = pathname === href || pathname.startsWith(`${href}/`);
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
+                    >
+                      {label}
+                    </Link>
+                  );
+                })}
+              </nav>
             )}
           </div>
-
-          {/* ── CENTER: main nav links ── */}
-          {!isAuthPage && (
-            <nav className="hidden md:flex items-center gap-0.5">
-              {allNavLinks.map(({ href, label }) => {
-                const isActive = pathname === href || pathname.startsWith(`${href}/`);
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                      isActive
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
-                  >
-                    {label}
-                  </Link>
-                );
-              })}
-            </nav>
-          )}
 
           {/* ── RIGHT: auth buttons ── */}
           {!isAuthPage && (
