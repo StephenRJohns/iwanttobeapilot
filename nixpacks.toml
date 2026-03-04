@@ -1,5 +1,6 @@
 [variables]
 NPM_CONFIG_INCLUDE = "optional"
+DATABASE_URL = "postgresql://x:x@x:5432/x"
 
 [phases.install]
 cmds = ["npm ci --include=optional"]
