@@ -15,7 +15,10 @@ export const authConfig: NextAuthConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+        if (!credentials?.email || !credentials?.password) {
+          console.log("[auth] authorize: missing credentials");
+          return null;
+        }
 
         const { db } = await import("@/lib/db");
         const bcrypt = await import("bcryptjs");
@@ -24,15 +27,27 @@ export const authConfig: NextAuthConfig = {
           where: { email: credentials.email as string },
         });
 
-        if (!user || !user.hashedPassword) return null;
-        if (!user.emailVerified) return null;
-        if (user.status !== "active") return null;
+        if (!user || !user.hashedPassword) {
+          console.log("[auth] authorize: user not found or no password", credentials.email);
+          return null;
+        }
+        if (!user.emailVerified) {
+          console.log("[auth] authorize: email not verified", credentials.email);
+          return null;
+        }
+        if (user.status !== "active") {
+          console.log("[auth] authorize: status not active", user.status);
+          return null;
+        }
 
         const valid = await bcrypt.compare(
           credentials.password as string,
           user.hashedPassword
         );
-        if (!valid) return null;
+        if (!valid) {
+          console.log("[auth] authorize: password mismatch");
+          return null;
+        }
 
         // Increment sessionVersion to displace prior sessions
         const updated = await db.user.update({
