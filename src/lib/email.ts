@@ -38,6 +38,15 @@ export async function sendPasswordResetEmail(email: string, code: string) {
   });
 }
 
+export async function sendCronAlertEmail(subject: string, body: string) {
+  await getResend().emails.send({
+    from: FROM,
+    to: "jjjjj_enterprises_llc@protonmail.com",
+    subject: `[${APP_NAME}] ${subject}`,
+    html: `<div style="font-family:monospace;font-size:13px;white-space:pre-wrap;max-width:700px;margin:auto">${body}</div>`,
+  });
+}
+
 export async function sendWelcomeEmail(email: string, name: string) {
   await getResend().emails.send({
     from: FROM,

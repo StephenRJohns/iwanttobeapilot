@@ -14,6 +14,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { sendCronAlertEmail } from "@/lib/email";
 import {
   checkAirmenInquiryStatus,
   searchAirman,
@@ -144,6 +145,18 @@ export async function GET(req: NextRequest) {
       }),
     },
   });
+
+  if (results.enriched > 0) {
+    try {
+      await sendCronAlertEmail(
+        `DPE sync complete — ${results.enriched} records enriched`,
+        `Sync completed at ${results.checkedAt}\n\nEnriched: ${results.enriched}\nSkipped:  ${results.skipped}\nBlocked:  ${results.blocked}\nErrors:   ${results.errors.length}` +
+          (results.errors.length > 0 ? `\n\nError details:\n${results.errors.join("\n")}` : ""),
+      );
+    } catch {
+      // Non-fatal — don't fail the cron if email delivery fails
+    }
+  }
 
   return NextResponse.json({
     ...results,
