@@ -74,3 +74,13 @@ Subscription flow via `/api/stripe/` endpoints. Customer and subscription IDs st
 ### Admin Account (dev/staging)
 - Email: `admin@iwanttobeapilot.online`
 - Password: `floofs!!QQ1209`
+
+## Deployment (Railway)
+
+- **Hosting**: Railway — app service + Postgres service in same project
+- **DB (production)**: `postgres.railway.internal:5432/railway` (private network, Railway injects `DATABASE_URL`)
+- **DB (local dev)**: public TCP proxy URL from Railway → `DATABASE_PUBLIC_URL` variable on the Postgres service
+- **Env vars**: set in Railway app service; `DATABASE_URL` is a variable reference `${{Postgres.DATABASE_URL}}`
+- **Build command**: `npm run build` (runs `prisma generate` + `next build`)
+- **Start command**: `npm run start`
+- **After schema changes**: run `npm run db:push` locally (uses public URL), Railway picks up schema via build

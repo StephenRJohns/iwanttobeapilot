@@ -329,7 +329,7 @@ function getPageHelp(pathname: string): PageHelp {
         {
           heading: "NavLogPro bundle",
           items: [
-            "Pro includes a free NavLogPro account (normally $99/year).",
+            "Pro includes a free NavLogPro account (normally $50/year).",
             "After subscribing, return to this page to generate your promo code.",
           ],
         },

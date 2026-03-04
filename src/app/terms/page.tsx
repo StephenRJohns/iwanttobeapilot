@@ -54,7 +54,7 @@ export default function TermsPage() {
           <ul className="space-y-2 text-muted-foreground list-disc list-inside">
             <li><strong className="text-foreground">Auto-renewal:</strong> Subscriptions renew automatically at the end of each billing period unless cancelled.</li>
             <li><strong className="text-foreground">Cancellation:</strong> You may cancel at any time through your account Settings or by contacting us. Cancellation takes effect at the end of the current billing period; you retain Pro access until then.</li>
-            <li><strong className="text-foreground">Refunds:</strong> We offer refunds at our sole discretion. Contact <a href="mailto:support@iwanttobeapilot.online" className="text-primary hover:underline">support@iwanttobeapilot.online</a> within 7 days of a charge if you believe a refund is warranted.</li>
+            <li><strong className="text-foreground">No refunds for partial periods:</strong> We do not offer refunds for unused portions of any billing period. Refunds are issued at our sole discretion for billing errors only. Contact <a href="mailto:support@iwanttobeapilot.online" className="text-primary hover:underline">support@iwanttobeapilot.online</a> within 7 days of a charge if you believe a refund is warranted.</li>
             <li><strong className="text-foreground">Price changes:</strong> We may change subscription prices with at least 30 days&apos; notice. Continued use after a price change constitutes acceptance of the new pricing.</li>
             <li><strong className="text-foreground">Promo codes:</strong> Promotional codes are one-time use, non-transferable, and may have expiration dates. We reserve the right to revoke codes used fraudulently.</li>
           </ul>

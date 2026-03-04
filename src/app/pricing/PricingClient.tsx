@@ -126,7 +126,7 @@ export default function PricingClient() {
       {/* NavLogPro bundle callout */}
       <div className="mb-8 rounded-lg bg-rose-600/15 border border-rose-600/40 px-5 py-4 text-center">
         <p className="text-sm font-semibold text-rose-400">
-          Pro includes a free NavLogPro account — a $99/year value
+          Pro includes a free NavLogPro account — a $50/year value
         </p>
         <p className="text-xs text-rose-400/80 mt-1">
           NavLogPro is the FAA cross-country nav log builder used by student pilots nationwide.
@@ -333,12 +333,13 @@ export default function PricingClient() {
 
       {/* FAQ */}
       <div className="mt-12 text-center text-xs text-muted-foreground space-y-1">
-        <p>Secure payments via Stripe. Cancel anytime from your settings.</p>
+        <p>Secure payments via Stripe. Subscriptions auto-renew and can be canceled anytime.</p>
+        <p>No refunds for partial billing periods.</p>
         <p>
-          Questions?{" "}
-          <Link href="/terms" className="text-primary hover:underline">Terms</Link>
-          {" · "}
-          <Link href="/privacy" className="text-primary hover:underline">Privacy</Link>
+          By subscribing, you agree to our{" "}
+          <Link href="/terms" className="text-primary hover:underline">Terms of Service</Link>
+          {" and "}
+          <Link href="/disclaimer" className="text-primary hover:underline">Aviation Disclaimer</Link>.
         </p>
       </div>
     </div>

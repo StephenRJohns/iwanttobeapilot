@@ -98,7 +98,14 @@ export default function DisclaimerPage() {
         <section>
           <h2 className="font-semibold text-base mb-3">No Liability</h2>
           <p className="text-muted-foreground">
-            We make no representations or warranties about the accuracy, completeness, or currentness of any information on this site. We are not responsible for any decisions you make — including financial, career, training, or flight-related decisions — based on information obtained from this site. See our Terms of Service for full limitation of liability provisions.
+            We make no representations or warranties about the accuracy, completeness, or currentness of any information on this site. We are not responsible for any decisions you make — including financial, career, training, or flight-related decisions — based on information obtained from this site. See our <a href="/terms" className="text-primary hover:underline">Terms of Service</a> for full limitation of liability and subscription terms.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="font-semibold text-base mb-3">Subscriptions</h2>
+          <p className="text-muted-foreground">
+            Pro subscriptions auto-renew and can be canceled anytime from your account Settings. No refunds are issued for partial billing periods. By subscribing, you acknowledge that all content — including training data, cost estimates, DPE information, and community content — is educational only and subject to this disclaimer. See our <a href="/terms" className="text-primary hover:underline">Terms of Service</a> for full subscription terms.
           </p>
         </section>
 

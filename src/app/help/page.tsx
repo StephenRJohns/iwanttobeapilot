@@ -117,7 +117,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
           <>
             Pro unlocks: visual progress timeline with milestone guidance, DPE finder with FAA pass rate data, the ability to rate flight schools and DPEs, pilot stories community, discussion forums, and equipment ratings. Pro also includes a free{" "}
             <a href="https://navlogpro.training" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NavLogPro</a>{" "}
-            account (FAA cross-country nav log builder, a $99/year value). See{" "}
+            account (FAA cross-country nav log builder, a $50/year value). See{" "}
             <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> for full details.
           </>
         ),
@@ -171,7 +171,18 @@ const sections: { title: string; items: FAQItem[] }[] = [
       },
       {
         q: "Do you offer refunds?",
-        a: "We offer refunds at our discretion. If you believe a charge was made in error, contact support@iwanttobeapilot.online within 7 days of the charge.",
+        a: (
+          <>
+            Subscriptions auto-renew and can be canceled anytime from{" "}
+            <Link href="/settings" className="text-primary hover:underline">Settings</Link>.
+            We do not offer refunds for partial billing periods. If you believe a charge was made in error, contact{" "}
+            <a href="mailto:support@iwanttobeapilot.online" className="text-primary hover:underline">support@iwanttobeapilot.online</a>{" "}
+            within 7 days. By subscribing, you agree to our{" "}
+            <Link href="/terms" className="text-primary hover:underline">Terms of Service</Link>{" "}
+            and{" "}
+            <Link href="/disclaimer" className="text-primary hover:underline">Aviation Disclaimer</Link>.
+          </>
+        ),
       },
       {
         q: "I have a promo code. How do I use it?",

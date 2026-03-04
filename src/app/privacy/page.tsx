@@ -74,7 +74,7 @@ export default function PrivacyPage() {
           <h2 className="font-semibold text-base mb-3">3. How We Share Your Information</h2>
           <p className="text-muted-foreground mb-2">We share your information only in the following circumstances:</p>
           <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-            <li><strong className="text-foreground">Service providers:</strong> We use Stripe for payment processing, Resend for email delivery, and a managed PostgreSQL provider for data storage. These providers process data on our behalf under contractual obligations.</li>
+            <li><strong className="text-foreground">Service providers:</strong> We use Stripe for payment processing, Resend for email delivery, and Railway (railway.app) for cloud hosting and managed PostgreSQL database storage. These providers process data on our behalf under contractual obligations.</li>
             <li><strong className="text-foreground">Public content:</strong> Stories and discussion posts you mark as public are visible to other logged-in Pro users.</li>
             <li><strong className="text-foreground">Legal requirements:</strong> We may disclose your information if required by law, court order, or governmental authority.</li>
             <li><strong className="text-foreground">Business transfers:</strong> If we sell or transfer the Service, your information may be transferred as part of that transaction, with advance notice to you.</li>
@@ -103,6 +103,10 @@ export default function PrivacyPage() {
             </li>
             <li>
               <strong className="text-foreground">Amazon Associates / Sporty&apos;s</strong> — affiliate links on the Equipment page and training timeline. Clicking these links may set third-party cookies subject to their privacy policies.
+            </li>
+            <li>
+              <strong className="text-foreground">Railway</strong> — cloud application hosting and PostgreSQL database.{" "}
+              <a href="https://railway.app/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">railway.app/legal/privacy</a>
             </li>
           </ul>
         </section>
