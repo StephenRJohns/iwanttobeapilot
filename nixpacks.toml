@@ -1,12 +1,11 @@
 [variables]
 NPM_CONFIG_INCLUDE = "optional"
-DATABASE_URL = "postgresql://x:x@x:5432/x"
 
 [phases.install]
 cmds = ["npm ci --include=optional"]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = ["DATABASE_URL=postgresql://x:x@x:5432/x npm run build"]
 
 [start]
 cmd = "prisma db push && npm start"
