@@ -2,10 +2,10 @@
 NPM_CONFIG_INCLUDE = "optional"
 
 [phases.install]
-cmds = ["DATABASE_URL=postgresql://x:x@x:5432/x npm ci --include=optional"]
+cmds = ["npm ci --ignore-scripts --include=optional"]
 
 [phases.build]
-cmds = ["DATABASE_URL=postgresql://x:x@x:5432/x npm run build"]
+cmds = ["bash scripts/railway-build.sh"]
 
 [start]
 cmd = "npm start"
