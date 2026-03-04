@@ -2,7 +2,7 @@
 NPM_CONFIG_INCLUDE = "optional"
 
 [phases.install]
-cmds = ["npm ci --include=optional"]
+cmds = ["DATABASE_URL=postgresql://x:x@x:5432/x npm ci --include=optional"]
 
 [phases.build]
 cmds = ["DATABASE_URL=postgresql://x:x@x:5432/x npm run build"]
