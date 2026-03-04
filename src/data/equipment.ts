@@ -107,7 +107,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "VFR cross-country navigation log builder with E6B, live weather, and AI grading. Built for student pilots.",
     externalUrl: "https://navlogpro.training",
     searchQuery: "navlog pro aviation",
-    imageUrl: "/images/navlogproSS.png",
+    imageUrl: "/images/NLP_logo.png",
   },
   {
     id: "planefacts",
@@ -117,7 +117,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     description: "Aircraft lookup, N-number search, and aviation data tools.",
     externalUrl: "https://planefacts.online",
     searchQuery: "planefacts aviation tool",
-    imageUrl: "/images/planefactsSS.png",
+    imageUrl: "/images/PFO_logo.png",
   },
   {
     id: "foreflight",
