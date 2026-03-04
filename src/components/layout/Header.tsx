@@ -4,22 +4,36 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { HelpCircle } from "lucide-react";
+import {
+  HelpCircle,
+  CreditCard,
+  GraduationCap,
+  BookOpen,
+  Wallet,
+  Package,
+  LayoutDashboard,
+  ClipboardList,
+  FileText,
+  MessageSquare,
+  Settings,
+  LogOut,
+  Shield,
+} from "lucide-react";
 import HelpPanel from "@/components/help/HelpPanel";
 
 // Pricing is rendered separately, always pinned to the far left outside
 // the centered nav group so it doesn't shift the other items.
 const navLinks = [
-  { href: "/schools", label: "Schools" },
-  { href: "/resources", label: "Resources" },
-  { href: "/costs", label: "Costs" },
-  { href: "/equipment", label: "Equipment" },
+  { href: "/schools", label: "Schools", icon: GraduationCap },
+  { href: "/resources", label: "Resources", icon: BookOpen },
+  { href: "/costs", label: "Costs", icon: Wallet },
+  { href: "/equipment", label: "Equipment", icon: Package },
 ];
 
 const authNavLinks = [
-  { href: "/dpe-finder", label: "DPEs" },
-  { href: "/community/stories", label: "Stories" },
-  { href: "/community/discussions", label: "Forums" },
+  { href: "/dpe-finder", label: "DPEs", icon: ClipboardList },
+  { href: "/community/stories", label: "Stories", icon: FileText },
+  { href: "/community/discussions", label: "Forums", icon: MessageSquare },
 ];
 
 export default function Header() {
@@ -35,11 +49,11 @@ export default function Header() {
 
   const allNavLinks = isLoggedIn
     ? [
-        { href: "/schools", label: "Schools" },
-        { href: "/resources", label: "Resources" },
-        { href: "/costs", label: "Costs" },
-        { href: "/dashboard", label: "Progress" },
-        { href: "/equipment", label: "Equipment" },
+        { href: "/schools", label: "Schools", icon: GraduationCap },
+        { href: "/resources", label: "Resources", icon: BookOpen },
+        { href: "/costs", label: "Costs", icon: Wallet },
+        { href: "/dashboard", label: "Progress", icon: LayoutDashboard },
+        { href: "/equipment", label: "Equipment", icon: Package },
         ...authNavLinks,
       ]
     : navLinks;
@@ -77,26 +91,28 @@ export default function Header() {
               <nav className="hidden md:flex items-center gap-0.5">
                 <Link
                   href="/pricing"
-                  className={`rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                  className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
                     pricingActive
                       ? "bg-amber-400/15 text-amber-400"
                       : "text-amber-400 hover:bg-amber-400/10"
                   }`}
                 >
+                  <CreditCard className="h-4 w-4" />
                   Pricing
                 </Link>
-                {allNavLinks.map(({ href, label }) => {
+                {allNavLinks.map(({ href, label, icon: Icon }) => {
                   const isActive = pathname === href || pathname.startsWith(`${href}/`);
                   return (
                     <Link
                       key={href}
                       href={href}
-                      className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                         isActive
                           ? "bg-primary/10 text-primary"
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                     >
+                      <Icon className="h-4 w-4" />
                       {label}
                     </Link>
                   );
@@ -113,36 +129,39 @@ export default function Header() {
                   {isAdminUser && (
                     <Link
                       href="/admin"
-                      className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                         pathname.startsWith("/admin")
                           ? "bg-red-900/30 text-red-400"
                           : "text-red-500/70 hover:bg-red-900/20 hover:text-red-400"
                       }`}
                     >
+                      <Shield className="h-4 w-4" />
                       Admin
                     </Link>
                   )}
                   <Link
                     href="/settings"
-                    className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                       pathname === "/settings"
                         ? "bg-amber-400/15 text-amber-400"
                         : "text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400"
                     }`}
                   >
+                    <Settings className="h-4 w-4" />
                     Settings
                   </Link>
                   <button
                     onClick={() => setHelpOpen(true)}
-                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="flex items-center gap-1.5 rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                     aria-label="Help"
                   >
-                    <HelpCircle className="w-4 h-4" />
+                    <HelpCircle className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => signOut({ callbackUrl: window.location.origin + "/" })}
-                    className="rounded-md px-3 py-2 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                   >
+                    <LogOut className="h-4 w-4" />
                     Sign Out
                   </button>
                 </>
@@ -150,10 +169,10 @@ export default function Header() {
                 <>
                   <button
                     onClick={() => setHelpOpen(true)}
-                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="flex items-center gap-1.5 rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                     aria-label="Help"
                   >
-                    <HelpCircle className="w-4 h-4" />
+                    <HelpCircle className="h-4 w-4" />
                   </button>
                   <Link
                     href="/auth/signin"
@@ -186,28 +205,30 @@ export default function Header() {
             <Link
               href="/pricing"
               onClick={() => setMobileOpen(false)}
-              className={`block rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
+              className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
                 pricingActive
                   ? "bg-amber-400/15 text-amber-400"
                   : "text-amber-400 hover:bg-amber-400/10"
               }`}
             >
+              <CreditCard className="h-5 w-5" />
               Pricing
             </Link>
 
-            {allNavLinks.map(({ href, label }) => {
+            {allNavLinks.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href || pathname.startsWith(`${href}/`);
               return (
                 <Link
                   key={href}
                   href={href}
                   onClick={() => setMobileOpen(false)}
-                  className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   }`}
                 >
+                  <Icon className="h-5 w-5" />
                   {label}
                 </Link>
               );
@@ -219,30 +240,33 @@ export default function Header() {
                     <Link
                       href="/admin"
                       onClick={() => setMobileOpen(false)}
-                      className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                         pathname.startsWith("/admin")
                           ? "bg-red-900/30 text-red-400"
                           : "text-red-500/70 hover:bg-red-900/20 hover:text-red-400"
                       }`}
                     >
+                      <Shield className="h-5 w-5" />
                       Admin
                     </Link>
                   )}
                   <Link
                     href="/settings"
                     onClick={() => setMobileOpen(false)}
-                    className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                       pathname === "/settings"
                         ? "bg-amber-400/15 text-amber-400"
                         : "text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400"
                     }`}
                   >
+                    <Settings className="h-5 w-5" />
                     Settings
                   </Link>
                   <button
                     onClick={() => { setMobileOpen(false); setHelpOpen(true); }}
-                    className="block w-full text-left rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                   >
+                    <HelpCircle className="h-5 w-5" />
                     Help
                   </button>
                   <button
@@ -250,8 +274,9 @@ export default function Header() {
                       setMobileOpen(false);
                       signOut({ callbackUrl: window.location.origin + "/" });
                     }}
-                    className="block w-full text-left rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                   >
+                    <LogOut className="h-5 w-5" />
                     Sign Out
                   </button>
                 </>
@@ -259,8 +284,9 @@ export default function Header() {
                 <>
                   <button
                     onClick={() => { setMobileOpen(false); setHelpOpen(true); }}
-                    className="block w-full text-left rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                   >
+                    <HelpCircle className="h-5 w-5" />
                     Help
                   </button>
                   <Link
