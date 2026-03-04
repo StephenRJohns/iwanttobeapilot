@@ -2,7 +2,7 @@ name: Weekly DPE Sync
 
 on:
   schedule:
-    - cron: "0 2 * * 0"   # Every Sunday at 02:00 UTC
+    - cron: "0 7 * * 0"   # Every Sunday at 02:00 CDT (07:00 UTC)
   workflow_dispatch:        # Allow manual trigger from GitHub Actions UI
 
 jobs:
