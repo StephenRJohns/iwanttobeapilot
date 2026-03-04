@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 
 export const authConfig: NextAuthConfig = {
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -106,12 +107,11 @@ export const authConfig: NextAuthConfig = {
                 type: account.type,
                 provider: account.provider,
                 providerAccountId: account.providerAccountId,
-                access_token: account.access_token as string | undefined,
                 refresh_token: account.refresh_token as string | undefined,
+                access_token: account.access_token as string | undefined,
                 expires_at: account.expires_at as number | undefined,
                 token_type: account.token_type as string | undefined,
                 scope: account.scope as string | undefined,
-                id_token: account.id_token as string | undefined,
               },
             });
           }
