@@ -6,7 +6,7 @@
   "author": "JJJJJ Enterprises, LLC",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
+    "build": "DATABASE_URL=postgresql://x:x@x:5432/x prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
