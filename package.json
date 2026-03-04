@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "license": "UNLICENSED",
-  "author": "Stephen Johns",
+  "author": "JJJJJ Enterprises, LLC",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
