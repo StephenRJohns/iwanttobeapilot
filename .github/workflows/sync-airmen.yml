@@ -1,0 +1,25 @@
+name: Weekly DPE Sync
+
+on:
+  schedule:
+    - cron: "0 2 * * 0"   # Every Sunday at 02:00 UTC
+  workflow_dispatch:        # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger sync-airmen cron
+        run: |
+          response=$(curl -s -o /tmp/body.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://iwanttobeapilot.online/api/cron/sync-airmen)
+
+          echo "HTTP status: $response"
+          echo "Response body:"
+          cat /tmp/body.json
+
+          if [ "$response" != "200" ]; then
+            echo "Cron endpoint returned non-200 status: $response"
+            exit 1
+          fi
