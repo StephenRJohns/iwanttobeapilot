@@ -251,3 +251,10 @@ model DiscussionReply {
   @@index([userId])
   @@index([postId])
 }
+
+model PassRateCache {
+  id          String   @id @default("singleton")
+  data        Json
+  lastUpdated DateTime
+  updatedAt   DateTime @updatedAt
+}

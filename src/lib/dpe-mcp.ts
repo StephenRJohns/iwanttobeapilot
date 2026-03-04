@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import os from "os";
+import { db } from "@/lib/db";
 
 export interface PassRateRecord {
   year: number;
@@ -24,9 +24,7 @@ export interface GetPassRatesResult {
   records: PassRateRecord[];
 }
 
-const CACHE_FILE = path.join(os.homedir(), ".cache", "dpe-data-unifier", "data.json");
 const BUNDLED_FILE = path.join(process.cwd(), "src", "data", "dpe-data.json");
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 interface RawRecord {
   year: number;
@@ -43,20 +41,26 @@ interface CacheFile {
   availableYears: number[];
 }
 
-// In-memory cache with TTL
+// In-memory cache with 5-minute TTL
 let memCache: { data: CacheFile; loadedAt: number } | null = null;
 
 async function loadCache(): Promise<CacheFile> {
   if (memCache && Date.now() - memCache.loadedAt < 5 * 60 * 1000) {
     return memCache.data;
   }
-  let filePath = CACHE_FILE;
+
+  // 1. Try DB (populated by the weekly cron job)
   try {
-    await fs.access(CACHE_FILE);
-  } catch {
-    filePath = BUNDLED_FILE;
-  }
-  const raw = await fs.readFile(filePath, "utf8");
+    const row = await db.passRateCache.findUnique({ where: { id: "singleton" } });
+    if (row) {
+      const data = row.data as unknown as CacheFile;
+      memCache = { data, loadedAt: Date.now() };
+      return data;
+    }
+  } catch { /* fall through */ }
+
+  // 2. Bundled static fallback (included in Docker image)
+  const raw = await fs.readFile(BUNDLED_FILE, "utf8");
   const data = JSON.parse(raw) as CacheFile;
   memCache = { data, loadedAt: Date.now() };
   return data;
@@ -78,7 +82,6 @@ export async function getPassRates(params: GetPassRatesParams = {}): Promise<Get
     records = records.filter((r) => r.examinerType === params.examiner_type);
   }
 
-  // Sort: year desc, cert type asc, examiner type asc
   records = [...records].sort((a, b) => {
     if (b.year !== a.year) return b.year - a.year;
     if (a.certificateType !== b.certificateType)
