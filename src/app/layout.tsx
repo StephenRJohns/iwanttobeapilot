@@ -169,7 +169,7 @@ const jsonLd = [
     },
     sameAs: [],
     founder: {
-      "@type": "Person",
+      "@type": "Organization",
       name: "JJJJJ Enterprises, LLC",
     },
     description: "Founded by a parent of two pilots who wanted to build the resource that would have made their training journeys easier.",

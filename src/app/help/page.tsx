@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Help & FAQ",
   description: "Get help using I Want To Be A Pilot — flight school search, cost estimator, DPE finder, progress tracker, and more.",
-  robots: { index: false },
+  robots: { index: true },
 };
 
 interface FAQItem {
