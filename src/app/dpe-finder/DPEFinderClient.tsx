@@ -129,7 +129,7 @@ export default function DPEFinderClient({ directoryDisabled = false }: { directo
   return (
     <div className="space-y-6">
       {/* Search panel */}
-      <div className={`rounded-lg border border-border bg-card p-4 ${directoryDisabled ? "opacity-40 pointer-events-none select-none" : ""}`}>
+      <div className={`rounded-lg border border-border bg-card p-4 ${directoryDisabled ? "hidden" : ""}`}>
         <form onSubmit={handleSearch} className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[140px]">
             <label className="text-xs text-muted-foreground block mb-1">Zip Code</label>
@@ -184,20 +184,30 @@ export default function DPEFinderClient({ directoryDisabled = false }: { directo
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Results + Map */}
-        <div className={`space-y-4 ${directoryDisabled ? "opacity-40 pointer-events-none select-none" : ""}`}>
-          {dpes.length > 0 && center && (
+        <div className="space-y-4">
+          {directoryDisabled ? (
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
+              <p className="font-medium mb-0.5">DPE directory data is temporarily unavailable</p>
+              <p className="text-amber-300/80 text-xs leading-relaxed">
+                We&apos;re waiting on an FAA data release to populate the examiner directory. The search
+                and map are disabled until real data is available. FAA aggregate pass rates (right) are
+                unaffected.
+              </p>
+            </div>
+          ) : null}
+          {!directoryDisabled && dpes.length > 0 && center && (
             <div className="h-64 rounded-lg overflow-hidden border border-border">
               <DPEMap dpes={dpes} center={center} />
             </div>
           )}
 
-          {dpes.length === 0 && !searching && zip && (
+          {!directoryDisabled && dpes.length === 0 && !searching && zip && (
             <p className="text-sm text-muted-foreground text-center py-8">
               No DPEs found. Try expanding your radius.
             </p>
           )}
 
-          {dpes.length > 0 && (() => {
+          {!directoryDisabled && dpes.length > 0 && (() => {
             const dpeTotalPages = Math.ceil(dpes.length / dpePageSize);
             const dpePageRows = dpes.slice(dpePage * dpePageSize, (dpePage + 1) * dpePageSize);
             return (
