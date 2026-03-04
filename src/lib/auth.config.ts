@@ -77,6 +77,19 @@ export const authConfig: NextAuthConfig = {
     error: "/auth/signin",
   },
   callbacks: {
+    // Edge-safe session callback — reads custom fields from token, no DB access.
+    // Used by middleware to populate auth.user.role for the authorized() check.
+    async session({ session, token }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id as string,
+          tier: token.tier as string,
+          role: token.role as string,
+        },
+      };
+    },
     authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user;
       const path = request.nextUrl.pathname;
