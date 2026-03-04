@@ -86,93 +86,123 @@ export default function Header() {
               <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-40 w-auto" />
             </Link>
 
-            {/* Nav links start immediately to the right of the logo */}
+            {/* Nav links — two rows to the right of the logo */}
             {!isAuthPage && (
-              <nav className="hidden md:flex items-center gap-0.5">
-                <Link
-                  href="/pricing"
-                  className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
-                    pricingActive
-                      ? "bg-amber-400/15 text-amber-400"
-                      : "text-amber-400 hover:bg-amber-400/10"
-                  }`}
-                >
-                  <CreditCard className="h-4 w-4" />
-                  Pricing
-                </Link>
-                {allNavLinks.map(({ href, label, icon: Icon }) => {
-                  const isActive = pathname === href || pathname.startsWith(`${href}/`);
-                  return (
-                    <Link
-                      key={href}
-                      href={href}
-                      className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                        isActive
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {label}
-                    </Link>
-                  );
-                })}
+              <nav className="hidden md:flex flex-col justify-center gap-0.5">
+                {/* Row 1: Pricing + public links */}
+                <div className="flex items-center gap-0.5">
+                  <Link
+                    href="/pricing"
+                    className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
+                      pricingActive
+                        ? "bg-amber-400/15 text-amber-400"
+                        : "text-amber-400 hover:bg-amber-400/10"
+                    }`}
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    Pricing
+                  </Link>
+                  {navLinks.map(({ href, label, icon: Icon }) => {
+                    const isActive = pathname === href || pathname.startsWith(`${href}/`);
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                          isActive
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
+                {/* Row 2: auth-only links (Progress, DPEs, Stories, Forums) */}
+                {isLoggedIn && (
+                  <div className="flex items-center gap-0.5">
+                    {[{ href: "/dashboard", label: "Progress", icon: LayoutDashboard }, ...authNavLinks].map(({ href, label, icon: Icon }) => {
+                      const isActive = pathname === href || pathname.startsWith(`${href}/`);
+                      return (
+                        <Link
+                          key={href}
+                          href={href}
+                          className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                            isActive
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          }`}
+                        >
+                          <Icon className="h-4 w-4" />
+                          {label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
               </nav>
             )}
           </div>
 
-          {/* ── RIGHT: auth buttons ── */}
+          {/* ── RIGHT: icon-only action buttons ── */}
           {!isAuthPage && (
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden md:flex items-center gap-0.5">
               {isLoggedIn ? (
                 <>
+                  <button
+                    onClick={() => setHelpOpen(true)}
+                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    aria-label="Help"
+                    title="Help"
+                  >
+                    <HelpCircle className="h-5 w-5" />
+                  </button>
+                  <Link
+                    href="/settings"
+                    className={`rounded-md p-2 transition-colors ${
+                      pathname === "/settings"
+                        ? "text-amber-400"
+                        : "text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400"
+                    }`}
+                    aria-label="Settings"
+                    title="Settings"
+                  >
+                    <Settings className="h-5 w-5" />
+                  </Link>
                   {isAdminUser && (
                     <Link
                       href="/admin"
-                      className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                      className={`rounded-md p-2 transition-colors ${
                         pathname.startsWith("/admin")
-                          ? "bg-red-900/30 text-red-400"
+                          ? "text-red-400"
                           : "text-red-500/70 hover:bg-red-900/20 hover:text-red-400"
                       }`}
+                      aria-label="Admin"
+                      title="Admin"
                     >
-                      <Shield className="h-4 w-4" />
-                      Admin
+                      <Shield className="h-5 w-5" />
                     </Link>
                   )}
-                  <Link
-                    href="/settings"
-                    className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                      pathname === "/settings"
-                        ? "bg-amber-400/15 text-amber-400"
-                        : "text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400"
-                    }`}
-                  >
-                    <Settings className="h-4 w-4" />
-                    Settings
-                  </Link>
-                  <button
-                    onClick={() => setHelpOpen(true)}
-                    className="flex items-center gap-1.5 rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
-                    aria-label="Help"
-                  >
-                    <HelpCircle className="h-4 w-4" />
-                  </button>
                   <button
                     onClick={() => signOut({ callbackUrl: window.location.origin + "/" })}
-                    className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    aria-label="Sign out"
+                    title="Sign out"
                   >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
+                    <LogOut className="h-5 w-5" />
                   </button>
                 </>
               ) : (
                 <>
                   <button
                     onClick={() => setHelpOpen(true)}
-                    className="flex items-center gap-1.5 rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
                     aria-label="Help"
+                    title="Help"
                   >
-                    <HelpCircle className="h-4 w-4" />
+                    <HelpCircle className="h-5 w-5" />
                   </button>
                   <Link
                     href="/auth/signin"
