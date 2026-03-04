@@ -8,4 +8,4 @@ cmds = ["npm ci --include=optional"]
 cmds = ["DATABASE_URL=postgresql://x:x@x:5432/x npm run build"]
 
 [start]
-cmd = "prisma db push && npm start"
+cmd = "npm start"
