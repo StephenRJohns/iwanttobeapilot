@@ -58,6 +58,12 @@ export async function GET(req: NextRequest) {
   });
 
   if (!status.up) {
+    try {
+      await sendCronAlertEmail(
+        "DPE sync FAILED — FAA Airmen Inquiry is down",
+        `Sync attempted at ${results.checkedAt}\n\nThe FAA Airmen Inquiry site is unreachable. Enrichment was skipped this cycle.\n\nStatus: ${JSON.stringify(status, null, 2)}`,
+      );
+    } catch { /* non-fatal */ }
     return NextResponse.json({
       ...results,
       message: "FAA Airmen Inquiry is down — skipping enrichment",
@@ -75,6 +81,12 @@ export async function GET(req: NextRequest) {
         details: "Akamai Bot Manager blocked POST — skipping enrichment this cycle",
       },
     });
+    try {
+      await sendCronAlertEmail(
+        "DPE sync FAILED — bot detection blocked requests",
+        `Sync attempted at ${results.checkedAt}\n\nAkamai Bot Manager blocked POST requests to FAA Airmen Inquiry. Enrichment was skipped this cycle.`,
+      );
+    } catch { /* non-fatal */ }
     return NextResponse.json({
       ...results,
       message: "Site is up but POST requests are bot-blocked — health check logged",
@@ -146,16 +158,23 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  if (results.enriched > 0) {
-    try {
+  const summary = `Sync completed at ${results.checkedAt}\n\nEnriched: ${results.enriched}\nSkipped:  ${results.skipped}\nBlocked:  ${results.blocked}\nErrors:   ${results.errors.length}` +
+    (results.errors.length > 0 ? `\n\nError details:\n${results.errors.join("\n")}` : "");
+
+  try {
+    if (results.errors.length > 0) {
+      await sendCronAlertEmail(
+        `DPE sync completed with ${results.errors.length} error(s)`,
+        summary,
+      );
+    } else if (results.enriched > 0) {
       await sendCronAlertEmail(
         `DPE sync complete — ${results.enriched} records enriched`,
-        `Sync completed at ${results.checkedAt}\n\nEnriched: ${results.enriched}\nSkipped:  ${results.skipped}\nBlocked:  ${results.blocked}\nErrors:   ${results.errors.length}` +
-          (results.errors.length > 0 ? `\n\nError details:\n${results.errors.join("\n")}` : ""),
+        summary,
       );
-    } catch {
-      // Non-fatal — don't fail the cron if email delivery fails
     }
+  } catch {
+    // Non-fatal — don't fail the cron if email delivery fails
   }
 
   return NextResponse.json({

@@ -23,3 +23,17 @@ jobs:
             echo "Cron endpoint returned non-200 status: $response"
             exit 1
           fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          body=$(cat /tmp/body.json 2>/dev/null || echo "No response body — site may be unreachable")
+          curl -s -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"from\": \"noreply@iwanttobeapilot.online\",
+              \"to\": \"jjjjj_enterprises_llc@protonmail.com\",
+              \"subject\": \"[I Want To Be A Pilot] DPE sync FAILED\",
+              \"html\": \"<pre style='font-family:monospace'>GitHub Actions workflow failed.\n\nResponse: $body</pre>\"
+            }"
