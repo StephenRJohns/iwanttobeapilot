@@ -19,6 +19,7 @@ async function getDpeSyncStatus(): Promise<{
   lastChecked: string | null;
   lastDataUpdate: string | null;
   totalRecords: number;
+  cronDataAvailable: boolean;
 }> {
   const [lastCheck, lastSync, totalRecords, newestRecord] = await Promise.all([
     // Last health check (runs weekly whether or not data was updated)
@@ -27,7 +28,7 @@ async function getDpeSyncStatus(): Promise<{
       orderBy: { createdAt: "desc" },
       select: { createdAt: true },
     }),
-    // Last sync where data was actually updated
+    // Last sync where data was actually updated by the cron job
     db.auditLog.findFirst({
       where: {
         action: "cron:airmen-inquiry:sync-complete",
@@ -51,6 +52,8 @@ async function getDpeSyncStatus(): Promise<{
       newestRecord?.updatedAt.toISOString() ??
       null,
     totalRecords,
+    // Only true when the cron has successfully pulled real FAA data
+    cronDataAvailable: lastSync !== null,
   };
 }
 
@@ -103,7 +106,7 @@ export default async function DPEFinderPage() {
         </div>
       </div>
 
-      <DPEFinderClient directoryDisabled={syncStatus.totalRecords === 0} />
+      <DPEFinderClient directoryDisabled={!syncStatus.cronDataAvailable} />
     </div>
   );
 }
