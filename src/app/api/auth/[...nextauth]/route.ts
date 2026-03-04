@@ -7,26 +7,36 @@ export const GET = handlers.GET;
 
 export async function POST(req: NextRequest) {
   const url = new URL(req.url);
-  const cookies = req.cookies.getAll().map(c => c.name);
   console.log("[auth-route] POST", url.pathname);
-  console.log("[auth-route] cookies present:", cookies.join(", "));
-  console.log("[auth-route] content-type:", req.headers.get("content-type"));
 
-  // Clone and peek at body
-  const clone = req.clone();
-  try {
-    const body = await clone.text();
-    const params = new URLSearchParams(body);
-    console.log("[auth-route] body keys:", [...params.keys()].join(", "));
-    console.log("[auth-route] has csrfToken:", params.has("csrfToken"));
-  } catch {}
+  // Test DB connectivity directly
+  if (url.pathname.endsWith("/callback/credentials")) {
+    try {
+      const { db } = await import("@/lib/db");
+      const testUser = await db.user.findUnique({
+        where: { email: "admin@iwanttobeapilot.online" },
+        select: { id: true, email: true, status: true, emailVerified: true },
+      });
+      console.log("[auth-route] DB test:", testUser ? `found ${testUser.email}, status=${testUser.status}, verified=${!!testUser.emailVerified}` : "NOT FOUND");
+    } catch (err) {
+      console.error("[auth-route] DB test FAILED:", err);
+    }
+  }
 
   try {
     const res = await origPOST(req);
     console.log("[auth-route] response status:", res?.status);
+
+    // Log response body for debugging
+    const clone = res.clone();
+    try {
+      const text = await clone.text();
+      console.log("[auth-route] response body (first 500):", text.substring(0, 500));
+    } catch {}
+
     return res;
   } catch (err) {
-    console.error("[auth-route] error:", err);
+    console.error("[auth-route] handler error:", err);
     throw err;
   }
 }
