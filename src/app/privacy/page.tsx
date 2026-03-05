@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   description: "Privacy Policy for I Want To Be A Pilot (iwanttobeapilot.online). Learn how we collect, use, and protect your personal information.",
   alternates: { canonical: "/privacy" },
   robots: { index: true, follow: false },
+  openGraph: {
+    title: "Privacy Policy | I Want To Be A Pilot",
+    description: "Privacy Policy for I Want To Be A Pilot — how we collect, use, and protect your personal information.",
+  },
 };
 
 export default function PrivacyPage() {

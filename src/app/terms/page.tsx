@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   description: "Terms of Service for I Want To Be A Pilot (iwanttobeapilot.online). Read our terms covering subscriptions, user content, affiliate links, and more.",
   alternates: { canonical: "/terms" },
   robots: { index: true, follow: false },
+  openGraph: {
+    title: "Terms of Service | I Want To Be A Pilot",
+    description: "Terms of Service for I Want To Be A Pilot — subscriptions, user content, affiliate links, intellectual property, and more.",
+  },
 };
 
 export default function TermsPage() {

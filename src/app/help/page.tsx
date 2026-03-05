@@ -253,9 +253,32 @@ const sections: { title: string; items: FAQItem[] }[] = [
   },
 ];
 
+/* Build FAQPage JSON-LD from the sections array (plain-text answers only) */
+function faqJsonLd() {
+  const items = sections.flatMap((s) =>
+    s.items.map((item) => ({
+      "@type": "Question" as const,
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer" as const,
+        text: typeof item.a === "string" ? item.a : item.q, // fallback for JSX answers
+      },
+    }))
+  );
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items,
+  };
+}
+
 export default function HelpPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
+      />
       <div className="mb-10">
         <h1 className="text-2xl font-bold mb-2">Help & FAQ</h1>
         <p className="text-sm text-muted-foreground">

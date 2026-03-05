@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   description: "Important aviation safety disclaimer for I Want To Be A Pilot. All content is educational only — not official FAA guidance, flight instruction, legal, or medical advice.",
   alternates: { canonical: "/disclaimer" },
   robots: { index: true, follow: false },
+  openGraph: {
+    title: "Aviation Disclaimer | I Want To Be A Pilot",
+    description: "Aviation safety disclaimer — all content is educational only, not official FAA guidance, flight instruction, legal, or medical advice.",
+  },
 };
 
 export default function DisclaimerPage() {
