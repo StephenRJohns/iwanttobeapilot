@@ -39,8 +39,8 @@ model User {
   stories           Story[]
   discussions       DiscussionPost[]
   discussionReplies DiscussionReply[]
-  parTestAttempts   PARTestAttempt[]
-  parWrongAnswers   PARWrongAnswer[]
+  testBankAttempts   TestBankAttempt[]
+  testBankWrongAnswers TestBankWrongAnswer[]
 }
 
 model Account {
@@ -118,6 +118,9 @@ model SiteSettings {
   id                 String   @id @default("singleton")
   maintenanceMode    Boolean  @default(false)
   maintenanceMessage String?
+  bannerEnabled      Boolean  @default(false)
+  bannerMessage      String?
+  bannerColor        String   @default("blue")
   updatedAt          DateTime @updatedAt
 }
 
@@ -263,9 +266,10 @@ model PassRateCache {
   updatedAt   DateTime @updatedAt
 }
 
-model PARTestAttempt {
+model TestBankAttempt {
   id        String   @id @default(cuid())
   userId    String
+  testBank  String
   score     Int
   total     Int
   passed    Boolean
@@ -274,17 +278,20 @@ model PARTestAttempt {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([userId, testBank])
 }
 
-model PARWrongAnswer {
+model TestBankWrongAnswer {
   id         String   @id @default(cuid())
   userId     String
+  testBank   String
   questionId String
   wrongCount Int      @default(1)
   lastSeenAt DateTime @default(now())
   updatedAt  DateTime @updatedAt
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, questionId])
+  @@unique([userId, testBank, questionId])
   @@index([userId])
+  @@index([userId, testBank])
 }

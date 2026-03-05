@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Providers from "@/components/layout/Providers";
 import Header from "@/components/layout/Header";
+import Banner from "@/components/layout/Banner";
 import Footer from "@/components/layout/Footer";
 import "./globals.css";
 
@@ -205,6 +206,7 @@ export default function RootLayout({
       >
         <Providers>
           <Header />
+          <Banner />
           <main>{children}</main>
           <Footer />
         </Providers>

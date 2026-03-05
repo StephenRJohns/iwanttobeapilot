@@ -10,14 +10,17 @@ export async function GET() {
     });
 
     if (!settings) {
-      return NextResponse.json({ maintenanceMode: false, message: null });
+      return NextResponse.json({ maintenanceMode: false, message: null, bannerEnabled: false, bannerMessage: null, bannerColor: "blue" });
     }
 
     return NextResponse.json({
       maintenanceMode: settings.maintenanceMode,
       message: settings.maintenanceMessage,
+      bannerEnabled: settings.bannerEnabled,
+      bannerMessage: settings.bannerMessage,
+      bannerColor: settings.bannerColor,
     });
   } catch {
-    return NextResponse.json({ maintenanceMode: false, message: null });
+    return NextResponse.json({ maintenanceMode: false, message: null, bannerEnabled: false, bannerMessage: null, bannerColor: "blue" });
   }
 }

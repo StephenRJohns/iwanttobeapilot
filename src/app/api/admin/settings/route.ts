@@ -34,23 +34,40 @@ export async function PATCH(req: NextRequest) {
   if (sessionUser.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
-    const { maintenanceMode, maintenanceMessage } = await req.json();
+    const { maintenanceMode, maintenanceMessage, bannerEnabled, bannerMessage, bannerColor } = await req.json();
     await getSettings();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = {};
     if (typeof maintenanceMode === "boolean") data.maintenanceMode = maintenanceMode;
     if (maintenanceMessage !== undefined) data.maintenanceMessage = maintenanceMessage;
+    if (typeof bannerEnabled === "boolean") data.bannerEnabled = bannerEnabled;
+    if (bannerMessage !== undefined) data.bannerMessage = bannerMessage;
+    if (bannerColor !== undefined) data.bannerColor = bannerColor;
 
     const updated = await db.siteSettings.update({ where: { id: "singleton" }, data });
 
-    await db.auditLog.create({
-      data: {
-        userId: sessionUser.id,
-        action: maintenanceMode ? "maintenance_mode_enabled" : "maintenance_mode_disabled",
-        details: JSON.stringify({ maintenanceMode: updated.maintenanceMode }),
-      },
-    });
+    // Audit log for maintenance changes
+    if (typeof maintenanceMode === "boolean") {
+      await db.auditLog.create({
+        data: {
+          userId: sessionUser.id,
+          action: maintenanceMode ? "maintenance_mode_enabled" : "maintenance_mode_disabled",
+          details: JSON.stringify({ maintenanceMode: updated.maintenanceMode }),
+        },
+      });
+    }
+
+    // Audit log for banner changes
+    if (typeof bannerEnabled === "boolean" || bannerMessage !== undefined || bannerColor !== undefined) {
+      await db.auditLog.create({
+        data: {
+          userId: sessionUser.id,
+          action: updated.bannerEnabled ? "banner_enabled" : "banner_disabled",
+          details: JSON.stringify({ bannerEnabled: updated.bannerEnabled, bannerMessage: updated.bannerMessage, bannerColor: updated.bannerColor }),
+        },
+      });
+    }
 
     return NextResponse.json(updated);
   } catch (err) {
