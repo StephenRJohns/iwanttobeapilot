@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <h1 className="text-xl font-bold">Admin</h1>
       </div>
 
-      <nav className="flex items-center gap-1 border-b border-border mb-6 overflow-x-auto">
+      <nav className="flex items-center gap-1 border-b border-border mb-6">
         {adminTabs.map(({ href, label, exact }) => {
           const isActive = exact ? pathname === href : pathname.startsWith(href);
           return (
