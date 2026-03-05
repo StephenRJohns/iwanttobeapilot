@@ -128,7 +128,7 @@ export default function Header() {
                 })}
                 {isLoggedIn && (
                   <>
-                    <div className="w-px h-5 bg-border mx-1" />
+                    <div className="w-px h-5 bg-white/30 mx-1" />
                     <span className="text-xs font-semibold text-white px-1">Pro:</span>
                     {[{ href: "/dashboard", label: "Progress", icon: LayoutDashboard }, ...authNavLinks].map(({ href, label, icon: Icon }) => {
                       const isActive = pathname === href || pathname.startsWith(`${href}/`);
