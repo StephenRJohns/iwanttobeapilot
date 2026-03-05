@@ -7,9 +7,12 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 ## Free Features (no account required)
 
 ### Flight School Search
-- Search FAA-certified flight schools by zip code
-- Show results on an interactive Leaflet map
-- Show a list below the map with name, address, phone, email, and website link for each school
+- Search FAA-certified flight schools by zip code and radius (25 / 50 / 100 / 200 mi)
+- Show results on an interactive Leaflet map with a "Search This Area" button that activates when the map is panned or zoomed
+- Paginated results table below the map: name, address, phone, website, distance
+- Page size selector (10 / 25 / 50 / 100, default 10) and first / prev / next / last navigation
+- Google Places (New) API with automatic fallback to Prisma DB when API is unavailable
+- API accepts zip code (geocoded via zippopotam.us) or direct lat/lng coordinates (for map-based search)
 
 ### Free Resources
 - Links to free FAA handbooks (PHAK, AFH, Instrument Flying Handbook)
@@ -19,6 +22,8 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 
 ### Equipment Guide
 - Curated list of gear pilots need: aviation headsets, flight bags, kneeboard apps, E6B calculators, sectional charts, foggles, iPads, iPad holders, thigh boards, sunglasses, sunscreen, clothes, luggage, and more
+- Category filter pills and text search (filters by name and description)
+- Result count display; "Suggest Equipment" modal for community submissions
 - Include NavLogPro (navlogpro.training) and PlaneFacts (planefacts.online) as featured tools
 - Include ForeFlight, Garmin Pilot, and other popular apps
 - Product images: ONLY self-hosted images under /public/images/ (owner-permitted). Never hotlink Amazon CDN, Sporty's BigCommerce CDN, or any third-party retailer CDN — TOS violation. Items without a licensed image show a styled "No Image Available" placeholder.
@@ -128,19 +133,28 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 ---
 
 ## Navigation & UI
-- Dark theme only (html class="dark")
+- Light/dark theme toggle (class-based, stored in localStorage under "theme"; dark is default)
 - TailwindCSS v4 (CSS-first config, no tailwind.config.js)
 - Radix UI primitives
-- Header: sticky top bar with hamburger (mobile), logo, Pricing link (pinned far left outside centered nav, amber/yellow color), centered nav links, right-side auth buttons
-- Pricing link styled amber-400 (text + hover bg-amber-400/10, active bg-amber-400/15) — always leftmost, not part of centered nav layout
-- Text-only navigation links (no icons except HelpCircle)
-- HelpCircle icon (?) in header right side — left of Sign Out (logged in) or left of Sign In (logged out) — opens contextual slide-in help panel
-- Contextual help panel (HelpPanel.tsx): slides in from right, shows page-specific help based on usePathname(), covers every route
-- Responsive with mobile hamburger drawer; Pricing is first item in drawer (amber styled)
+- Compact header: h-16, logo h-10, single-row horizontal nav with text-xs links and h-3.5 icons
+- Free nav items (Pricing, Schools, Resources, Costs, Equipment) on the left
+- White vertical divider + "Pro:" label separates free from pro nav items
+- Pro nav items (Progress, DPEs, Stories, Forums) styled white/70, visible only when logged in
+- Pricing link hidden for pro/admin users
+- Right-side: HelpCircle (?), Contact Support (LifeBuoy), admin icon (if admin), Sign In / avatar+Sign Out
+- HelpCircle opens contextual slide-in help panel (HelpPanel.tsx) with page-specific content based on usePathname()
+- Contact Support icon opens modal that sends message to support@iwanttobeapilot.online via /api/support
+- Responsive mobile hamburger drawer with same free/pro split
 - Sign Out uses window.location.origin + "/" as callbackUrl (avoids NEXTAUTH_URL port mismatch in dev)
+- Micro-animations: active:scale-[0.97] on CTA buttons, hover:-translate-y-0.5 hover:shadow-md on cards
+- Loading skeletons (animate-pulse) replace spinners for page-level loading states
+- Reusable EmptyState component for zero-result states
+- Custom error.tsx (global error boundary with "Try Again" + "Go Home") and not-found.tsx (aviation-themed 404)
+- Footer: 4-column grid (Brand, Product, Legal, Support) + bottom copyright bar with HTTPS badge
 
 ---
 
 ## Admin Account (seed)
-- Email: admin@iwanttobeapilot.online
-- Password: floofs!!QQ1209
+- Email and password read from ADMIN_EMAIL and ADMIN_PASSWORD environment variables
+- Never hardcode credentials in source files — scripts/fix-admin.ts, scripts/check-admin.ts, and prisma/seed.ts all read from env
+- Admin deletion guard in API routes also uses process.env.ADMIN_EMAIL

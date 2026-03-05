@@ -82,7 +82,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "How does the flight school search work?",
         a: (
           <>
-            Go to <Link href="/schools" className="text-primary hover:underline">Schools</Link> and enter your zip code. The map will show FAA-certified flight schools near you, and the list below includes each school&apos;s name, address, phone number, email, and website. No account required.
+            Go to <Link href="/schools" className="text-primary hover:underline">Schools</Link> and enter your zip code and search radius. The map will show FAA-certified flight schools near you, and a paginated table below includes each school&apos;s name, address, phone number, website, and distance. You can pan or zoom the map and click the &ldquo;Search This Area&rdquo; button to re-search from the new location. No account required.
           </>
         ),
       },

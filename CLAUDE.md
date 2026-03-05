@@ -72,8 +72,8 @@ Uses `@modelcontextprotocol/sdk` StdioClientTransport to spawn a child process a
 Subscription flow via `/api/stripe/` endpoints. Customer and subscription IDs stored on User (`stripeCustomerId`, `stripeSubscriptionId`, `stripePriceId`, `stripeCurrentPeriodEnd`).
 
 ### Admin Account (dev/staging)
-- Email: `admin@iwanttobeapilot.online`
-- Password: `floofs!!QQ1209`
+- Credentials stored in `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables (see `.env`)
+- Never hardcode credentials in source files
 
 ## Deployment (Railway)
 
