@@ -25,8 +25,6 @@ import {
 } from "lucide-react";
 import HelpPanel from "@/components/help/HelpPanel";
 
-// Pricing is rendered separately, always pinned to the far left outside
-// the centered nav group so it doesn't shift the other items.
 const navLinks = [
   { href: "/schools", label: "Schools", icon: GraduationCap },
   { href: "/resources", label: "Resources", icon: BookOpen },
@@ -71,10 +69,10 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-md">
-        <div className="mx-auto flex h-44 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
 
           {/* ── LEFT: logo + nav links ── */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             {!isAuthPage && (
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
@@ -89,67 +87,64 @@ export default function Header() {
               </button>
             )}
 
-            <Link href="/" className="shrink-0 flex items-center mr-2">
+            <Link href="/" className="shrink-0 flex items-center mr-1">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-40 w-auto" />
+              <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-10 w-auto" />
             </Link>
 
-            {/* Nav links — Pricing + 4-column grid of gray items */}
+            {/* Nav links — single horizontal row */}
             {!isAuthPage && (
               <nav className="hidden md:flex items-center gap-0.5">
                 {showPricing && (
                   <Link
                     href="/pricing"
-                    className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
+                    className={`flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-semibold transition-colors ${
                       pricingActive
                         ? "bg-amber-400/15 text-amber-400"
                         : "text-amber-400 hover:bg-amber-400/10"
                     }`}
                   >
-                    <CreditCard className="h-4 w-4" />
+                    <CreditCard className="h-3.5 w-3.5" />
                     Pricing
                   </Link>
                 )}
 
-                {/* 4-column grid: row 1 = public links, row 2 = auth links (amber when pro) */}
-                <div className="grid grid-cols-4 gap-x-0.5 gap-y-0.5">
-                  {navLinks.map(({ href, label, icon: Icon }) => {
-                    const isActive = pathname === href || pathname.startsWith(`${href}/`);
-                    return (
-                      <Link
-                        key={href}
-                        href={href}
-                        className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                          isActive
-                            ? "bg-primary/10 text-primary"
+                {navLinks.map(({ href, label, icon: Icon }) => {
+                  const isActive = pathname === href || pathname.startsWith(`${href}/`);
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={`flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
+                    >
+                      <Icon className="h-3.5 w-3.5" />
+                      {label}
+                    </Link>
+                  );
+                })}
+                {isLoggedIn && [{ href: "/dashboard", label: "Progress", icon: LayoutDashboard }, ...authNavLinks].map(({ href, label, icon: Icon }) => {
+                  const isActive = pathname === href || pathname.startsWith(`${href}/`);
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={`flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : isProUser
+                            ? "text-amber-400/80 hover:bg-amber-400/10 hover:text-amber-400"
                             : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {label}
-                      </Link>
-                    );
-                  })}
-                  {isLoggedIn && [{ href: "/dashboard", label: "Progress", icon: LayoutDashboard }, ...authNavLinks].map(({ href, label, icon: Icon }) => {
-                    const isActive = pathname === href || pathname.startsWith(`${href}/`);
-                    return (
-                      <Link
-                        key={href}
-                        href={href}
-                        className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                          isActive
-                            ? "bg-primary/10 text-primary"
-                            : isProUser
-                              ? "text-amber-400/80 hover:bg-amber-400/10 hover:text-amber-400"
-                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {label}
-                      </Link>
-                    );
-                  })}
-                </div>
+                      }`}
+                    >
+                      <Icon className="h-3.5 w-3.5" />
+                      {label}
+                    </Link>
+                  );
+                })}
               </nav>
             )}
           </div>
@@ -165,7 +160,7 @@ export default function Header() {
                     aria-label="Help"
                     title="Help"
                   >
-                    <HelpCircle className="h-5 w-5" />
+                    <HelpCircle className="h-4.5 w-4.5" />
                   </button>
                   <Link
                     href="/settings"
@@ -177,7 +172,7 @@ export default function Header() {
                     aria-label="Settings"
                     title="Settings"
                   >
-                    <Settings className="h-5 w-5" />
+                    <Settings className="h-4.5 w-4.5" />
                   </Link>
                   {isAdminUser && (
                     <Link
@@ -190,7 +185,7 @@ export default function Header() {
                       aria-label="Admin"
                       title="Admin"
                     >
-                      <Shield className="h-5 w-5" />
+                      <Shield className="h-4.5 w-4.5" />
                     </Link>
                   )}
                   <button
@@ -199,7 +194,7 @@ export default function Header() {
                     aria-label="Contact support"
                     title="Contact support"
                   >
-                    <LifeBuoy className="h-5 w-5" />
+                    <LifeBuoy className="h-4.5 w-4.5" />
                   </button>
                   <button
                     onClick={() => signOut({ callbackUrl: window.location.origin + "/" })}
@@ -207,7 +202,7 @@ export default function Header() {
                     aria-label="Sign out"
                     title="Sign out"
                   >
-                    <LogOut className="h-5 w-5" />
+                    <LogOut className="h-4.5 w-4.5" />
                   </button>
                 </>
               ) : (
@@ -218,17 +213,17 @@ export default function Header() {
                     aria-label="Help"
                     title="Help"
                   >
-                    <HelpCircle className="h-5 w-5" />
+                    <HelpCircle className="h-4.5 w-4.5" />
                   </button>
                   <Link
                     href="/auth/signin"
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/auth/register"
-                    className="rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm font-medium hover:bg-primary/90 transition-colors"
+                    className="rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-xs font-medium hover:bg-primary/90 transition-colors active:scale-[0.97]"
                   >
                     Get Started
                   </Link>
@@ -246,20 +241,22 @@ export default function Header() {
             className="fixed inset-0 bg-black/50"
             onClick={() => setMobileOpen(false)}
           />
-          <nav className="fixed top-14 left-0 bottom-0 w-64 bg-card border-r border-border p-4 space-y-1 overflow-y-auto">
+          <nav className="fixed top-16 left-0 bottom-0 w-64 bg-card border-r border-border p-4 space-y-1 overflow-y-auto">
             {/* Pricing first, amber styled */}
-            <Link
-              href="/pricing"
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
-                pricingActive
-                  ? "bg-amber-400/15 text-amber-400"
-                  : "text-amber-400 hover:bg-amber-400/10"
-              }`}
-            >
-              <CreditCard className="h-5 w-5" />
-              Pricing
-            </Link>
+            {showPricing && (
+              <Link
+                href="/pricing"
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
+                  pricingActive
+                    ? "bg-amber-400/15 text-amber-400"
+                    : "text-amber-400 hover:bg-amber-400/10"
+                }`}
+              >
+                <CreditCard className="h-5 w-5" />
+                Pricing
+              </Link>
+            )}
 
             {allNavLinks.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href || pathname.startsWith(`${href}/`);
@@ -314,6 +311,13 @@ export default function Header() {
                   >
                     <HelpCircle className="h-5 w-5" />
                     Help
+                  </button>
+                  <button
+                    onClick={() => { setMobileOpen(false); setContactOpen(true); }}
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                  >
+                    <LifeBuoy className="h-5 w-5" />
+                    Contact Support
                   </button>
                   <button
                     onClick={() => {

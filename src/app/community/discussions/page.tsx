@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { MessageSquare } from "lucide-react";
 import { db } from "@/lib/db";
+import { EmptyState } from "@/components/ui/EmptyState";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -26,7 +28,11 @@ export default async function DiscussionsPage() {
       <h2 className="text-lg font-semibold mb-4">Discussion Categories</h2>
 
       {categories.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No categories available yet.</p>
+        <EmptyState
+          icon={<MessageSquare className="h-12 w-12" />}
+          title="No discussion categories yet"
+          description="Forums are being set up. Check back soon!"
+        />
       ) : (
         <div className="space-y-2">
           {categories.map((cat) => (

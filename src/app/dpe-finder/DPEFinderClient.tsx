@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Loader2, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { Loader2, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, ClipboardList } from "lucide-react";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { useSession } from "next-auth/react";
 import { isPro } from "@/lib/tier";
 import { PILOT_LEVELS } from "@/data/pilot-levels";
@@ -202,9 +204,11 @@ export default function DPEFinderClient({ directoryDisabled = false }: { directo
           )}
 
           {!directoryDisabled && dpes.length === 0 && !searching && zip && (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              No DPEs found. Try expanding your radius.
-            </p>
+            <EmptyState
+              icon={<ClipboardList className="h-12 w-12" />}
+              title="No DPEs found"
+              description="Try expanding your search radius or changing the certificate type."
+            />
           )}
 
           {!directoryDisabled && dpes.length > 0 && (() => {

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Privacy Policy for I Want To Be A Pilot (iwanttobeapilot.online). Learn how we collect, use, and protect your personal information.",
+  alternates: { canonical: "/privacy" },
   robots: { index: true, follow: false },
 };
 
@@ -29,7 +30,7 @@ export default function PrivacyPage() {
                 <li><strong className="text-foreground">Account data:</strong> name, email address, hashed password</li>
                 <li><strong className="text-foreground">Profile data:</strong> pilot goal, zip code, pilot level</li>
                 <li><strong className="text-foreground">User content:</strong> pilot stories, discussion posts, replies, equipment ratings</li>
-                <li><strong className="text-foreground">Support communications:</strong> emails you send us</li>
+                <li><strong className="text-foreground">Support communications:</strong> emails you send us and messages submitted through the in-app Contact Support form</li>
               </ul>
             </div>
 

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "Terms of Service for I Want To Be A Pilot (iwanttobeapilot.online). Read our terms covering subscriptions, user content, affiliate links, and more.",
+  alternates: { canonical: "/terms" },
   robots: { index: true, follow: false },
 };
 
@@ -160,7 +161,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-semibold text-base mb-3">15. Contact</h2>
           <p className="text-muted-foreground">
-            Questions about these Terms? Contact us at{" "}
+            Questions about these Terms? Use the Contact Support button in the navigation bar or email us at{" "}
             <a href="mailto:support@iwanttobeapilot.online" className="text-primary hover:underline">
               support@iwanttobeapilot.online
             </a>

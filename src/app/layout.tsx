@@ -114,6 +114,14 @@ export const metadata: Metadata = {
     url: "https://iwanttobeapilot.online",
     type: "website",
     locale: "en_US",
+    images: [
+      {
+        url: "/images/IWTBAP_logo.png",
+        width: 512,
+        height: 512,
+        alt: "I Want To Be A Pilot",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -121,6 +129,7 @@ export const metadata: Metadata = {
     description:
       "Find flight schools, explore pilot training costs, locate a DPE, and track your progress to the cockpit.",
     site: "@iwanttobeapilot",
+    images: ["/images/IWTBAP_logo.png"],
   },
   icons: {
     icon: "/favicon.png",
@@ -161,7 +170,7 @@ const jsonLd = [
     "@type": "Organization",
     name: "I Want To Be A Pilot",
     url: "https://iwanttobeapilot.online",
-    logo: "https://iwanttobeapilot.online/images/pilot_logo.png",
+    logo: "https://iwanttobeapilot.online/images/IWTBAP_logo.png",
     contactPoint: {
       "@type": "ContactPoint",
       email: "support@iwanttobeapilot.online",

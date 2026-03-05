@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, FileText } from "lucide-react";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { useSession } from "next-auth/react";
 import { isPro } from "@/lib/tier";
 import { PILOT_LEVELS } from "@/data/pilot-levels";
@@ -54,8 +56,17 @@ export default function StoriesClient() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="rounded-lg border border-border bg-card p-4 flex items-start gap-3">
+            <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-1/2" />
+              <Skeleton className="h-3 w-1/3" />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -92,9 +103,12 @@ export default function StoriesClient() {
       </div>
 
       {stories.length === 0 ? (
-        <div className="text-center py-16 text-muted-foreground">
-          <p className="text-sm">No stories yet. Be the first to share your journey!</p>
-        </div>
+        <EmptyState
+          icon={<FileText className="h-12 w-12" />}
+          title="No pilot stories yet"
+          description="Be the first to share your training journey — how long it took, what it cost, and where you are now."
+          action={pro ? { label: "Share Your Story", href: "/community/stories/new" } : undefined}
+        />
       ) : (
         <div className="space-y-4">
           {stories.map((story) => {

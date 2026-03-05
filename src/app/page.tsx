@@ -21,13 +21,13 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
             <Link
               href="/auth/register"
-              className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:bg-primary/90 transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:bg-primary/90 transition-colors active:scale-[0.97]"
             >
               Get Started Free
             </Link>
             <Link
               href="/costs"
-              className="w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-border bg-secondary/30 px-6 py-3 text-sm font-medium hover:bg-secondary transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-border bg-secondary/30 px-6 py-3 text-sm font-medium hover:bg-secondary transition-colors active:scale-[0.97]"
             >
               Explore Costs & Timelines
             </Link>
@@ -91,7 +91,7 @@ export default function HomePage() {
               <Link
                 key={feature.href}
                 href={feature.href}
-                className="group rounded-lg border border-border bg-card p-5 hover:border-primary/50 transition-colors"
+                className="group rounded-lg border border-border bg-card p-5 hover:border-primary/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
                 <div className="text-3xl mb-3">{feature.icon}</div>
                 <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
@@ -165,7 +165,7 @@ export default function HomePage() {
             <div className="text-center">
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors active:scale-[0.97]"
               >
                 View Pricing
               </Link>
@@ -223,7 +223,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/auth/register"
-            className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-8 py-3 text-sm font-medium hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-8 py-3 text-sm font-medium hover:bg-primary/90 transition-colors active:scale-[0.97]"
           >
             Create Free Account
           </Link>

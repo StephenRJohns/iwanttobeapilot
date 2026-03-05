@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "DPE Finder — Find Designated Pilot Examiners Near You",
   description:
     "Find FAA Designated Pilot Examiners (DPEs) near you. View checkride pass rate data to choose the right examiner for your practical test.",
+  alternates: { canonical: "/dpe-finder" },
   openGraph: {
     title: "DPE Finder — Find Designated Pilot Examiners Near You",
     description:

@@ -4,7 +4,11 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Help & FAQ",
   description: "Get help using I Want To Be A Pilot — flight school search, cost estimator, DPE finder, progress tracker, and more.",
-  robots: { index: true },
+  alternates: { canonical: "/help" },
+  openGraph: {
+    title: "Help & FAQ | I Want To Be A Pilot",
+    description: "Get help using I Want To Be A Pilot — flight school search, cost estimator, DPE finder, progress tracker, and more.",
+  },
 };
 
 interface FAQItem {
@@ -225,7 +229,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "How do I contact support?",
         a: (
           <>
-            Email us at{" "}
+            Click the <strong className="text-foreground">Contact Support</strong> icon (life buoy) in the navigation bar to send us a message directly from the site. You can also email us at{" "}
             <a href="mailto:support@iwanttobeapilot.online" className="text-primary hover:underline">
               support@iwanttobeapilot.online
             </a>
@@ -237,7 +241,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "I found a bug or have a feature request.",
         a: (
           <>
-            Email{" "}
+            Use the <strong className="text-foreground">Contact Support</strong> button in the navigation bar, or email{" "}
             <a href="mailto:support@iwanttobeapilot.online" className="text-primary hover:underline">
               support@iwanttobeapilot.online
             </a>{" "}
@@ -291,7 +295,7 @@ export default function HelpPage() {
       </div>
 
       <div className="mt-12 pt-8 border-t border-border text-sm text-muted-foreground text-center">
-        <p>Still have questions?</p>
+        <p>Still have questions? Use the Contact Support button in the navigation bar or email us at</p>
         <a
           href="mailto:support@iwanttobeapilot.online"
           className="text-primary hover:underline font-medium"

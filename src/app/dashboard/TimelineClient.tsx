@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { PILOT_LEVELS, CAREER_PATH_IDS, HOBBY_PATH_IDS } from "@/data/pilot-levels";
 import { EQUIPMENT_ITEMS, getAffiliateUrl, getVendorLabel } from "@/data/equipment";
 import { formatCurrency } from "@/lib/utils";
@@ -103,8 +104,11 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+      <div className="max-w-3xl mx-auto space-y-4">
+        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-16 w-full" />
+        <Skeleton className="h-16 w-full" />
+        <Skeleton className="h-16 w-full" />
       </div>
     );
   }

@@ -4,6 +4,11 @@ import SchoolsClient from "./SchoolsClient";
 export const metadata: Metadata = {
   title: "Find Flight Schools Near Me",
   description: "Search for FAA-certified flight schools near you. View on a map, get contact info, and read ratings from real pilots.",
+  alternates: { canonical: "/schools" },
+  openGraph: {
+    title: "Find Flight Schools Near Me | I Want To Be A Pilot",
+    description: "Search for FAA-certified flight schools near you. View on a map, get contact info, and read ratings from real pilots.",
+  },
 };
 
 export default function SchoolsPage() {

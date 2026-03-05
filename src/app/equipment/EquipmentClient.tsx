@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { Search, X } from "lucide-react";
 import {
   EQUIPMENT_ITEMS,
   EQUIPMENT_CATEGORIES,
@@ -86,7 +87,7 @@ function ItemCard({
   const imgSrc = item.imageUrl ?? null;
 
   return (
-    <div className="relative rounded-lg border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors flex flex-col">
+    <div className="relative rounded-lg border border-border bg-card overflow-hidden hover:border-primary/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md flex flex-col">
 
       {/* Product image */}
       <a
@@ -263,14 +264,16 @@ export default function EquipmentClient() {
   const { data: session } = useSession();
   const isProUser = isPro(session);
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [search, setSearch] = useState("");
   const [showSuggest, setShowSuggest] = useState(false);
 
   const categories = ["All", ...EQUIPMENT_CATEGORIES];
 
-  const filtered =
-    activeCategory === "All"
-      ? EQUIPMENT_ITEMS
-      : EQUIPMENT_ITEMS.filter((item) => item.category === activeCategory);
+  const filtered = EQUIPMENT_ITEMS.filter((item) => {
+    const matchesCategory = activeCategory === "All" || item.category === activeCategory;
+    const matchesSearch = !search || item.name.toLowerCase().includes(search.toLowerCase()) || item.description.toLowerCase().includes(search.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -297,8 +300,29 @@ export default function EquipmentClient() {
         commission at no extra cost to you. This helps support the site.
       </div>
 
+      {/* Search */}
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search equipment..."
+          className="w-full bg-background border border-border rounded-md pl-9 pr-8 py-2 text-sm outline-none focus:border-primary transition-colors"
+        />
+        {search && (
+          <button
+            onClick={() => setSearch("")}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Clear search"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
       {/* Category filter */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-4">
         {categories.map((cat) => (
           <button
             key={cat}
@@ -313,6 +337,13 @@ export default function EquipmentClient() {
           </button>
         ))}
       </div>
+
+      {/* Result count */}
+      <p className="text-xs text-muted-foreground mb-4">
+        Showing {filtered.length} item{filtered.length !== 1 ? "s" : ""}
+        {search && <> matching &ldquo;{search}&rdquo;</>}
+        {activeCategory !== "All" && <> in {activeCategory}</>}
+      </p>
 
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

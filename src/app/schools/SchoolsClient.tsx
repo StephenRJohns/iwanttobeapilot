@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { Loader2 } from "lucide-react";
+import { Loader2, GraduationCap, MapPin } from "lucide-react";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 const SchoolsMap = dynamic(() => import("./SchoolsMap"), { ssr: false });
 
@@ -104,6 +106,16 @@ export default function SchoolsClient() {
         </div>
       )}
 
+      {/* Loading skeleton */}
+      {searched && loading && (
+        <div className="space-y-3">
+          <Skeleton className="h-[400px] w-full rounded-lg" />
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </div>
+      )}
+
       {/* Map — always full width on top when results exist */}
       {searched && !loading && center && schools.length > 0 && (
         <div className="rounded-lg border border-border overflow-hidden mb-6" style={{ height: "400px" }}>
@@ -115,10 +127,11 @@ export default function SchoolsClient() {
       {searched && !loading && (
         <>
           {schools.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <p className="text-sm">No flight schools found within {radius} miles of {zip}.</p>
-              <p className="text-xs mt-1">Try expanding your search radius.</p>
-            </div>
+            <EmptyState
+              icon={<GraduationCap className="h-12 w-12" />}
+              title="No flight schools found"
+              description={`No schools found within ${radius} miles of ${zip}. Try expanding your search radius.`}
+            />
           ) : (
             <>
               <p className="text-sm text-muted-foreground mb-3">
@@ -200,9 +213,11 @@ export default function SchoolsClient() {
       )}
 
       {!searched && (
-        <div className="text-center py-16 text-muted-foreground">
-          <p className="text-sm">Enter your zip code to find flight schools near you</p>
-        </div>
+        <EmptyState
+          icon={<MapPin className="h-12 w-12" />}
+          title="Find flight schools near you"
+          description="Enter your zip code above to search for FAA-certified flight schools in your area."
+        />
       )}
     </div>
   );

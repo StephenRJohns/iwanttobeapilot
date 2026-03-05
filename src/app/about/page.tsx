@@ -2,9 +2,15 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About — Our Story",
   description:
     "The story behind I Want To Be A Pilot — built by a parent who watched two kids navigate the challenges of flight training and wanted to make the journey easier for everyone.",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About — Our Story | I Want To Be A Pilot",
+    description:
+      "Built by a parent who watched two kids navigate flight training and wanted to make the journey easier for everyone.",
+  },
 };
 
 export default function AboutPage() {
@@ -67,13 +73,13 @@ export default function AboutPage() {
       <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <Link
           href="/costs"
-          className="inline-flex items-center justify-center rounded-md border border-border bg-secondary/30 px-5 py-2.5 text-sm font-medium hover:bg-secondary transition-colors"
+          className="inline-flex items-center justify-center rounded-md border border-border bg-secondary/30 px-5 py-2.5 text-sm font-medium hover:bg-secondary transition-colors active:scale-[0.97]"
         >
           Explore Costs &amp; Timelines
         </Link>
         <Link
           href="/auth/register"
-          className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors active:scale-[0.97]"
         >
           Create a Free Account
         </Link>

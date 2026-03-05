@@ -4,6 +4,11 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Free Pilot Training Resources",
   description: "Free FAA handbooks, practice tests, study guides, and reference materials for student pilots.",
+  alternates: { canonical: "/resources" },
+  openGraph: {
+    title: "Free Pilot Training Resources | I Want To Be A Pilot",
+    description: "Free FAA handbooks, practice tests, study guides, and reference materials for student pilots.",
+  },
 };
 
 interface Resource {
@@ -222,7 +227,7 @@ export default function ResourcesPage() {
                   href={resource.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group rounded-lg border border-border bg-card p-4 hover:border-primary/50 transition-colors"
+                  className="group rounded-lg border border-border bg-card p-4 hover:border-primary/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <h3 className="text-sm font-medium group-hover:text-primary transition-colors leading-snug">

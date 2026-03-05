@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Aviation Disclaimer",
   description: "Important aviation safety disclaimer for I Want To Be A Pilot. All content is educational only — not official FAA guidance, flight instruction, legal, or medical advice.",
+  alternates: { canonical: "/disclaimer" },
   robots: { index: true, follow: false },
 };
 
