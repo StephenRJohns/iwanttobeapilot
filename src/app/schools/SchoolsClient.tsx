@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { Loader2, GraduationCap, MapPin } from "lucide-react";
+import { Loader2, GraduationCap, MapPin, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
 
@@ -32,12 +32,15 @@ export default function SchoolsClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
     setSearched(true);
+    setPage(0);
 
     try {
       const res = await fetch(`/api/schools?zip=${encodeURIComponent(zip)}&radius=${radius}`);
@@ -59,6 +62,9 @@ export default function SchoolsClient() {
 
     setLoading(false);
   }
+
+  const totalPages = Math.ceil(schools.length / pageSize);
+  const pageRows = schools.slice(page * pageSize, (page + 1) * pageSize);
 
   return (
     <div>
@@ -116,7 +122,7 @@ export default function SchoolsClient() {
         </div>
       )}
 
-      {/* Map — always full width on top when results exist */}
+      {/* Map */}
       {searched && !loading && center && schools.length > 0 && (
         <div className="rounded-lg border border-border overflow-hidden mb-6" style={{ height: "400px" }}>
           <SchoolsMap schools={schools} center={center} />
@@ -134,9 +140,65 @@ export default function SchoolsClient() {
             />
           ) : (
             <>
-              <p className="text-sm text-muted-foreground mb-3">
-                Found <span className="text-foreground font-medium">{schools.length}</span> flight school{schools.length !== 1 ? "s" : ""} within {radius} miles, sorted by distance
-              </p>
+              {/* Pagination controls — above table */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3">
+                <p className="text-sm text-muted-foreground">
+                  Found <span className="text-foreground font-medium">{schools.length}</span> school{schools.length !== 1 ? "s" : ""} within {radius} miles
+                  {totalPages > 1 && (
+                    <span className="ml-1">— page {page + 1} of {totalPages}</span>
+                  )}
+                </p>
+
+                <div className="flex items-center gap-2">
+                  {/* Page size selector */}
+                  <select
+                    value={pageSize}
+                    onChange={(e) => { setPageSize(Number(e.target.value)); setPage(0); }}
+                    className="bg-background border border-border rounded-md px-2 py-1 text-xs outline-none focus:border-primary transition-colors"
+                  >
+                    {[10, 25, 50, 100].map((n) => (
+                      <option key={n} value={n}>{n} per page</option>
+                    ))}
+                  </select>
+
+                  {/* Nav buttons */}
+                  <div className="flex items-center gap-0.5">
+                    <button
+                      onClick={() => setPage(0)}
+                      disabled={page === 0}
+                      className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      title="First page"
+                    >
+                      <ChevronsLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setPage((p) => p - 1)}
+                      disabled={page === 0}
+                      className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      title="Previous page"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setPage((p) => p + 1)}
+                      disabled={page >= totalPages - 1}
+                      className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      title="Next page"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setPage(totalPages - 1)}
+                      disabled={page >= totalPages - 1}
+                      className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      title="Last page"
+                    >
+                      <ChevronsRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div className="overflow-x-auto rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
@@ -150,7 +212,7 @@ export default function SchoolsClient() {
                     </tr>
                   </thead>
                   <tbody>
-                    {schools.map((school, i) => (
+                    {pageRows.map((school, i) => (
                       <tr
                         key={school.id}
                         className={`border-b border-border last:border-0 hover:bg-card/50 transition-colors ${i % 2 === 0 ? "" : "bg-card/20"}`}

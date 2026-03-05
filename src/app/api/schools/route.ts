@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { haversineDistance } from "@/lib/utils";
+import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -122,6 +123,29 @@ async function searchWithGooglePlacesNew(
   });
 }
 
+async function searchWithDatabase(lat: number, lng: number, radiusMiles: number) {
+  const allSchools = await db.flightSchool.findMany();
+  return allSchools
+    .filter((s) => s.lat !== null && s.lng !== null)
+    .map((s) => ({
+      id: s.id,
+      name: s.name,
+      address: s.address,
+      city: s.city,
+      state: s.state,
+      zipCode: s.zipCode,
+      phone: s.phone ?? null,
+      email: s.email ?? null,
+      website: s.website ?? null,
+      identifier: null,
+      lat: s.lat!,
+      lng: s.lng!,
+      distance: haversineDistance(lat, lng, s.lat!, s.lng!),
+    }))
+    .filter((s) => s.distance <= radiusMiles)
+    .sort((a, b) => a.distance - b.distance);
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -132,26 +156,28 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Zip code is required" }, { status: 400 });
     }
 
-    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "Flight school search requires a Google Maps API key. Add GOOGLE_MAPS_API_KEY to your .env file." },
-        { status: 503 }
-      );
-    }
-
     const coords = await geocodeZip(zip);
     if (!coords) {
       return NextResponse.json({ error: "Could not find that zip code" }, { status: 400 });
     }
 
-    const schools = await searchWithGooglePlacesNew(coords.lat, coords.lng, radius, apiKey);
-    schools.sort((a, b) => a.distance - b.distance);
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
+    // Try Google Places first; fall back to DB on any failure
+    if (apiKey) {
+      try {
+        const schools = await searchWithGooglePlacesNew(coords.lat, coords.lng, radius, apiKey);
+        schools.sort((a, b) => a.distance - b.distance);
+        return NextResponse.json({ schools, center: coords });
+      } catch (err) {
+        console.error("Google Places failed, falling back to DB:", err);
+      }
+    }
+
+    const schools = await searchWithDatabase(coords.lat, coords.lng, radius);
     return NextResponse.json({ schools, center: coords });
   } catch (err) {
     console.error("Schools error:", err);
-    const message = err instanceof Error ? err.message : "Failed to search schools";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: "Search failed. Please try again." }, { status: 500 });
   }
 }
