@@ -129,7 +129,7 @@ export default function Header() {
                 {isLoggedIn && (
                   <>
                     <div className="w-px h-5 bg-white/30 mx-1" />
-                    <span className="text-xs font-semibold text-primary px-1">Pro:</span>
+                    <span className="text-xs font-semibold text-white px-1">Pro:</span>
                     {[{ href: "/dashboard", label: "Progress", icon: LayoutDashboard }, ...authNavLinks].map(({ href, label, icon: Icon }) => {
                       const isActive = pathname === href || pathname.startsWith(`${href}/`);
                       return (
@@ -138,8 +138,8 @@ export default function Header() {
                           href={href}
                           className={`flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
                             isActive
-                              ? "bg-primary/10 text-primary"
-                              : "text-primary/70 hover:bg-primary/10 hover:text-primary"
+                              ? "bg-white/10 text-white"
+                              : "text-white/70 hover:bg-white/10 hover:text-white"
                           }`}
                         >
                           <Icon className="h-3.5 w-3.5" />
