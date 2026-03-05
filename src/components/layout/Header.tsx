@@ -91,22 +91,23 @@ export default function Header() {
               <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-40 w-auto" />
             </Link>
 
-            {/* Nav links — two rows to the right of the logo */}
+            {/* Nav links — Pricing + 4-column grid of gray items */}
             {!isAuthPage && (
-              <nav className="hidden md:flex flex-col justify-center gap-0.5">
-                {/* Row 1: Pricing + public links */}
-                <div className="flex items-center gap-0.5">
-                  <Link
-                    href="/pricing"
-                    className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
-                      pricingActive
-                        ? "bg-amber-400/15 text-amber-400"
-                        : "text-amber-400 hover:bg-amber-400/10"
-                    }`}
-                  >
-                    <CreditCard className="h-4 w-4" />
-                    Pricing
-                  </Link>
+              <nav className="hidden md:flex items-center gap-0.5">
+                <Link
+                  href="/pricing"
+                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
+                    pricingActive
+                      ? "bg-amber-400/15 text-amber-400"
+                      : "text-amber-400 hover:bg-amber-400/10"
+                  }`}
+                >
+                  <CreditCard className="h-4 w-4" />
+                  Pricing
+                </Link>
+
+                {/* 4-column grid: row 1 = public links, row 2 = auth links */}
+                <div className="grid grid-cols-4 gap-x-0.5 gap-y-0.5">
                   {navLinks.map(({ href, label, icon: Icon }) => {
                     const isActive = pathname === href || pathname.startsWith(`${href}/`);
                     return (
@@ -124,33 +125,24 @@ export default function Header() {
                       </Link>
                     );
                   })}
+                  {isLoggedIn && [{ href: "/dashboard", label: "Progress", icon: LayoutDashboard }, ...authNavLinks].map(({ href, label, icon: Icon }) => {
+                    const isActive = pathname === href || pathname.startsWith(`${href}/`);
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                          isActive
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {label}
+                      </Link>
+                    );
+                  })}
                 </div>
-                {/* Row 2: auth-only links — invisible Pricing spacer aligns with row 1 */}
-                {isLoggedIn && (
-                  <div className="flex items-center gap-0.5">
-                    <span className="invisible pointer-events-none flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold" aria-hidden="true">
-                      <CreditCard className="h-4 w-4" />
-                      Pricing
-                    </span>
-                    {[{ href: "/dashboard", label: "Progress", icon: LayoutDashboard }, ...authNavLinks].map(({ href, label, icon: Icon }) => {
-                      const isActive = pathname === href || pathname.startsWith(`${href}/`);
-                      return (
-                        <Link
-                          key={href}
-                          href={href}
-                          className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                            isActive
-                              ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                          }`}
-                        >
-                          <Icon className="h-4 w-4" />
-                          {label}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
               </nav>
             )}
           </div>
