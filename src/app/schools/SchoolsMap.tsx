@@ -77,17 +77,18 @@ function SearchHereControl({
           onSearchHere({ lat: c.lat, lng: c.lng });
         }}
         style={{
-          background: active ? "#fff" : "rgba(255,255,255,0.6)",
-          color: active ? "#1a1a1a" : "#888",
-          border: "1px solid rgba(0,0,0,0.15)",
+          background: "#fff",
+          color: active ? "#1a1a1a" : "#aaa",
+          border: `1px solid ${active ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.1)"}`,
           borderRadius: "6px",
           padding: "6px 14px",
           fontSize: "13px",
           fontWeight: 500,
-          cursor: active ? "pointer" : "not-allowed",
-          boxShadow: active ? "0 2px 6px rgba(0,0,0,0.18)" : "none",
+          cursor: active ? "pointer" : "default",
+          boxShadow: active ? "0 2px 6px rgba(0,0,0,0.18)" : "0 1px 3px rgba(0,0,0,0.08)",
           transition: "all 0.15s ease",
           whiteSpace: "nowrap",
+          pointerEvents: active ? "auto" : "none",
         }}
       >
         {loading ? "Searching…" : "Search This Area"}
