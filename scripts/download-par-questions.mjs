@@ -1,0 +1,1845 @@
+#!/usr/bin/env node
+/**
+ * Download and parse the FAA PAR (Private Pilot Airplane) question bank.
+ * Outputs src/data/par-questions.ts
+ *
+ * Usage: node scripts/download-par-questions.mjs
+ *
+ * The FAA publishes the PAR test question bank as a ZIP file containing
+ * an RTF document. This script downloads, extracts, parses, and outputs
+ * structured TypeScript data.
+ */
+
+import https from "https";
+import http from "http";
+import { createWriteStream, mkdirSync, readFileSync, writeFileSync, existsSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import { createGunzip } from "zlib";
+import { pipeline } from "stream/promises";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(__dirname, "..");
+
+const PAR_ZIP_URL = "https://www.faa.gov/training_testing/testing/test_questions/media/PAR.zip";
+const TMP_ZIP = "/tmp/PAR.zip";
+const TMP_DIR = "/tmp/par-extracted";
+const OUT_FILE = join(ROOT, "src/data/par-questions.ts");
+
+// ---------------------------------------------------------------------------
+// Download helpers
+// ---------------------------------------------------------------------------
+
+function downloadFile(url, dest) {
+  return new Promise((resolve, reject) => {
+    const file = createWriteStream(dest);
+    const protocol = url.startsWith("https") ? https : http;
+
+    function request(targetUrl, redirectCount = 0) {
+      if (redirectCount > 5) return reject(new Error("Too many redirects"));
+      protocol.get(targetUrl, (res) => {
+        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+          res.resume();
+          const next = res.headers.location.startsWith("http")
+            ? res.headers.location
+            : new URL(res.headers.location, targetUrl).href;
+          const nextProtocol = next.startsWith("https") ? https : http;
+          // Switch protocol if needed
+          if (next.startsWith("https") && protocol === http) {
+            https.get(next, (r2) => handleResponse(r2, redirectCount + 1));
+          } else {
+            request(next, redirectCount + 1);
+          }
+          return;
+        }
+        if (res.statusCode !== 200) {
+          reject(new Error(`HTTP ${res.statusCode} for ${targetUrl}`));
+          return;
+        }
+        res.pipe(file);
+        file.on("finish", () => file.close(resolve));
+        file.on("error", reject);
+      }).on("error", reject);
+    }
+
+    function handleResponse(res, redirectCount) {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        res.resume();
+        const next = res.headers.location.startsWith("http")
+          ? res.headers.location
+          : new URL(res.headers.location, url).href;
+        request(next, redirectCount + 1);
+        return;
+      }
+      if (res.statusCode !== 200) {
+        reject(new Error(`HTTP ${res.statusCode}`));
+        return;
+      }
+      res.pipe(file);
+      file.on("finish", () => file.close(resolve));
+      file.on("error", reject);
+    }
+
+    request(url);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// ZIP extraction (Node built-in, no third-party)
+// ---------------------------------------------------------------------------
+
+async function extractZip(zipPath, outDir) {
+  // Use system unzip command since Node doesn't have built-in zip support
+  const { execSync } = await import("child_process");
+  mkdirSync(outDir, { recursive: true });
+  execSync(`unzip -o "${zipPath}" -d "${outDir}"`, { stdio: "pipe" });
+  console.log(`Extracted to ${outDir}`);
+}
+
+// ---------------------------------------------------------------------------
+// RTF stripping
+// ---------------------------------------------------------------------------
+
+function stripRtf(rtf) {
+  // Remove RTF header and control words
+  let text = rtf;
+
+  // Remove binary embedded objects
+  text = text.replace(/\{\\pict[^}]*\}/gs, "");
+  text = text.replace(/\{\\object[^}]*\}/gs, "");
+
+  // Replace common RTF escape sequences with text equivalents
+  text = text.replace(/\\par\b/g, "\n");
+  text = text.replace(/\\line\b/g, "\n");
+  text = text.replace(/\\tab\b/g, "\t");
+  text = text.replace(/\\lquote\b/g, "'");
+  text = text.replace(/\\rquote\b/g, "'");
+  text = text.replace(/\\ldblquote\b/g, '"');
+  text = text.replace(/\\rdblquote\b/g, '"');
+  text = text.replace(/\\emdash\b/g, "—");
+  text = text.replace(/\\endash\b/g, "–");
+  text = text.replace(/\\bullet\b/g, "•");
+
+  // Remove RTF control words with parameters
+  text = text.replace(/\\[a-zA-Z]+(-?\d+)?\s?/g, "");
+
+  // Remove RTF braces
+  text = text.replace(/[{}]/g, "");
+
+  // Collapse excessive whitespace / blank lines
+  text = text.replace(/\r\n/g, "\n");
+  text = text.replace(/\r/g, "\n");
+  text = text.replace(/\n{3,}/g, "\n\n");
+  text = text.replace(/[ \t]{2,}/g, " ");
+  text = text.trim();
+
+  return text;
+}
+
+// ---------------------------------------------------------------------------
+// PAR-specific text parsing
+// ---------------------------------------------------------------------------
+
+const PAR_AREAS_OF_KNOWLEDGE = [
+  "Regulations",
+  "National Airspace System",
+  "Weather",
+  "Cross-Country Flight Planning",
+  "Performance and Limitations",
+  "Principles of Flight",
+  "Aircraft Systems",
+  "Flight Instruments",
+  "Aeromedical Factors",
+];
+
+/**
+ * Try to identify the AOK from a PLT code embedded in the question.
+ * PLT codes map to subject areas; this is a simplified heuristic.
+ */
+function aokFromCode(code, text) {
+  const lower = (text || "").toLowerCase();
+  if (!code) {
+    // Guess from text content
+    if (lower.includes("regulation") || lower.includes("far ") || lower.includes("§")) return "Regulations";
+    if (lower.includes("airspace") || lower.includes("class b") || lower.includes("class c") || lower.includes("class d") || lower.includes("class e") || lower.includes("class g")) return "National Airspace System";
+    if (lower.includes("weather") || lower.includes("metar") || lower.includes("taf") || lower.includes("sigmet") || lower.includes("pirep") || lower.includes("icing") || lower.includes("fog") || lower.includes("dew point") || lower.includes("pressure") || lower.includes("temperature") || lower.includes("wind") || lower.includes("thunderstorm")) return "Weather";
+    if (lower.includes("navigation") || lower.includes("cross-country") || lower.includes("sectional") || lower.includes("vfr") || lower.includes("chart") || lower.includes("fuel") && lower.includes("plan")) return "Cross-Country Flight Planning";
+    if (lower.includes("performance") || lower.includes("density altitude") || lower.includes("takeoff distance") || lower.includes("landing distance") || lower.includes("climb") || lower.includes("cruise")) return "Performance and Limitations";
+    if (lower.includes("lift") || lower.includes("drag") || lower.includes("stall") || lower.includes("angle of attack") || lower.includes("stability") || lower.includes("load factor")) return "Principles of Flight";
+    if (lower.includes("engine") || lower.includes("fuel system") || lower.includes("magneto") || lower.includes("carburetor") || lower.includes("mixture") || lower.includes("oil")) return "Aircraft Systems";
+    if (lower.includes("altimeter") || lower.includes("airspeed") || lower.includes("attitude indicator") || lower.includes("gyro") || lower.includes("vsi") || lower.includes("pitot") || lower.includes("static")) return "Flight Instruments";
+    if (lower.includes("hypoxia") || lower.includes("vision") || lower.includes("spatial") || lower.includes("fatigue") || lower.includes("alcohol") || lower.includes("medication") || lower.includes("vertigo") || lower.includes("hyperventilat")) return "Aeromedical Factors";
+    return "Regulations"; // default
+  }
+
+  const c = parseInt(code.replace(/\D/g, ""), 10);
+  // PLT code ranges are approximate — adjust as needed
+  if (c <= 100) return "Regulations";
+  if (c <= 200) return "National Airspace System";
+  if (c <= 350) return "Weather";
+  if (c <= 450) return "Cross-Country Flight Planning";
+  if (c <= 550) return "Performance and Limitations";
+  if (c <= 650) return "Principles of Flight";
+  if (c <= 750) return "Aircraft Systems";
+  if (c <= 850) return "Flight Instruments";
+  return "Aeromedical Factors";
+}
+
+/**
+ * Parse the cleaned text into question objects.
+ *
+ * The FAA question bank text format (after RTF strip) looks like:
+ *
+ *   8001. PLT021 NO
+ *   The minimum flight visibility required for VFR flight in Class G airspace...
+ *   A—1 statute mile.
+ *   B—3 statute miles.
+ *   C—5 statute miles.
+ *   (Refer to FAR 91.155.)
+ *
+ * We also try alternate formats used in different ZIP releases.
+ */
+function parseQuestions(text) {
+  const questions = [];
+
+  // Pattern 1: numbered questions with PLT codes (most common FAA format)
+  // Lines like: "8001. PLT021 NO" or "PAR 001"
+  // Followed by question text, then A— B— C— choices, then answer line
+
+  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  let i = 0;
+
+  while (i < lines.length) {
+    // Try to detect question start
+    // Pattern: number followed by period, or "PAR" followed by number
+    const questionStartMatch =
+      lines[i].match(/^(\d{4,})\.\s+(PLT\d+)?\s*(NO|YES)?\s*$/) ||
+      lines[i].match(/^PAR[- ]?(\d+)\.?\s*/i) ||
+      lines[i].match(/^(\d{4,})\.\s+/);
+
+    if (!questionStartMatch) {
+      i++;
+      continue;
+    }
+
+    const questionNum = questionStartMatch[1];
+    const pltCode = questionStartMatch[2] || "";
+
+    // Collect question text (lines until we see A—)
+    const textLines = [];
+    i++;
+    while (i < lines.length && !lines[i].match(/^[ABC][—\-\.]\s/)) {
+      if (lines[i].match(/^\d{4,}\./)) break; // next question
+      textLines.push(lines[i]);
+      i++;
+    }
+
+    const questionText = textLines
+      .filter((l) => !l.match(/^\(Refer to/i))
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!questionText || questionText.length < 10) continue;
+
+    // Collect choices
+    const choices = [];
+    while (i < lines.length && choices.length < 3) {
+      const choiceMatch = lines[i].match(/^([ABC])[—\-\.]\s+(.+)/);
+      if (choiceMatch) {
+        choices.push({ key: choiceMatch[1], text: choiceMatch[2].trim() });
+        i++;
+      } else if (lines[i].match(/^\d{4,}\./)) {
+        break;
+      } else {
+        // Continuation of previous choice
+        if (choices.length > 0) {
+          choices[choices.length - 1].text += " " + lines[i];
+        }
+        i++;
+      }
+    }
+
+    if (choices.length < 3) continue;
+
+    // Skip metadata lines between choices and next question
+    while (
+      i < lines.length &&
+      !lines[i].match(/^\d{4,}\./) &&
+      !lines[i].match(/^PAR[- ]?\d+/i)
+    ) {
+      i++;
+    }
+
+    const aok = aokFromCode(pltCode.replace("PLT", ""), questionText);
+
+    questions.push({
+      id: `PAR${questionNum.padStart(4, "0")}`,
+      aok,
+      text: questionText,
+      choices: choices.map((c) => ({ key: c.key, text: c.text })),
+      correct: "A", // Will be overridden if we find answer key
+    });
+  }
+
+  return questions;
+}
+
+/**
+ * Try to extract answers from a separate answer-key section if present.
+ */
+function applyAnswerKey(questions, text) {
+  // Look for patterns like "8001 B" or "PAR001: B" in answer sections
+  const answerPattern = /\b(\d{4,})\s+([ABC])\b/g;
+  const answerMap = new Map();
+  let m;
+  while ((m = answerPattern.exec(text)) !== null) {
+    answerMap.set(m[1], m[2]);
+  }
+
+  if (answerMap.size === 0) return questions;
+
+  return questions.map((q) => {
+    const num = q.id.replace(/\D/g, "");
+    const ans = answerMap.get(num);
+    return ans ? { ...q, correct: ans } : q;
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+async function main() {
+  console.log("Downloading FAA PAR question bank...");
+  console.log(`URL: ${PAR_ZIP_URL}`);
+
+  let rawText = "";
+
+  try {
+    await downloadFile(PAR_ZIP_URL, TMP_ZIP);
+    console.log(`Downloaded to ${TMP_ZIP}`);
+
+    await extractZip(TMP_ZIP, TMP_DIR);
+
+    // Find RTF or TXT files
+    const { readdirSync } = await import("fs");
+    const allFiles = readdirSync(TMP_DIR);
+    console.log("Extracted files:", allFiles.join(", "));
+
+    for (const f of allFiles) {
+      const ext = f.toLowerCase();
+      if (ext.endsWith(".rtf") || ext.endsWith(".txt")) {
+        const content = readFileSync(join(TMP_DIR, f), "utf8");
+        rawText += content + "\n";
+      }
+    }
+
+    if (!rawText) {
+      // Try reading all files
+      for (const f of allFiles) {
+        try {
+          rawText += readFileSync(join(TMP_DIR, f), { encoding: "utf8", flag: "r" }) + "\n";
+        } catch {}
+      }
+    }
+  } catch (err) {
+    console.warn("Download/extraction failed:", err.message);
+    console.warn("Generating placeholder data file...");
+  }
+
+  let questions = [];
+
+  if (rawText) {
+    const stripped = stripRtf(rawText);
+    console.log(`Stripped text length: ${stripped.length} chars`);
+    questions = parseQuestions(stripped);
+    questions = applyAnswerKey(questions, stripped);
+    console.log(`Parsed ${questions.length} questions`);
+  }
+
+  if (questions.length < 10) {
+    console.warn("Too few questions parsed — using embedded sample set.");
+    questions = SAMPLE_QUESTIONS;
+  }
+
+  // Deduplicate by id
+  const seen = new Set();
+  questions = questions.filter((q) => {
+    if (seen.has(q.id)) return false;
+    seen.add(q.id);
+    return true;
+  });
+
+  const updatedAt = new Date().toISOString();
+
+  const ts = `// AUTO-GENERATED by scripts/download-par-questions.mjs
+// Last updated: ${updatedAt}
+// Do not edit manually — run the script to regenerate.
+
+export interface PARQuestion {
+  id: string;
+  aok: string;
+  text: string;
+  choices: { key: "A" | "B" | "C"; text: string }[];
+  correct: "A" | "B" | "C";
+  explanation?: string;
+  figureRef?: string;
+}
+
+export const PAR_DATA_UPDATED = "${updatedAt}";
+
+export const PAR_AREAS_OF_KNOWLEDGE = [
+  "Regulations",
+  "National Airspace System",
+  "Weather",
+  "Cross-Country Flight Planning",
+  "Performance and Limitations",
+  "Principles of Flight",
+  "Aircraft Systems",
+  "Flight Instruments",
+  "Aeromedical Factors",
+] as const;
+
+export const PAR_QUESTIONS: PARQuestion[] = ${JSON.stringify(questions, null, 2)};
+`;
+
+  mkdirSync(join(ROOT, "src/data"), { recursive: true });
+  writeFileSync(OUT_FILE, ts, "utf8");
+  console.log(`\nWrote ${questions.length} questions to ${OUT_FILE}`);
+  console.log("Distribution by AOK:");
+  for (const aok of PAR_AREAS_OF_KNOWLEDGE) {
+    const count = questions.filter((q) => q.aok === aok).length;
+    console.log(`  ${aok}: ${count}`);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Embedded sample questions (fallback when download fails)
+// Covers all 9 AOKs with enough variety to make the app usable.
+// ---------------------------------------------------------------------------
+
+const SAMPLE_QUESTIONS = [
+  // Regulations (20)
+  {
+    id: "PAR0001", aok: "Regulations",
+    text: "What is the minimum safe altitude for flight over congested areas?",
+    choices: [
+      { key: "A", text: "500 feet above the highest obstacle within a horizontal radius of 2,000 feet of the aircraft" },
+      { key: "B", text: "1,000 feet above the highest obstacle within a horizontal radius of 2,000 feet of the aircraft" },
+      { key: "C", text: "1,500 feet above the highest obstacle within a horizontal radius of 2,000 feet of the aircraft" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0002", aok: "Regulations",
+    text: "When must a pilot-in-command of a civil aircraft have a current medical certificate?",
+    choices: [
+      { key: "A", text: "Only when carrying passengers" },
+      { key: "B", text: "At all times when acting as pilot in command" },
+      { key: "C", text: "Only when operating under instrument flight rules" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0003", aok: "Regulations",
+    text: "What is the maximum indicated airspeed allowed in Class D airspace?",
+    choices: [
+      { key: "A", text: "156 knots" },
+      { key: "B", text: "200 knots" },
+      { key: "C", text: "250 knots" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0004", aok: "Regulations",
+    text: "How long does a student pilot certificate remain valid?",
+    choices: [
+      { key: "A", text: "24 calendar months" },
+      { key: "B", text: "36 calendar months" },
+      { key: "C", text: "60 calendar months" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0005", aok: "Regulations",
+    text: "Which action is required when operating an aircraft in Class B airspace?",
+    choices: [
+      { key: "A", text: "File an IFR flight plan" },
+      { key: "B", text: "Obtain an ATC clearance before entering" },
+      { key: "C", text: "Have a mode C transponder only" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0006", aok: "Regulations",
+    text: "A private pilot may not act as pilot in command of an aircraft for compensation or hire. Which of the following is an exception?",
+    choices: [
+      { key: "A", text: "Towing a glider for a glider club" },
+      { key: "B", text: "Flying a friend to a business meeting" },
+      { key: "C", text: "Carrying a banner for an advertiser" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0007", aok: "Regulations",
+    text: "Under what conditions may a pilot operate an aircraft that is not airworthy?",
+    choices: [
+      { key: "A", text: "Never; the aircraft must be airworthy at all times" },
+      { key: "B", text: "Only when operating under a special flight permit" },
+      { key: "C", text: "Only with the approval of the aircraft owner" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0008", aok: "Regulations",
+    text: "What is the minimum visibility required for VFR flight in Class G airspace at or below 1,200 feet AGL during the day?",
+    choices: [
+      { key: "A", text: "1 statute mile" },
+      { key: "B", text: "3 statute miles" },
+      { key: "C", text: "5 statute miles" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0009", aok: "Regulations",
+    text: "The 'right-of-way' rule for aircraft states that an aircraft in distress has right-of-way over all other air traffic. Which has the next highest priority?",
+    choices: [
+      { key: "A", text: "Gliders" },
+      { key: "B", text: "Aircraft towing or refueling other aircraft" },
+      { key: "C", text: "Airships" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0010", aok: "Regulations",
+    text: "What documents must be on board an aircraft during flight?",
+    choices: [
+      { key: "A", text: "Airworthiness certificate, registration, operating handbook, and weight and balance data" },
+      { key: "B", text: "Airworthiness certificate, registration, and radio station license" },
+      { key: "C", text: "Airworthiness certificate, registration, and pilot's logbook" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0011", aok: "Regulations",
+    text: "How far from clouds must a VFR aircraft remain when operating in Class E airspace above 10,000 feet MSL?",
+    choices: [
+      { key: "A", text: "500 feet below, 1,000 feet above, and 2,000 feet horizontally" },
+      { key: "B", text: "1,000 feet below, 1,000 feet above, and 1 statute mile horizontally" },
+      { key: "C", text: "500 feet below, 500 feet above, and 1,000 feet horizontally" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0012", aok: "Regulations",
+    text: "What is required for a pilot to act as PIC in an aircraft after consuming alcohol?",
+    choices: [
+      { key: "A", text: "At least 8 hours must have elapsed since last drinking" },
+      { key: "B", text: "At least 12 hours must have elapsed since last drinking" },
+      { key: "C", text: "At least 24 hours must have elapsed since last drinking" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0013", aok: "Regulations",
+    text: "What is the minimum distance from clouds required for VFR flight in Class C airspace?",
+    choices: [
+      { key: "A", text: "Clear of clouds" },
+      { key: "B", text: "500 feet below, 1,000 feet above, 2,000 feet horizontal" },
+      { key: "C", text: "1,000 feet below, 1,000 feet above, 1 mile horizontal" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0014", aok: "Regulations",
+    text: "Who has final authority and responsibility for the operation of an aircraft?",
+    choices: [
+      { key: "A", text: "The air traffic controller" },
+      { key: "B", text: "The pilot in command" },
+      { key: "C", text: "The aircraft owner" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0015", aok: "Regulations",
+    text: "A third class medical certificate for a pilot under 40 years of age is valid for how long?",
+    choices: [
+      { key: "A", text: "12 calendar months" },
+      { key: "B", text: "24 calendar months" },
+      { key: "C", text: "60 calendar months" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0016", aok: "Regulations",
+    text: "What is the maximum speed permitted in a VFR corridor through Class B airspace?",
+    choices: [
+      { key: "A", text: "156 knots" },
+      { key: "B", text: "180 knots" },
+      { key: "C", text: "200 knots" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0017", aok: "Regulations",
+    text: "What action, if any, is required before operating an aircraft that has an inoperative flap position indicator?",
+    choices: [
+      { key: "A", text: "No action required if the pilot determines it is not needed for safe flight" },
+      { key: "B", text: "The flight must be conducted under a special flight permit" },
+      { key: "C", text: "An approved minimum equipment list (MEL) must authorize the flight" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0018", aok: "Regulations",
+    text: "When are position lights required to be on?",
+    choices: [
+      { key: "A", text: "Sunset to sunrise only when carrying passengers" },
+      { key: "B", text: "Sunset to sunrise" },
+      { key: "C", text: "Whenever operating in Class B or C airspace" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0019", aok: "Regulations",
+    text: "What is the minimum age for a student pilot certificate?",
+    choices: [
+      { key: "A", text: "14 years for powered aircraft, 14 years for gliders" },
+      { key: "B", text: "16 years for powered aircraft, 14 years for gliders" },
+      { key: "C", text: "16 years for all aircraft" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0020", aok: "Regulations",
+    text: "What is the minimum fuel reserve required for VFR day flight?",
+    choices: [
+      { key: "A", text: "30 minutes at normal cruise speed" },
+      { key: "B", text: "45 minutes at normal cruise speed" },
+      { key: "C", text: "1 hour at normal cruise speed" },
+    ],
+    correct: "A",
+  },
+
+  // National Airspace System (15)
+  {
+    id: "PAR0101", aok: "National Airspace System",
+    text: "What is the vertical extent of Class D airspace when no other designation is given?",
+    choices: [
+      { key: "A", text: "From the surface to 2,500 feet AGL" },
+      { key: "B", text: "From the surface to 3,000 feet AGL" },
+      { key: "C", text: "From the surface to 4,000 feet AGL" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0102", aok: "National Airspace System",
+    text: "What equipment is required for operation within Class C airspace?",
+    choices: [
+      { key: "A", text: "Two-way radio communications and an operable transponder with altitude encoding capability" },
+      { key: "B", text: "Two-way radio communications only" },
+      { key: "C", text: "An operable transponder with altitude encoding capability only" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0103", aok: "National Airspace System",
+    text: "What is required to fly through a Class B airspace area?",
+    choices: [
+      { key: "A", text: "Instrument rating" },
+      { key: "B", text: "ATC clearance" },
+      { key: "C", text: "Private pilot certificate or higher" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0104", aok: "National Airspace System",
+    text: "Which type of airspace is depicted by a dashed magenta line on a sectional chart?",
+    choices: [
+      { key: "A", text: "Class D" },
+      { key: "B", text: "Class E beginning at the surface" },
+      { key: "C", text: "Special Use Airspace" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0105", aok: "National Airspace System",
+    text: "A NOTAM (D) is issued primarily for which purpose?",
+    choices: [
+      { key: "A", text: "To provide information about navigation aids and airports" },
+      { key: "B", text: "To advise pilots of permanent changes to airspace" },
+      { key: "C", text: "To warn of special military activities" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0106", aok: "National Airspace System",
+    text: "What type of airspace exists from the surface up to 18,000 feet MSL where not otherwise designated?",
+    choices: [
+      { key: "A", text: "Class D" },
+      { key: "B", text: "Class E" },
+      { key: "C", text: "Class G" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0107", aok: "National Airspace System",
+    text: "What is the definition of Class G airspace?",
+    choices: [
+      { key: "A", text: "Airspace that is not designated as Class A, B, C, D, or E" },
+      { key: "B", text: "Airspace above 18,000 feet MSL" },
+      { key: "C", text: "Airspace within 5 miles of an airport" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0108", aok: "National Airspace System",
+    text: "What does a solid blue line on a VFR sectional chart indicate?",
+    choices: [
+      { key: "A", text: "Class B airspace" },
+      { key: "B", text: "Class C airspace" },
+      { key: "C", text: "Class D airspace" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0109", aok: "National Airspace System",
+    text: "Prohibited areas are established to protect what?",
+    choices: [
+      { key: "A", text: "Areas where flight is hazardous to the aircraft" },
+      { key: "B", text: "Areas where flight is prohibited for security or national welfare reasons" },
+      { key: "C", text: "Military training routes" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0110", aok: "National Airspace System",
+    text: "Which airspace requires prior authorization before entry?",
+    choices: [
+      { key: "A", text: "Restricted area during active hours" },
+      { key: "B", text: "Class E airspace" },
+      { key: "C", text: "Class G airspace" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0111", aok: "National Airspace System",
+    text: "What is the purpose of a TFR (Temporary Flight Restriction)?",
+    choices: [
+      { key: "A", text: "To provide additional radar coverage" },
+      { key: "B", text: "To restrict flight in an area due to a hazard or special condition" },
+      { key: "C", text: "To designate a military training route" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0112", aok: "National Airspace System",
+    text: "Where can a pilot find information about active Temporary Flight Restrictions?",
+    choices: [
+      { key: "A", text: "In the Airport/Facility Directory only" },
+      { key: "B", text: "NOTAMs and the FAA TFR website" },
+      { key: "C", text: "Only via ATC radio contact" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0113", aok: "National Airspace System",
+    text: "What is the transponder code a pilot should squawk when in distress?",
+    choices: [
+      { key: "A", text: "7500" },
+      { key: "B", text: "7600" },
+      { key: "C", text: "7700" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0114", aok: "National Airspace System",
+    text: "What does squawking 7500 indicate?",
+    choices: [
+      { key: "A", text: "Radio failure" },
+      { key: "B", text: "Hijacking in progress" },
+      { key: "C", text: "Emergency" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0115", aok: "National Airspace System",
+    text: "Class A airspace begins at what altitude?",
+    choices: [
+      { key: "A", text: "14,500 feet MSL" },
+      { key: "B", text: "18,000 feet MSL" },
+      { key: "C", text: "24,000 feet MSL" },
+    ],
+    correct: "B",
+  },
+
+  // Weather (20)
+  {
+    id: "PAR0201", aok: "Weather",
+    text: "A stable air mass is most likely to produce which type of clouds?",
+    choices: [
+      { key: "A", text: "Cumulus" },
+      { key: "B", text: "Cumulonimbus" },
+      { key: "C", text: "Stratus" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0202", aok: "Weather",
+    text: "What weather phenomenon is associated with wind shear at low altitudes?",
+    choices: [
+      { key: "A", text: "Radiation fog" },
+      { key: "B", text: "Sudden changes in airspeed and aircraft performance" },
+      { key: "C", text: "High surface visibility" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0203", aok: "Weather",
+    text: "What does a SIGMET advise?",
+    choices: [
+      { key: "A", text: "Significant meteorological conditions hazardous to all aircraft" },
+      { key: "B", text: "Pilot weather reports from other pilots" },
+      { key: "C", text: "Forecast for the route of flight" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0204", aok: "Weather",
+    text: "What condition is necessary for the formation of radiation fog?",
+    choices: [
+      { key: "A", text: "Warm moist air over cold water" },
+      { key: "B", text: "Clear skies, calm winds, and high relative humidity near the surface" },
+      { key: "C", text: "Strong surface winds and low temperatures" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0205", aok: "Weather",
+    text: "In which quadrant of a low-pressure system is precipitation and poor weather most likely in the Northern Hemisphere?",
+    choices: [
+      { key: "A", text: "Southwest quadrant" },
+      { key: "B", text: "Northeast quadrant" },
+      { key: "C", text: "Southeast quadrant" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0206", aok: "Weather",
+    text: "What is a METAR?",
+    choices: [
+      { key: "A", text: "An aviation routine weather report" },
+      { key: "B", text: "A terminal aerodrome forecast" },
+      { key: "C", text: "A pilot weather report" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0207", aok: "Weather",
+    text: "What is the primary cause of all changes in the Earth's weather?",
+    choices: [
+      { key: "A", text: "Variations in solar energy" },
+      { key: "B", text: "Ocean currents" },
+      { key: "C", text: "Earth's rotation" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0208", aok: "Weather",
+    text: "What weather feature is associated with a cold front passage?",
+    choices: [
+      { key: "A", text: "Gradual temperature decrease over several days" },
+      { key: "B", text: "Rapid temperature drop, wind shift, and possible thunderstorms" },
+      { key: "C", text: "Slowly improving visibility" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0209", aok: "Weather",
+    text: "What does OVC010 mean in a METAR?",
+    choices: [
+      { key: "A", text: "Overcast at 10,000 feet" },
+      { key: "B", text: "Overcast at 1,000 feet" },
+      { key: "C", text: "10% cloud coverage at 1,000 feet" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0210", aok: "Weather",
+    text: "Which weather product provides a 24-hour categorical forecast for VFR/IFR conditions?",
+    choices: [
+      { key: "A", text: "Area Forecast" },
+      { key: "B", text: "Terminal Aerodrome Forecast (TAF)" },
+      { key: "C", text: "Aviation Weather Center prog chart" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0211", aok: "Weather",
+    text: "What is the dew point temperature?",
+    choices: [
+      { key: "A", text: "The temperature at which ice crystals form" },
+      { key: "B", text: "The temperature to which air must be cooled to become saturated" },
+      { key: "C", text: "The temperature at which precipitation begins" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0212", aok: "Weather",
+    text: "What type of icing is most dangerous to aircraft?",
+    choices: [
+      { key: "A", text: "Frost" },
+      { key: "B", text: "Clear ice" },
+      { key: "C", text: "Rime ice" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0213", aok: "Weather",
+    text: "What does a wind barb with no flags indicate on a weather chart?",
+    choices: [
+      { key: "A", text: "Calm winds" },
+      { key: "B", text: "Wind speed of 5 knots" },
+      { key: "C", text: "Wind speed of 10 knots" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0214", aok: "Weather",
+    text: "What conditions are required for structural icing to occur?",
+    choices: [
+      { key: "A", text: "Temperature below -40°C and heavy precipitation" },
+      { key: "B", text: "Visible moisture and temperatures at or below 0°C" },
+      { key: "C", text: "Temperatures below freezing and no moisture" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0215", aok: "Weather",
+    text: "A microburst can create a hazard to aircraft due to which condition?",
+    choices: [
+      { key: "A", text: "Extreme turbulence only" },
+      { key: "B", text: "Rapid airspeed gain followed by severe airspeed loss" },
+      { key: "C", text: "Sudden magnetic compass errors" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0216", aok: "Weather",
+    text: "What is the standard lapse rate of temperature with altitude in the atmosphere?",
+    choices: [
+      { key: "A", text: "2°C per 1,000 feet" },
+      { key: "B", text: "3.5°F per 1,000 feet" },
+      { key: "C", text: "2°C per 1,000 feet (standard 3.5°F per 1,000 feet)" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0217", aok: "Weather",
+    text: "What is a PIREP?",
+    choices: [
+      { key: "A", text: "A pilot weather report" },
+      { key: "B", text: "A preflight information report" },
+      { key: "C", text: "A projected route evaluation plan" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0218", aok: "Weather",
+    text: "Thunderstorm activity is most likely when which condition exists?",
+    choices: [
+      { key: "A", text: "Stable air with high surface temperatures" },
+      { key: "B", text: "Unstable air with sufficient moisture and a lifting force" },
+      { key: "C", text: "Cold surface temperatures with high humidity" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0219", aok: "Weather",
+    text: "What does the symbol 'TS' indicate in a METAR?",
+    choices: [
+      { key: "A", text: "Towering stratus clouds" },
+      { key: "B", text: "Thunderstorm" },
+      { key: "C", text: "Temperature/dewpoint spread" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0220", aok: "Weather",
+    text: "If the outside air temperature is warmer than expected at a given altitude, what is the effect on density altitude?",
+    choices: [
+      { key: "A", text: "Density altitude is lower than pressure altitude" },
+      { key: "B", text: "Density altitude is higher than pressure altitude" },
+      { key: "C", text: "Density altitude equals pressure altitude" },
+    ],
+    correct: "B",
+  },
+
+  // Cross-Country Flight Planning (15)
+  {
+    id: "PAR0301", aok: "Cross-Country Flight Planning",
+    text: "What is the purpose of a VOR receiver check?",
+    choices: [
+      { key: "A", text: "To verify the aircraft's transponder is functioning" },
+      { key: "B", text: "To ensure the VOR receiver meets accuracy standards" },
+      { key: "C", text: "To calibrate the aircraft's compass" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0302", aok: "Cross-Country Flight Planning",
+    text: "What is true course?",
+    choices: [
+      { key: "A", text: "The course measured with respect to magnetic north" },
+      { key: "B", text: "The course measured with respect to true north" },
+      { key: "C", text: "The course corrected for wind" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0303", aok: "Cross-Country Flight Planning",
+    text: "When converting true course to magnetic course, you must account for:",
+    choices: [
+      { key: "A", text: "Wind correction angle" },
+      { key: "B", text: "Magnetic variation" },
+      { key: "C", text: "Both variation and deviation" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0304", aok: "Cross-Country Flight Planning",
+    text: "What is the purpose of VFR cruising altitude requirements?",
+    choices: [
+      { key: "A", text: "To separate VFR traffic flying in opposite directions" },
+      { key: "B", text: "To keep VFR traffic away from clouds" },
+      { key: "C", text: "To comply with terrain clearance requirements" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0305", aok: "Cross-Country Flight Planning",
+    text: "What altitude should a VFR aircraft fly when on a magnetic course of 095° above 3,000 AGL?",
+    choices: [
+      { key: "A", text: "Odd thousand + 500 (e.g., 3,500)" },
+      { key: "B", text: "Even thousand + 500 (e.g., 4,500)" },
+      { key: "C", text: "Any altitude" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0306", aok: "Cross-Country Flight Planning",
+    text: "What does the phrase 'fuel on board' refer to in flight planning?",
+    choices: [
+      { key: "A", text: "The total fuel capacity of the aircraft" },
+      { key: "B", text: "The amount of usable fuel available for the flight" },
+      { key: "C", text: "The minimum fuel required by regulation" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0307", aok: "Cross-Country Flight Planning",
+    text: "On a VFR sectional chart, what does the number in a circle next to an airport mean?",
+    choices: [
+      { key: "A", text: "The airport elevation" },
+      { key: "B", text: "Traffic pattern altitude" },
+      { key: "C", text: "The length of the longest runway in hundreds of feet" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0308", aok: "Cross-Country Flight Planning",
+    text: "How is groundspeed calculated?",
+    choices: [
+      { key: "A", text: "True airspeed plus or minus wind component along the flight path" },
+      { key: "B", text: "Indicated airspeed corrected for altitude only" },
+      { key: "C", text: "True airspeed corrected for magnetic variation" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0309", aok: "Cross-Country Flight Planning",
+    text: "What is the function of an E6B flight computer?",
+    choices: [
+      { key: "A", text: "GPS navigation" },
+      { key: "B", text: "Calculating wind correction angles, groundspeed, fuel burn, and time en route" },
+      { key: "C", text: "Monitoring aircraft systems" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0310", aok: "Cross-Country Flight Planning",
+    text: "What is an isogonic line on a sectional chart?",
+    choices: [
+      { key: "A", text: "A line connecting points of equal elevation" },
+      { key: "B", text: "A line connecting points of equal magnetic variation" },
+      { key: "C", text: "A line showing airspace boundaries" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0311", aok: "Cross-Country Flight Planning",
+    text: "When should a VFR flight plan be closed?",
+    choices: [
+      { key: "A", text: "Automatically when landing" },
+      { key: "B", text: "By contacting FSS or ATC upon landing" },
+      { key: "C", text: "Only if search and rescue has been notified" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0312", aok: "Cross-Country Flight Planning",
+    text: "How long after a VFR flight plan's ETA must pass before search and rescue operations begin?",
+    choices: [
+      { key: "A", text: "30 minutes" },
+      { key: "B", text: "1 hour" },
+      { key: "C", text: "30 minutes after the flight plan is not closed" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0313", aok: "Cross-Country Flight Planning",
+    text: "When computing the time required to climb to cruising altitude, what factor should be considered?",
+    choices: [
+      { key: "A", text: "The extra fuel burn and reduced groundspeed during climb" },
+      { key: "B", text: "The airport elevation only" },
+      { key: "C", text: "The cruise power setting only" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0314", aok: "Cross-Country Flight Planning",
+    text: "What is the minimum VFR fuel reserve required for a night flight?",
+    choices: [
+      { key: "A", text: "30 minutes" },
+      { key: "B", text: "45 minutes" },
+      { key: "C", text: "1 hour" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0315", aok: "Cross-Country Flight Planning",
+    text: "What does AWOS stand for?",
+    choices: [
+      { key: "A", text: "Automated Weather Observing System" },
+      { key: "B", text: "Area Weather Observation Station" },
+      { key: "C", text: "Aviation Weather Operations Summary" },
+    ],
+    correct: "A",
+  },
+
+  // Performance and Limitations (15)
+  {
+    id: "PAR0401", aok: "Performance and Limitations",
+    text: "What effect does high density altitude have on aircraft performance?",
+    choices: [
+      { key: "A", text: "Increased engine power and improved climb performance" },
+      { key: "B", text: "Decreased engine power, reduced lift, and longer takeoff roll" },
+      { key: "C", text: "No significant effect on normally aspirated engines" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0402", aok: "Performance and Limitations",
+    text: "What is the purpose of aircraft weight and balance calculations?",
+    choices: [
+      { key: "A", text: "To determine takeoff distance only" },
+      { key: "B", text: "To ensure the aircraft operates within its design limits" },
+      { key: "C", text: "To calculate fuel consumption" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0403", aok: "Performance and Limitations",
+    text: "If an aircraft is loaded with the CG forward of the forward limit, what is the effect?",
+    choices: [
+      { key: "A", text: "Increased stability but may make landing difficult" },
+      { key: "B", text: "Decreased stability and difficult-to-control pitch up" },
+      { key: "C", text: "No significant effect" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0404", aok: "Performance and Limitations",
+    text: "What is the effect of a tailwind on takeoff distance?",
+    choices: [
+      { key: "A", text: "Decreases takeoff distance" },
+      { key: "B", text: "Increases takeoff distance" },
+      { key: "C", text: "Has no effect on takeoff distance" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0405", aok: "Performance and Limitations",
+    text: "What is density altitude?",
+    choices: [
+      { key: "A", text: "The altitude shown on the altimeter when set to 29.92" },
+      { key: "B", text: "Pressure altitude corrected for temperature variations from standard" },
+      { key: "C", text: "The altitude above sea level" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0406", aok: "Performance and Limitations",
+    text: "What is maximum gross weight?",
+    choices: [
+      { key: "A", text: "The maximum weight authorized for takeoff" },
+      { key: "B", text: "The maximum weight allowed in the cabin" },
+      { key: "C", text: "The weight of the aircraft without fuel" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0407", aok: "Performance and Limitations",
+    text: "How does increasing altitude affect the true airspeed of an aircraft at a constant power setting?",
+    choices: [
+      { key: "A", text: "True airspeed decreases" },
+      { key: "B", text: "True airspeed increases" },
+      { key: "C", text: "True airspeed remains the same" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0408", aok: "Performance and Limitations",
+    text: "What does Va (maneuvering speed) represent?",
+    choices: [
+      { key: "A", text: "Maximum landing gear operating speed" },
+      { key: "B", text: "Maximum speed at which full control deflection will not overstress the aircraft" },
+      { key: "C", text: "Best glide speed" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0409", aok: "Performance and Limitations",
+    text: "What is the effect of flap extension on the stall speed?",
+    choices: [
+      { key: "A", text: "Stall speed increases" },
+      { key: "B", text: "Stall speed decreases" },
+      { key: "C", text: "Stall speed is not affected" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0410", aok: "Performance and Limitations",
+    text: "What is the purpose of the red arc on an airspeed indicator?",
+    choices: [
+      { key: "A", text: "Flap operating range" },
+      { key: "B", text: "Normal operating range" },
+      { key: "C", text: "Never exceed speed (Vne)" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0411", aok: "Performance and Limitations",
+    text: "What speed is represented by the bottom of the green arc on the airspeed indicator?",
+    choices: [
+      { key: "A", text: "Maximum flap extended speed (Vfe)" },
+      { key: "B", text: "Power-off stall speed in landing configuration (Vso)" },
+      { key: "C", text: "Power-off stall speed in clean configuration (Vs1)" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0412", aok: "Performance and Limitations",
+    text: "What type of performance chart uses pressure altitude and temperature to determine density altitude?",
+    choices: [
+      { key: "A", text: "Climb performance chart" },
+      { key: "B", text: "Density altitude chart" },
+      { key: "C", text: "Fuel consumption chart" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0413", aok: "Performance and Limitations",
+    text: "What is the empty weight of an aircraft?",
+    choices: [
+      { key: "A", text: "Weight of the airframe, engine, and fixed equipment" },
+      { key: "B", text: "Weight of the aircraft without fuel, oil, or occupants" },
+      { key: "C", text: "Weight of the aircraft with unusable fuel and full operating fluids" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0414", aok: "Performance and Limitations",
+    text: "What is the load factor in a 60-degree bank level turn?",
+    choices: [
+      { key: "A", text: "1.5 G" },
+      { key: "B", text: "2 G" },
+      { key: "C", text: "3 G" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0415", aok: "Performance and Limitations",
+    text: "If you are flying at Vx (best angle of climb speed), you are maximizing:",
+    choices: [
+      { key: "A", text: "Altitude gained per unit of time" },
+      { key: "B", text: "Altitude gained per unit of distance" },
+      { key: "C", text: "Distance traveled per unit of fuel" },
+    ],
+    correct: "B",
+  },
+
+  // Principles of Flight (15)
+  {
+    id: "PAR0501", aok: "Principles of Flight",
+    text: "What is the primary cause of lift?",
+    choices: [
+      { key: "A", text: "Angle of attack alone" },
+      { key: "B", text: "The difference in pressure between the upper and lower wing surfaces" },
+      { key: "C", text: "Engine thrust pushing the aircraft upward" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0502", aok: "Principles of Flight",
+    text: "What is induced drag?",
+    choices: [
+      { key: "A", text: "Drag caused by the aircraft's skin friction" },
+      { key: "B", text: "Drag created as a byproduct of lift production" },
+      { key: "C", text: "Drag caused by the landing gear in the slipstream" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0503", aok: "Principles of Flight",
+    text: "What happens to the stall speed when the aircraft's weight increases?",
+    choices: [
+      { key: "A", text: "Stall speed decreases" },
+      { key: "B", text: "Stall speed increases" },
+      { key: "C", text: "Stall speed remains unchanged" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0504", aok: "Principles of Flight",
+    text: "Torque effect in a single-engine airplane tends to turn the nose in which direction?",
+    choices: [
+      { key: "A", text: "Right" },
+      { key: "B", text: "Left" },
+      { key: "C", text: "Up" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0505", aok: "Principles of Flight",
+    text: "What is the critical angle of attack?",
+    choices: [
+      { key: "A", text: "The angle at which maximum lift is produced before a stall" },
+      { key: "B", text: "The angle at which the aircraft achieves maximum speed" },
+      { key: "C", text: "The minimum angle of attack for level flight" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0506", aok: "Principles of Flight",
+    text: "What is adverse yaw?",
+    choices: [
+      { key: "A", text: "Yaw toward the raised aileron (outside of turn)" },
+      { key: "B", text: "Yaw toward the lowered aileron (inside of turn)" },
+      { key: "C", text: "Yaw caused by the propeller slipstream" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0507", aok: "Principles of Flight",
+    text: "What is the purpose of trim tabs?",
+    choices: [
+      { key: "A", text: "To increase lift during takeoff" },
+      { key: "B", text: "To relieve the pilot of constant pressure on the controls" },
+      { key: "C", text: "To increase drag on landing" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0508", aok: "Principles of Flight",
+    text: "During a slip, which control surface is used to prevent the aircraft from turning?",
+    choices: [
+      { key: "A", text: "Elevator" },
+      { key: "B", text: "Opposite rudder" },
+      { key: "C", text: "Aileron in the upwind direction" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0509", aok: "Principles of Flight",
+    text: "What is ground effect?",
+    choices: [
+      { key: "A", text: "Increased drag as the aircraft nears the ground" },
+      { key: "B", text: "Reduced induced drag as the aircraft flies within one wingspan of the ground" },
+      { key: "C", text: "Turbulence created by the aircraft's wake near the ground" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0510", aok: "Principles of Flight",
+    text: "Which of the four forces acts opposite to the direction of flight?",
+    choices: [
+      { key: "A", text: "Weight" },
+      { key: "B", text: "Drag" },
+      { key: "C", text: "Lift" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0511", aok: "Principles of Flight",
+    text: "What causes a spin?",
+    choices: [
+      { key: "A", text: "Exceeding the critical angle of attack with yaw present" },
+      { key: "B", text: "Excessive airspeed with full back elevator" },
+      { key: "C", text: "A stall with wings level" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0512", aok: "Principles of Flight",
+    text: "What is P-factor?",
+    choices: [
+      { key: "A", text: "Propeller gyroscopic precession" },
+      { key: "B", text: "The asymmetric thrust caused by the descending propeller blade producing more thrust" },
+      { key: "C", text: "The tendency of the aircraft to pitch nose down at high speeds" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0513", aok: "Principles of Flight",
+    text: "What is the lift-to-drag ratio used to determine?",
+    choices: [
+      { key: "A", text: "Best glide angle" },
+      { key: "B", text: "Takeoff performance" },
+      { key: "C", text: "Cruise fuel consumption" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0514", aok: "Principles of Flight",
+    text: "In what phase of flight is parasite drag most significant?",
+    choices: [
+      { key: "A", text: "Slow flight and landings" },
+      { key: "B", text: "High-speed cruise" },
+      { key: "C", text: "Climb" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0515", aok: "Principles of Flight",
+    text: "The gyroscopic action of the propeller causes the nose of the aircraft to yaw in which direction when the tail is pushed down?",
+    choices: [
+      { key: "A", text: "Left" },
+      { key: "B", text: "Right" },
+      { key: "C", text: "Straight ahead" },
+    ],
+    correct: "B",
+  },
+
+  // Aircraft Systems (15)
+  {
+    id: "PAR0601", aok: "Aircraft Systems",
+    text: "What is the purpose of carburetor heat?",
+    choices: [
+      { key: "A", text: "To increase engine power output in cold weather" },
+      { key: "B", text: "To prevent or remove carburetor ice" },
+      { key: "C", text: "To warm the fuel before combustion" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0602", aok: "Aircraft Systems",
+    text: "What condition increases the risk of carburetor ice?",
+    choices: [
+      { key: "A", text: "Hot and dry air" },
+      { key: "B", text: "High temperatures with low humidity" },
+      { key: "C", text: "High humidity and temperatures between -7°C and 21°C" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0603", aok: "Aircraft Systems",
+    text: "What is the function of the magneto system?",
+    choices: [
+      { key: "A", text: "To power the aircraft's electrical system" },
+      { key: "B", text: "To provide ignition for the engine independent of the aircraft battery" },
+      { key: "C", text: "To regulate fuel flow to the engine" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0604", aok: "Aircraft Systems",
+    text: "What does the fuel selector 'BOTH' position provide in most light aircraft?",
+    choices: [
+      { key: "A", text: "Increased fuel flow from both tanks simultaneously" },
+      { key: "B", text: "Allows fuel from either tank to feed the engine" },
+      { key: "C", text: "Transfers fuel from one tank to the other" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0605", aok: "Aircraft Systems",
+    text: "What is the purpose of leaning the fuel/air mixture?",
+    choices: [
+      { key: "A", text: "To reduce engine power" },
+      { key: "B", text: "To improve fuel efficiency and prevent spark plug fouling at altitude" },
+      { key: "C", text: "To increase the engine's maximum RPM" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0606", aok: "Aircraft Systems",
+    text: "What is the purpose of an aircraft's primer system?",
+    choices: [
+      { key: "A", text: "To inject fuel directly into the engine cylinders for easier cold starts" },
+      { key: "B", text: "To prime the hydraulic system before flight" },
+      { key: "C", text: "To lubricate the propeller before starting" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0607", aok: "Aircraft Systems",
+    text: "What does a drop in oil pressure indicate?",
+    choices: [
+      { key: "A", text: "The engine is at full power" },
+      { key: "B", text: "A possible oil system problem that requires immediate attention" },
+      { key: "C", text: "Low fuel flow to the engine" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0608", aok: "Aircraft Systems",
+    text: "What is the function of an aircraft's alternator?",
+    choices: [
+      { key: "A", text: "To start the engine" },
+      { key: "B", text: "To charge the battery and power the electrical system during flight" },
+      { key: "C", text: "To power the magneto system" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0609", aok: "Aircraft Systems",
+    text: "What type of fuel should you use if the specified fuel grade is not available?",
+    choices: [
+      { key: "A", text: "A lower grade of fuel may be used temporarily" },
+      { key: "B", text: "A higher octane rating fuel may be used if approved" },
+      { key: "C", text: "Never substitute fuel grades without manufacturer approval" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0610", aok: "Aircraft Systems",
+    text: "What is the purpose of an ELT (Emergency Locator Transmitter)?",
+    choices: [
+      { key: "A", text: "To communicate with ATC during an emergency" },
+      { key: "B", text: "To transmit a distress signal to assist search and rescue operations" },
+      { key: "C", text: "To activate the aircraft's emergency lighting system" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0611", aok: "Aircraft Systems",
+    text: "When should you use full throttle for takeoff in a normally aspirated engine?",
+    choices: [
+      { key: "A", text: "Only at sea level" },
+      { key: "B", text: "At all altitudes" },
+      { key: "C", text: "Only when density altitude is below 3,000 feet" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0612", aok: "Aircraft Systems",
+    text: "What is the effect of running an engine too rich?",
+    choices: [
+      { key: "A", text: "Engine overheating and detonation" },
+      { key: "B", text: "Spark plug fouling and rough running" },
+      { key: "C", text: "Loss of oil pressure" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0613", aok: "Aircraft Systems",
+    text: "What is detonation in a piston aircraft engine?",
+    choices: [
+      { key: "A", text: "Normal combustion of the fuel/air mixture" },
+      { key: "B", text: "Explosive, uncontrolled burning of the fuel/air mixture" },
+      { key: "C", text: "Engine failure due to oil starvation" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0614", aok: "Aircraft Systems",
+    text: "What is the purpose of the oxygen system in high-altitude operations?",
+    choices: [
+      { key: "A", text: "To increase engine performance" },
+      { key: "B", text: "To provide supplemental oxygen to occupants as required by regulations" },
+      { key: "C", text: "To cool the engine at high altitudes" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0615", aok: "Aircraft Systems",
+    text: "What does AVGAS 100LL mean?",
+    choices: [
+      { key: "A", text: "100 octane, low-lead aviation gasoline" },
+      { key: "B", text: "100% lead-free aviation fuel" },
+      { key: "C", text: "Fuel suitable for use at altitudes up to 100,000 feet" },
+    ],
+    correct: "A",
+  },
+
+  // Flight Instruments (15)
+  {
+    id: "PAR0701", aok: "Flight Instruments",
+    text: "What is the pitot-static system used for?",
+    choices: [
+      { key: "A", text: "To power the directional gyro and attitude indicator" },
+      { key: "B", text: "To provide inputs to the airspeed indicator, altimeter, and vertical speed indicator" },
+      { key: "C", text: "To determine the aircraft's magnetic heading" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0702", aok: "Flight Instruments",
+    text: "What causes the magnetic compass to swing during acceleration on an easterly heading?",
+    choices: [
+      { key: "A", text: "The compass indicates a turn toward the north" },
+      { key: "B", text: "The compass indicates a turn toward the south" },
+      { key: "C", text: "The compass reads accurately during acceleration" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0703", aok: "Flight Instruments",
+    text: "What power source drives the vacuum-powered attitude indicator?",
+    choices: [
+      { key: "A", text: "The aircraft's electrical system" },
+      { key: "B", text: "Engine-driven vacuum pump or venturi tube" },
+      { key: "C", text: "The pitot-static system" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0704", aok: "Flight Instruments",
+    text: "What instrument indicates rate of climb or descent in feet per minute?",
+    choices: [
+      { key: "A", text: "Altimeter" },
+      { key: "B", text: "Vertical speed indicator (VSI)" },
+      { key: "C", text: "Attitude indicator" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0705", aok: "Flight Instruments",
+    text: "What is the purpose of the altimeter setting?",
+    choices: [
+      { key: "A", text: "To calibrate the altimeter to show pressure altitude" },
+      { key: "B", text: "To adjust the altimeter so it shows altitude above sea level at the current location" },
+      { key: "C", text: "To compensate for temperature variations" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0706", aok: "Flight Instruments",
+    text: "What happens to indicated airspeed if the pitot tube becomes blocked?",
+    choices: [
+      { key: "A", text: "IAS reads zero immediately" },
+      { key: "B", text: "IAS freezes at the speed when blockage occurred, then may increase during climb" },
+      { key: "C", text: "IAS reads true airspeed instead" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0707", aok: "Flight Instruments",
+    text: "What error does the turn coordinator indicate?",
+    choices: [
+      { key: "A", text: "Rate of turn and bank angle" },
+      { key: "B", text: "Rate of turn and coordination of the turn (using the ball)" },
+      { key: "C", text: "Heading and rate of turn only" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0708", aok: "Flight Instruments",
+    text: "What is indicated when the ball in the turn coordinator is displaced to the right?",
+    choices: [
+      { key: "A", text: "The aircraft is in a right slip — use right rudder" },
+      { key: "B", text: "The aircraft is in a right skid — use left rudder" },
+      { key: "C", text: "The aircraft is in a right slip — use left rudder" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0709", aok: "Flight Instruments",
+    text: "How does a heading indicator (directional gyro) differ from a magnetic compass?",
+    choices: [
+      { key: "A", text: "It uses magnetism to determine heading" },
+      { key: "B", text: "It is not affected by magnetic dip or acceleration errors" },
+      { key: "C", text: "It does not need to be calibrated" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0710", aok: "Flight Instruments",
+    text: "What does true altitude represent?",
+    choices: [
+      { key: "A", text: "The altitude shown when the altimeter is set to 29.92" },
+      { key: "B", text: "The actual height above sea level" },
+      { key: "C", text: "The height above the terrain directly below the aircraft" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0711", aok: "Flight Instruments",
+    text: "What is absolute altitude?",
+    choices: [
+      { key: "A", text: "Altitude above mean sea level" },
+      { key: "B", text: "Altitude above the terrain directly below the aircraft" },
+      { key: "C", text: "Altitude when altimeter is set to 29.92" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0712", aok: "Flight Instruments",
+    text: "The heading indicator should be aligned with the magnetic compass when?",
+    choices: [
+      { key: "A", text: "Every 15 minutes during flight" },
+      { key: "B", text: "Only during preflight" },
+      { key: "C", text: "Every 30 minutes or as needed during straight and level flight" },
+    ],
+    correct: "C",
+  },
+  {
+    id: "PAR0713", aok: "Flight Instruments",
+    text: "What is the purpose of the static port?",
+    choices: [
+      { key: "A", text: "To measure ram air pressure" },
+      { key: "B", text: "To provide ambient static pressure to pitot-static instruments" },
+      { key: "C", text: "To measure airspeed directly" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0714", aok: "Flight Instruments",
+    text: "If the altimeter reads higher than actual altitude, the altimeter setting is:",
+    choices: [
+      { key: "A", text: "Higher than current atmospheric pressure" },
+      { key: "B", text: "Lower than current atmospheric pressure" },
+      { key: "C", text: "Equal to current atmospheric pressure" },
+    ],
+    correct: "A",
+  },
+  {
+    id: "PAR0715", aok: "Flight Instruments",
+    text: "What instrument provides direct indication of attitude?",
+    choices: [
+      { key: "A", text: "Heading indicator" },
+      { key: "B", text: "Attitude indicator (artificial horizon)" },
+      { key: "C", text: "Turn coordinator" },
+    ],
+    correct: "B",
+  },
+
+  // Aeromedical Factors (10)
+  {
+    id: "PAR0801", aok: "Aeromedical Factors",
+    text: "What is hypoxia?",
+    choices: [
+      { key: "A", text: "A condition caused by excess nitrogen in the blood" },
+      { key: "B", text: "A deficiency of oxygen reaching body tissues" },
+      { key: "C", text: "Motion sickness caused by turbulence" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0802", aok: "Aeromedical Factors",
+    text: "At what altitude does hypoxia typically begin to affect night vision?",
+    choices: [
+      { key: "A", text: "Above 10,000 feet MSL" },
+      { key: "B", text: "Above 5,000 feet MSL" },
+      { key: "C", text: "Above 15,000 feet MSL" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0803", aok: "Aeromedical Factors",
+    text: "What is spatial disorientation?",
+    choices: [
+      { key: "A", text: "A visual impairment caused by looking at bright lights" },
+      { key: "B", text: "A false sense of orientation relative to the natural horizon" },
+      { key: "C", text: "Discomfort caused by altitude changes" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0804", aok: "Aeromedical Factors",
+    text: "What is the cure for spatial disorientation?",
+    choices: [
+      { key: "A", text: "Trust your senses and ignore instruments" },
+      { key: "B", text: "Trust the flight instruments, not your senses" },
+      { key: "C", text: "Close your eyes briefly and reorient" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0805", aok: "Aeromedical Factors",
+    text: "What effect does carbon monoxide have on the human body?",
+    choices: [
+      { key: "A", text: "It increases alertness briefly before causing drowsiness" },
+      { key: "B", text: "It replaces oxygen in the bloodstream, causing hypoxia" },
+      { key: "C", text: "It causes hyperventilation" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0806", aok: "Aeromedical Factors",
+    text: "What is the effect of alcohol on a pilot?",
+    choices: [
+      { key: "A", text: "It improves confidence while slightly impairing judgment" },
+      { key: "B", text: "It impairs judgment, vision, and reaction time even after it is no longer detectable on the breath" },
+      { key: "C", text: "It has no effect at altitudes below 5,000 feet" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0807", aok: "Aeromedical Factors",
+    text: "What is hyperventilation?",
+    choices: [
+      { key: "A", text: "Breathing too slowly" },
+      { key: "B", text: "Breathing too rapidly, causing excessive CO2 loss" },
+      { key: "C", text: "Holding breath at altitude" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0808", aok: "Aeromedical Factors",
+    text: "What are the symptoms of hyperventilation?",
+    choices: [
+      { key: "A", text: "Coughing, sneezing, and headache" },
+      { key: "B", text: "Tingling, lightheadedness, dizziness, and possible loss of consciousness" },
+      { key: "C", text: "Redness of skin and sweating" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0809", aok: "Aeromedical Factors",
+    text: "What is the best way for a pilot to see objects in the dark?",
+    choices: [
+      { key: "A", text: "Look directly at the object" },
+      { key: "B", text: "Use off-center vision (look 10° off to the side of the object)" },
+      { key: "C", text: "Increase aircraft lighting" },
+    ],
+    correct: "B",
+  },
+  {
+    id: "PAR0810", aok: "Aeromedical Factors",
+    text: "What is the IMSAFE checklist used for?",
+    choices: [
+      { key: "A", text: "Checking aircraft airworthiness before flight" },
+      { key: "B", text: "Personal pilot self-assessment for fitness to fly" },
+      { key: "C", text: "Weather assessment before cross-country flight" },
+    ],
+    correct: "B",
+  },
+];
+
+main().catch((err) => {
+  console.error("Fatal error:", err);
+  process.exit(1);
+});

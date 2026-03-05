@@ -36,23 +36,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "This promo code has already been used" }, { status: 400 });
     }
 
-    // Apply promo
-    await db.promoCode.update({
-      where: { id: promo.id },
-      data: { uses: { increment: 1 } },
-    });
+    // Calculate when access expires (null = never)
+    let periodEnd: Date | null = null;
+    if (promo.durationMonths && promo.durationMonths > 0) {
+      periodEnd = new Date();
+      periodEnd.setMonth(periodEnd.getMonth() + promo.durationMonths);
+    }
 
-    await db.user.update({
-      where: { id: userId },
-      data: { tier: "pro", promoCodeId: promo.id },
-    });
+    await db.$transaction([
+      db.promoCode.update({
+        where: { id: promo.id },
+        data: { uses: { increment: 1 } },
+      }),
+      db.user.update({
+        where: { id: userId },
+        data: {
+          tier: "pro",
+          promoCodeId: promo.id,
+          stripeCurrentPeriodEnd: periodEnd,
+        },
+      }),
+    ]);
 
     await db.auditLog.create({
       data: {
         userId,
         action: "promo_code_redeemed",
         target: promo.id,
-        details: `Code: ${promo.code}`,
+        details: `Code: ${promo.code}, discount: ${promo.discountPct}%, duration: ${promo.durationMonths ? `${promo.durationMonths}mo` : "permanent"}`,
       },
     });
 

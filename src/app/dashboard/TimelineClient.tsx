@@ -296,6 +296,28 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
                         );
                       })()}
 
+                      {level.id === "private" && (
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
+                            Knowledge Test Prep
+                          </p>
+                          <div className="flex gap-2 flex-wrap">
+                            <Link
+                              href="/par-practice"
+                              className="text-xs px-3 py-1.5 rounded-md border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
+                            >
+                              PAR Practice Questions
+                            </Link>
+                            <Link
+                              href="/par-test"
+                              className="text-xs px-3 py-1.5 rounded-md border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
+                            >
+                              Take a PAR Sample Test
+                            </Link>
+                          </div>
+                        </div>
+                      )}
+
                       <div className="flex gap-2 pt-1">
                         <button
                           onClick={() => updateMilestone(level.id, "in_progress")}

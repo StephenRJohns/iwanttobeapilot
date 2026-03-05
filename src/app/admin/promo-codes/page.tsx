@@ -11,6 +11,8 @@ interface PromoCode {
   maxUses: number;
   uses: number;
   revoked: boolean;
+  discountPct: number;
+  durationMonths: number | null;
   expiresAt: string | null;
   createdAt: string;
 }
@@ -20,6 +22,15 @@ function getStatus(code: PromoCode): { label: string; color: string } {
   if (code.expiresAt && new Date(code.expiresAt) < new Date()) return { label: "Expired", color: "bg-amber-400/10 text-amber-400" };
   if (code.uses >= 1) return { label: "Used", color: "bg-secondary text-muted-foreground" };
   return { label: "Active", color: "bg-primary/10 text-primary" };
+}
+
+function formatDiscount(pct: number) {
+  return pct === 100 ? <span className="text-emerald-400 font-medium">Free</span> : `${pct}% off`;
+}
+
+function formatDuration(months: number | null) {
+  if (!months) return "Permanent";
+  return `${months} mo`;
 }
 
 export default function AdminPromoCodesPage() {
@@ -36,6 +47,12 @@ export default function AdminPromoCodesPage() {
   const [newBlockName, setNewBlockName] = useState("");
   const [newBlockCount, setNewBlockCount] = useState(10);
   const [newExpires, setNewExpires] = useState("");
+  // Discount
+  const [discountMode, setDiscountMode] = useState<"free" | "custom">("free");
+  const [customPct, setCustomPct] = useState(50);
+  // Duration
+  const [durationMode, setDurationMode] = useState<"never" | "months">("never");
+  const [durationMonths, setDurationMonths] = useState(3);
   const [creating, setCreating] = useState(false);
 
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -65,7 +82,10 @@ export default function AdminPromoCodesPage() {
     e.preventDefault();
     setCreating(true);
     try {
-      const body: Record<string, unknown> = {};
+      const body: Record<string, unknown> = {
+        discountPct: discountMode === "free" ? 100 : customPct,
+        durationMonths: durationMode === "months" ? durationMonths : null,
+      };
       if (createMode === "block") {
         body.count = newBlockCount;
         if (newBlockName.trim()) body.blockName = newBlockName.trim();
@@ -74,6 +94,7 @@ export default function AdminPromoCodesPage() {
         body.code = newCode.trim();
       }
       if (newExpires) body.expiresAt = newExpires;
+
       const res = await fetch("/api/admin/promo-codes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -83,7 +104,9 @@ export default function AdminPromoCodesPage() {
         const data = await res.json();
         const count = data.count || 1;
         toast({ title: `${count} promo code${count > 1 ? "s" : ""} created` });
-        setNewCode(""); setNewBlockName(""); setNewBlockCount(10); setNewExpires(""); setShowCreate(false);
+        setNewCode(""); setNewBlockName(""); setNewBlockCount(10); setNewExpires("");
+        setDiscountMode("free"); setCustomPct(50); setDurationMode("never"); setDurationMonths(3);
+        setShowCreate(false);
         fetchCodes();
       } else {
         const data = await res.json();
@@ -171,7 +194,8 @@ export default function AdminPromoCodesPage() {
       </div>
 
       {showCreate && (
-        <form onSubmit={handleCreate} className="border border-border rounded-lg p-4 space-y-3">
+        <form onSubmit={handleCreate} className="border border-border rounded-lg p-4 space-y-4">
+          {/* Mode toggle */}
           <div className="flex items-center gap-4 text-sm">
             <label className="flex items-center gap-1.5 cursor-pointer">
               <input type="radio" name="createMode" checked={createMode === "single"} onChange={() => setCreateMode("single")} className="accent-primary" />
@@ -182,6 +206,8 @@ export default function AdminPromoCodesPage() {
               Code Block
             </label>
           </div>
+
+          {/* Code / block fields */}
           {createMode === "single" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
@@ -190,7 +216,7 @@ export default function AdminPromoCodesPage() {
                   className="w-full bg-background border border-border rounded-md px-3 py-1.5 text-sm outline-none focus:border-primary" />
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium block mb-1">Expires (optional)</label>
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium block mb-1">Code Expires (optional)</label>
                 <input type="date" value={newExpires} onChange={(e) => setNewExpires(e.target.value)}
                   className="w-full bg-background border border-border rounded-md px-3 py-1.5 text-sm outline-none focus:border-primary" />
               </div>
@@ -208,12 +234,62 @@ export default function AdminPromoCodesPage() {
                   className="w-full bg-background border border-border rounded-md px-3 py-1.5 text-sm outline-none focus:border-primary" />
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium block mb-1">Expires (optional)</label>
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium block mb-1">Code Expires (optional)</label>
                 <input type="date" value={newExpires} onChange={(e) => setNewExpires(e.target.value)}
                   className="w-full bg-background border border-border rounded-md px-3 py-1.5 text-sm outline-none focus:border-primary" />
               </div>
             </div>
           )}
+
+          {/* Discount + duration row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium block mb-1">Discount</label>
+              <div className="flex gap-2">
+                <select
+                  value={discountMode}
+                  onChange={(e) => setDiscountMode(e.target.value as "free" | "custom")}
+                  className="flex-1 bg-background border border-border rounded-md px-2 py-1.5 text-sm outline-none focus:border-primary"
+                >
+                  <option value="free">Free (100% off)</option>
+                  <option value="custom">Custom %</option>
+                </select>
+                {discountMode === "custom" && (
+                  <input
+                    type="number"
+                    value={customPct}
+                    min={1}
+                    max={99}
+                    onChange={(e) => setCustomPct(Math.max(1, Math.min(99, parseInt(e.target.value) || 1)))}
+                    className="w-20 bg-background border border-border rounded-md px-2 py-1.5 text-sm outline-none focus:border-primary"
+                  />
+                )}
+              </div>
+            </div>
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium block mb-1">Access Duration</label>
+              <div className="flex gap-2">
+                <select
+                  value={durationMode}
+                  onChange={(e) => setDurationMode(e.target.value as "never" | "months")}
+                  className="flex-1 bg-background border border-border rounded-md px-2 py-1.5 text-sm outline-none focus:border-primary"
+                >
+                  <option value="never">Never expires</option>
+                  <option value="months">Months after activation</option>
+                </select>
+                {durationMode === "months" && (
+                  <input
+                    type="number"
+                    value={durationMonths}
+                    min={1}
+                    onChange={(e) => setDurationMonths(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-20 bg-background border border-border rounded-md px-2 py-1.5 text-sm outline-none focus:border-primary"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="flex items-center gap-2">
             <button type="submit" disabled={creating} className="bg-primary text-primary-foreground px-3 py-1.5 rounded-md text-sm font-medium hover:bg-primary/90 disabled:opacity-50 flex items-center gap-1">
               {creating && <Loader2 className="h-3 w-3 animate-spin" />}
@@ -242,16 +318,16 @@ export default function AdminPromoCodesPage() {
               <th className="px-3 py-2 w-8">
                 <input type="checkbox" checked={codes.length > 0 && selectedIds.size === codes.length} onChange={() => selectedIds.size === codes.length ? setSelectedIds(new Set()) : setSelectedIds(new Set(codes.map((c) => c.id)))} className="accent-primary" />
               </th>
-              {["Code", "Block", "Redeemed", "Status", "Expires", "Created", "Actions"].map((h) => (
+              {["Code", "Block", "Discount", "Duration", "Redeemed", "Status", "Expires", "Created", "Actions"].map((h) => (
                 <th key={h} className="text-left px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} className="text-center py-8"><Loader2 className="h-4 w-4 animate-spin mx-auto text-muted-foreground" /></td></tr>
+              <tr><td colSpan={10} className="text-center py-8"><Loader2 className="h-4 w-4 animate-spin mx-auto text-muted-foreground" /></td></tr>
             ) : codes.length === 0 ? (
-              <tr><td colSpan={8} className="text-center py-8 text-muted-foreground text-xs">No promo codes found.</td></tr>
+              <tr><td colSpan={10} className="text-center py-8 text-muted-foreground text-xs">No promo codes found.</td></tr>
             ) : (
               codes.map((code) => {
                 const status = getStatus(code);
@@ -260,6 +336,8 @@ export default function AdminPromoCodesPage() {
                     <td className="px-3 py-2"><input type="checkbox" checked={selectedIds.has(code.id)} onChange={() => toggleSelect(code.id)} className="accent-primary" /></td>
                     <td className="px-3 py-2"><code className="text-xs font-mono bg-secondary px-1.5 py-0.5 rounded">{code.code}</code></td>
                     <td className="px-3 py-2 text-xs text-muted-foreground">{code.blockName || "—"}</td>
+                    <td className="px-3 py-2 text-xs">{formatDiscount(code.discountPct ?? 100)}</td>
+                    <td className="px-3 py-2 text-xs text-muted-foreground">{formatDuration(code.durationMonths)}</td>
                     <td className="px-3 py-2 text-xs">{code.uses > 0 ? "Yes" : "No"}</td>
                     <td className="px-3 py-2"><span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${status.color}`}>{status.label}</span></td>
                     <td className="px-3 py-2 text-xs text-muted-foreground">{code.expiresAt ? new Date(code.expiresAt).toLocaleDateString() : "—"}</td>

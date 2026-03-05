@@ -55,8 +55,10 @@ export async function POST(req: NextRequest) {
   if (!(await adminGuard())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
-    const { code, blockName, count, expiresAt } = await req.json();
+    const { code, blockName, count, expiresAt, discountPct, durationMonths } = await req.json();
     const expires = expiresAt ? new Date(expiresAt) : null;
+    const pct = typeof discountPct === "number" ? Math.max(0, Math.min(100, Math.round(discountPct))) : 100;
+    const duration = typeof durationMonths === "number" && durationMonths > 0 ? durationMonths : null;
 
     if (count && count > 0) {
       const batchCount = Math.min(count, 500);
@@ -69,7 +71,9 @@ export async function POST(req: NextRequest) {
           newCode = generateCode(prefix);
           attempts++;
         } while (attempts < 10 && (await db.promoCode.findUnique({ where: { code: newCode } })));
-        created.push(await db.promoCode.create({ data: { code: newCode, blockName: prefix || null, maxUses: 1, expiresAt: expires } }));
+        created.push(await db.promoCode.create({
+          data: { code: newCode, blockName: prefix || null, maxUses: 1, discountPct: pct, durationMonths: duration, expiresAt: expires },
+        }));
       }
       return NextResponse.json({ codes: created, count: created.length }, { status: 201 });
     }
@@ -80,7 +84,7 @@ export async function POST(req: NextRequest) {
     if (existing) return NextResponse.json({ error: "Code already exists" }, { status: 409 });
 
     const created = await db.promoCode.create({
-      data: { code: normalized, blockName: blockName?.trim().toUpperCase() || null, maxUses: 1, expiresAt: expires },
+      data: { code: normalized, blockName: blockName?.trim().toUpperCase() || null, maxUses: 1, discountPct: pct, durationMonths: duration, expiresAt: expires },
     });
     return NextResponse.json(created, { status: 201 });
   } catch (err) {

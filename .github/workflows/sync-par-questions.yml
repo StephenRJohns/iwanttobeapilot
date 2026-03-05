@@ -1,0 +1,73 @@
+name: Weekly PAR Question Bank Sync
+
+on:
+  schedule:
+    - cron: "0 6 * * 0"   # Every Sunday at 01:00 CDT (06:00 UTC)
+  workflow_dispatch:        # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run PAR question bank download
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: node scripts/download-par-questions.mjs
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ -n "$(git diff --name-only src/data/par-questions.ts)" ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push updated question bank
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/par-questions.ts
+          git commit -m "chore: auto-sync PAR question bank
+
+          Weekly download of FAA Private Pilot Airplane test question bank.
+          Updated question data and metadata timestamp."
+          git push
+
+      - name: Notify on success (questions updated)
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          curl -s -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"from\": \"noreply@iwanttobeapilot.online\",
+              \"to\": \"jjjjj_enterprises_llc@protonmail.com\",
+              \"subject\": \"[I Want To Be A Pilot] PAR question bank updated\",
+              \"html\": \"<p>The PAR question bank was successfully downloaded and updated. Railway will auto-deploy the changes.</p>\"
+            }"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          curl -s -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"from\": \"noreply@iwanttobeapilot.online\",
+              \"to\": \"jjjjj_enterprises_llc@protonmail.com\",
+              \"subject\": \"[I Want To Be A Pilot] PAR question sync FAILED\",
+              \"html\": \"<pre style='font-family:monospace'>GitHub Actions workflow failed. Check the Actions tab for details.\n\nThe PAR question bank may be unavailable from the FAA server.</pre>\"
+            }"

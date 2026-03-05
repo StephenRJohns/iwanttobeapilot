@@ -22,6 +22,8 @@ import {
   Send,
   Loader2,
   CheckCircle,
+  Brain,
+  ClipboardCheck,
 } from "lucide-react";
 import HelpPanel from "@/components/help/HelpPanel";
 
@@ -36,6 +38,8 @@ const authNavLinks = [
   { href: "/dpe-finder", label: "DPEs", icon: ClipboardList },
   { href: "/community/stories", label: "Stories", icon: FileText },
   { href: "/community/discussions", label: "Forums", icon: MessageSquare },
+  { href: "/par-practice", label: "PAR Practice", icon: Brain },
+  { href: "/par-test", label: "PAR Test", icon: ClipboardCheck },
 ];
 
 export default function Header() {
