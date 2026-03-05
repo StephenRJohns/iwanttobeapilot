@@ -58,7 +58,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Learn to Fly Course",
     description: "The most popular online ground school for Private Pilot. Video-based, FAA-accepted, includes written test prep and endorsement.",
-    sportysUrl: "https://www.sportys.com/learn-to-fly-course.html",
+    sportysUrl: "https://www.sportys.com/learn-to-fly-course-private-pilot-test-prep-online-app-and-tv.html",
     searchQuery: "Sporty's learn to fly course",
   },
   {
@@ -67,7 +67,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Instrument Rating Course",
     description: "Complete IFR ground school from Sporty's. Covers all ACS areas, includes written test prep and CFII endorsement.",
-    sportysUrl: "https://www.sportys.com/instrument-rating-course.html",
+    sportysUrl: "https://www.sportys.com/learn-to-fly/instrument-rating-course.html",
     searchQuery: "Sporty's instrument rating course",
   },
   {
@@ -76,7 +76,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Commercial Pilot Course",
     description: "FAA-accepted commercial pilot ground school covering aerodynamics, regulations, and commercial maneuvers.",
-    sportysUrl: "https://www.sportys.com/commercial-pilot-course.html",
+    sportysUrl: "https://www.sportys.com/commercial-pilot-prep-course.html",
     searchQuery: "Sporty's commercial pilot course",
   },
   {
@@ -85,7 +85,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's CFI Certification Course",
     description: "Comprehensive CFI prep — FOI, flight instructor PTS, and lesson plan templates. Used by thousands of CFI candidates.",
-    sportysUrl: "https://www.sportys.com/cfi-course.html",
+    sportysUrl: "https://www.sportys.com/flight-instructor-checkride-and-test-prep-course-cfi-cfii-and-foi.html",
     searchQuery: "Sporty's CFI certification course",
   },
   {
@@ -94,7 +94,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's FIRC (CFI Renewal)",
     description: "FAA-accepted Flight Instructor Refresher Course to renew your CFI certificate online. Accepted at all FAASTeam events.",
-    sportysUrl: "https://www.sportys.com/firc-flight-instructor-refresher-course.html",
+    sportysUrl: "https://www.sportys.com/sporty-s-efirc-flight-instructor-refresher-online-course.html",
     searchQuery: "Sporty's FIRC flight instructor refresher",
   },
 
@@ -143,7 +143,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Pilot Training App",
     description: "Free companion app for Sporty's courses. Study anywhere with flashcards, practice tests, and video lessons.",
-    sportysUrl: "https://www.sportys.com/pilottraining/sportys-pilot-training-app.html",
+    sportysUrl: "https://www.sportys.com/sporty-s-pilot-training-app.html",
     searchQuery: "Sporty's pilot training app",
   },
 
@@ -208,7 +208,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's S-LAX Stereo Headset",
     description: "Sporty's own passive stereo headset — excellent value for student pilots starting out.",
-    sportysUrl: "https://www.sportys.com/s-lax-stereo-headset.html",
+    sportysUrl: "https://www.sportys.com/headsets.html",
     searchQuery: "Sporty's student pilot headset",
   },
 
@@ -228,7 +228,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Pilot Training Bag",
     description: "Purpose-built pilot bag with dedicated compartments for headset, charts, iPad, and kneeboard.",
-    sportysUrl: "https://www.sportys.com/sporty-s-pilot-training-bag.html",
+    sportysUrl: "https://www.sportys.com/original-flight-gear-bag.html",
     searchQuery: "Sporty's pilot training bag",
   },
   {
@@ -266,7 +266,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "FAR/AIM (Current Edition)",
     description: "Federal Aviation Regulations and Aeronautical Information Manual. Every pilot needs a current copy.",
-    sportysUrl: "https://www.sportys.com/far-aim.html",
+    sportysUrl: "https://www.sportys.com/far-aim-2026-asa.html",
     searchQuery: "FAR AIM Federal Aviation Regulations",
   },
   {
@@ -293,7 +293,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Checkride Prep Bundle",
     description: "Private Pilot checkride prep — oral exam guide, ACS study materials, and practical test prep from Sporty's.",
-    sportysUrl: "https://www.sportys.com/private-pilot-checkride-prep.html",
+    sportysUrl: "https://www.sportys.com/sporty-s-deluxe-learn-to-fly-course-kit-online-app-and-tv.html",
     searchQuery: "Sporty's private pilot checkride prep oral",
   },
 
@@ -322,7 +322,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Stratus 3 ADS-B Receiver",
     description: "Portable ADS-B receiver for traffic and weather on your iPad. Integrates with ForeFlight.",
-    sportysUrl: "https://www.sportys.com/stratus-3-adsb-receiver.html",
+    sportysUrl: "https://www.sportys.com/stratus-3-ads-b-receiver.html",
     searchQuery: "Stratus 3 ADS-B receiver ForeFlight",
   },
   {
@@ -351,7 +351,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's iPad Kneeboard",
     description: "Keep your iPad secured to your leg in the cockpit. Designed specifically for iPad mini and Air.",
-    sportysUrl: "https://www.sportys.com/sporty-s-ipad-kneeboard.html",
+    sportysUrl: "https://www.sportys.com/flight-gear-rotating-ipad-kneeboard.html",
     searchQuery: "Sporty's iPad kneeboard pilot aviation",
   },
   {
@@ -389,7 +389,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Pilot Polo Shirt",
     description: "Professional aviation polo from Sporty's — embroidered airplane logo, moisture-wicking fabric.",
-    sportysUrl: "https://www.sportys.com/pilot-polo-shirt.html",
+    sportysUrl: "https://www.sportys.com/nike-micro-pique-polo-shirt.html",
     searchQuery: "Sporty's pilot polo shirt aviation",
   },
 
@@ -400,7 +400,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Electronic E6B",
     description: "Digital E6B from Sporty's. Calculates crosswind, fuel, TAS, density altitude. FAA test legal.",
-    sportysUrl: "https://www.sportys.com/sportys-e6b-flight-computer.html",
+    sportysUrl: "https://www.sportys.com/sporty-s-electronic-e6b-flight-computer.html",
     searchQuery: "Sporty's electronic E6B flight computer",
   },
   {
@@ -409,7 +409,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Manual E6B",
     description: "The classic circular slide rule flight computer from Sporty's. Required to know for checkride.",
-    sportysUrl: "https://www.sportys.com/manual-e6b-flight-computer.html",
+    sportysUrl: "https://www.sportys.com/sporty-s-manual-e6b-flight-computer.html",
     searchQuery: "manual E6B circular slide rule pilot",
   },
   {
@@ -418,7 +418,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's Foggles (View-Limiting Device)",
     description: "Required for instrument training. Limits outside view to simulate IMC conditions.",
-    sportysUrl: "https://www.sportys.com/foggles.html",
+    sportysUrl: "https://www.sportys.com/instant-ifrtm-training-glasses.html",
     searchQuery: "Foggles view limiting device instrument training pilot",
   },
   {
@@ -427,7 +427,7 @@ export const EQUIPMENT_ITEMS: EquipmentItem[] = [
     vendor: "sportys",
     name: "Sporty's VFR Plotter",
     description: "Manual navigation plotter for sectional charts. Required for PPL training.",
-    sportysUrl: "https://www.sportys.com/plotter.html",
+    sportysUrl: "https://www.sportys.com/sporty-s-vfr-and-ifr-plotter.html",
     searchQuery: "VFR plotter sectional chart navigation pilot",
   },
 ];

@@ -63,9 +63,8 @@ function SearchHereControl({
     <div
       style={{
         position: "absolute",
-        top: "12px",
-        left: "50%",
-        transform: "translateX(-50%)",
+        bottom: "28px",
+        left: "12px",
         zIndex: 1000,
       }}
     >
