@@ -185,8 +185,8 @@ export default function Header() {
                       href="/admin"
                       className={`rounded-md p-2 transition-colors ${
                         pathname.startsWith("/admin")
-                          ? "bg-red-600 text-white"
-                          : "bg-red-600/80 text-white hover:bg-red-600"
+                          ? "bg-red-900/30 text-red-400"
+                          : "text-red-500/70 hover:bg-red-900/20 hover:text-red-400"
                       }`}
                       aria-label="Admin"
                       title="Admin"
