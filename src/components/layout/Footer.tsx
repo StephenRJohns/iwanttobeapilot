@@ -21,7 +21,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-8 w-auto mb-3" />
+            <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-12 w-auto mb-3" />
             <p className="text-xs text-muted-foreground leading-relaxed">
               Your complete guide to becoming a pilot — from first flight to airline captain.
             </p>

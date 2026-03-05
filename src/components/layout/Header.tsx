@@ -89,7 +89,7 @@ export default function Header() {
 
             <Link href="/" className="shrink-0 flex items-center mr-1">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-10 w-auto" />
+              <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-14 w-auto" />
             </Link>
 
             {/* Nav links — single horizontal row */}
