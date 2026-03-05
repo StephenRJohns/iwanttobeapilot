@@ -63,6 +63,16 @@ export default function AboutPage() {
         </div>
 
         <p>
+          Our{" "}
+          <Link href="/knowledge-tests" className="text-primary hover:underline">
+            knowledge test prep
+          </Link>{" "}
+          uses the official FAA test data banks — the same question pools used to create the actual
+          FAA knowledge exams. We download and sync these directly from the FAA so your practice
+          questions are always current and authentic.
+        </p>
+
+        <p>
           The free tools — school search, cost estimator, equipment guide, FAA resources — are free
           because they should be. The Pro features exist to keep the lights on and to fund continued
           development. If this site has helped you, a Pro account is the best way to say thanks and

@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { PILOT_LEVELS, CAREER_PATH_IDS, HOBBY_PATH_IDS } from "@/data/pilot-levels";
 import { EQUIPMENT_ITEMS, getAffiliateUrl, getVendorLabel } from "@/data/equipment";
 import { formatCurrency } from "@/lib/utils";
+import { getTestBanksForMilestone } from "@/lib/test-banks";
 
 interface UserProgress {
   id: string;
@@ -197,6 +198,16 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
                           }`}>
                             {status === "completed" ? "Completed" : status === "in_progress" ? "In Progress" : "Pending"}
                           </span>
+                          {getTestBanksForMilestone(level.id).map((tb) => (
+                            <Link
+                              key={tb.code}
+                              href={`/study/${tb.code.toLowerCase()}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-xs px-2 py-0.5 rounded-full border bg-muted text-muted-foreground border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-colors"
+                            >
+                              {tb.code} Required
+                            </Link>
+                          ))}
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">{level.description}</p>
                       </div>
@@ -296,24 +307,28 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
                         );
                       })()}
 
-                      {level.id === "private" && (
+                      {getTestBanksForMilestone(level.id).length > 0 && (
                         <div>
                           <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
                             Knowledge Test Prep
                           </p>
                           <div className="flex gap-2 flex-wrap">
-                            <Link
-                              href="/par-practice"
-                              className="text-xs px-3 py-1.5 rounded-md border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
-                            >
-                              PAR Practice Questions
-                            </Link>
-                            <Link
-                              href="/par-test"
-                              className="text-xs px-3 py-1.5 rounded-md border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
-                            >
-                              Take a PAR Sample Test
-                            </Link>
+                            {getTestBanksForMilestone(level.id).map((tb) => (
+                              <span key={tb.code} className="contents">
+                                <Link
+                                  href={`/study/${tb.code.toLowerCase()}`}
+                                  className="text-xs px-3 py-1.5 rounded-md border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
+                                >
+                                  {tb.code} Practice Questions
+                                </Link>
+                                <Link
+                                  href={`/test-prep/${tb.code.toLowerCase()}`}
+                                  className="text-xs px-3 py-1.5 rounded-md border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
+                                >
+                                  Take a {tb.code} Sample Test
+                                </Link>
+                              </span>
+                            ))}
                           </div>
                         </div>
                       )}

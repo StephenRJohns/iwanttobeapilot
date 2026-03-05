@@ -10,7 +10,8 @@ export const config = {
     "/community/:path*",
     "/settings/:path*",
     "/admin/:path*",
-    "/par-practice/:path*",
-    "/par-test/:path*",
+    "/study/:path*",
+    "/test-prep/:path*",
+    "/knowledge-tests",
   ],
 };

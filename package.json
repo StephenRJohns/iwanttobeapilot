@@ -57,8 +57,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^10.0.0",
+    "pdfkit": "^0.17.2",
     "postcss": "^8",
     "prisma": "^6.2.1",
+    "puppeteer": "^24.38.0",
     "tailwindcss": "^4",
     "tsx": "^4.19.2",
     "typescript": "^5"
