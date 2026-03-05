@@ -1,5 +1,80 @@
+"use client";
+
 import Link from "next/link";
 import { PILOT_LEVELS } from "@/data/pilot-levels";
+import {
+  GraduationCap,
+  BookOpen,
+  Headphones,
+  DollarSign,
+  BarChart3,
+  Search,
+  Star,
+  Plane,
+  MessageCircle,
+  Trophy,
+  Quote,
+} from "lucide-react";
+
+const freeFeatures = [
+  {
+    href: "/schools",
+    title: "Flight Schools",
+    description: "Find FAA-certified flight schools near you. Search by zip code, view on a map, get contact info.",
+    icon: GraduationCap,
+  },
+  {
+    href: "/resources",
+    title: "Free Resources",
+    description: "FAA handbooks, practice tests, study guides, and reference materials — all free.",
+    icon: BookOpen,
+  },
+  {
+    href: "/equipment",
+    title: "Equipment Guide",
+    description: "Headsets, bags, apps, books, and everything a pilot needs — with ratings from real pilots.",
+    icon: Headphones,
+  },
+  {
+    href: "/costs",
+    title: "Cost Estimator",
+    description: "Real cost and time estimates for every certification level, from student pilot to airline captain.",
+    icon: DollarSign,
+  },
+];
+
+const proFeatures = [
+  {
+    title: "Progress Timeline",
+    description: "Visual milestone tracker with step-by-step guidance at each certification level.",
+    icon: BarChart3,
+  },
+  {
+    title: "DPE Finder",
+    description: "Find Designated Pilot Examiners near you. View FAA pass rate data to make informed choices.",
+    icon: Search,
+  },
+  {
+    title: "Rate Schools & DPEs",
+    description: "Read and leave honest reviews for flight schools and examiners.",
+    icon: Star,
+  },
+  {
+    title: "Pilot Stories",
+    description: "Real stories from real pilots — how long it took, what it cost, what they earn.",
+    icon: Plane,
+  },
+  {
+    title: "Discussion Forums",
+    description: "Connect with other aspiring pilots. Ask questions, share experiences, get advice.",
+    icon: MessageCircle,
+  },
+  {
+    title: "Product Ratings",
+    description: "Community ratings and reviews on headsets, bags, apps, and more.",
+    icon: Trophy,
+  },
+];
 
 export default function HomePage() {
   return (
@@ -62,50 +137,30 @@ export default function HomePage() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-            {[
-              {
-                href: "/schools",
-                title: "Flight Schools",
-                description: "Find FAA-certified flight schools near you. Search by zip code, view on a map, get contact info.",
-                icon: "🏫",
-              },
-              {
-                href: "/resources",
-                title: "Free Resources",
-                description: "FAA handbooks, practice tests, study guides, and reference materials — all free.",
-                icon: "📚",
-              },
-              {
-                href: "/equipment",
-                title: "Equipment Guide",
-                description: "Headsets, bags, apps, books, and everything a pilot needs — with ratings from real pilots.",
-                icon: "🎧",
-              },
-              {
-                href: "/costs",
-                title: "Cost Estimator",
-                description: "Real cost and time estimates for every certification level, from student pilot to airline captain.",
-                icon: "💰",
-              },
-            ].map((feature) => (
-              <Link
-                key={feature.href}
-                href={feature.href}
-                className="group rounded-lg border border-border bg-card p-5 hover:border-primary/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <div className="text-3xl mb-3">{feature.icon}</div>
-                <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {feature.description}
-                </p>
-              </Link>
-            ))}
+            {freeFeatures.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <Link
+                  key={feature.href}
+                  href={feature.href}
+                  className="group rounded-lg border border-border bg-card p-5 hover:border-primary/40 hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="mb-3">
+                    <Icon className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Pro Features */}
-          <div className="bg-gradient-to-br from-primary/5 to-card rounded-xl border border-primary/20 p-8">
+          <div className="bg-gradient-to-br from-primary/8 to-card rounded-xl border border-primary/20 p-8">
             <div className="text-center mb-8">
               <div className="inline-block bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 mb-3">
                 Pro Membership
@@ -117,49 +172,21 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-              {[
-                {
-                  title: "Progress Timeline",
-                  description: "Visual milestone tracker with step-by-step guidance at each certification level.",
-                  icon: "📊",
-                },
-                {
-                  title: "DPE Finder",
-                  description: "Find Designated Pilot Examiners near you. View FAA pass rate data to make informed choices.",
-                  icon: "🔍",
-                },
-                {
-                  title: "Rate Schools & DPEs",
-                  description: "Read and leave honest reviews for flight schools and examiners.",
-                  icon: "⭐",
-                },
-                {
-                  title: "Pilot Stories",
-                  description: "Real stories from real pilots — how long it took, what it cost, what they earn.",
-                  icon: "✈",
-                },
-                {
-                  title: "Discussion Forums",
-                  description: "Connect with other aspiring pilots. Ask questions, share experiences, get advice.",
-                  icon: "💬",
-                },
-                {
-                  title: "Product Ratings",
-                  description: "Community ratings and reviews on headsets, bags, apps, and more.",
-                  icon: "🏆",
-                },
-              ].map((feature) => (
-                <div
-                  key={feature.title}
-                  className="flex items-start gap-3 rounded-lg bg-card/50 border border-border p-4"
-                >
-                  <span className="text-2xl">{feature.icon}</span>
-                  <div>
-                    <p className="text-sm font-medium mb-0.5">{feature.title}</p>
-                    <p className="text-xs text-muted-foreground">{feature.description}</p>
+              {proFeatures.map((feature) => {
+                const Icon = feature.icon;
+                return (
+                  <div
+                    key={feature.title}
+                    className="flex items-start gap-3 rounded-lg bg-card/50 border border-border p-4"
+                  >
+                    <Icon className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium mb-0.5">{feature.title}</p>
+                      <p className="text-sm text-muted-foreground">{feature.description}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="text-center">
@@ -178,7 +205,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats */}
-      <section className="py-12 px-4 sm:px-6 border-t border-border bg-card/30">
+      <section className="py-12 px-4 sm:px-6 bg-card/30">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
             {[
@@ -189,7 +216,7 @@ export default function HomePage() {
             ].map((stat) => (
               <div key={stat.label}>
                 <div className="text-2xl font-bold text-primary">{stat.value}</div>
-                <div className="text-xs text-muted-foreground mt-1">{stat.label}</div>
+                <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -197,8 +224,9 @@ export default function HomePage() {
       </section>
 
       {/* Founder story */}
-      <section className="py-14 px-4 sm:px-6 border-t border-border">
+      <section className="py-14 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto text-center">
+          <Quote className="h-8 w-8 text-primary/30 mx-auto mb-4" />
           <p className="text-muted-foreground text-sm leading-relaxed mb-4">
             This site was built by a parent who watched two kids go through pilot training and
             wanted to create the resource that would have made their journeys easier — clear
@@ -215,7 +243,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-4 sm:px-6 border-t border-border">
+      <section className="py-16 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-3">Ready to Start Your Journey?</h2>
           <p className="text-muted-foreground text-sm mb-6">

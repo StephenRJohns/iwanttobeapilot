@@ -100,8 +100,8 @@ export default function Header() {
                     href="/pricing"
                     className={`flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-semibold transition-colors ${
                       pricingActive
-                        ? "bg-amber-400/15 text-amber-400"
-                        : "text-amber-400 hover:bg-amber-400/10"
+                        ? "bg-primary/10 text-primary"
+                        : "text-primary hover:bg-primary/10"
                     }`}
                   >
                     <CreditCard className="h-3.5 w-3.5" />
@@ -128,7 +128,7 @@ export default function Header() {
                 })}
                 {isLoggedIn && (
                   <>
-                    <div className="w-px h-5 bg-white/30 mx-1" />
+                    <div className="w-px h-5 bg-border mx-1" />
                     <span className="text-xs font-semibold text-white px-1">Pro:</span>
                     {[{ href: "/dashboard", label: "Progress", icon: LayoutDashboard }, ...authNavLinks].map(({ href, label, icon: Icon }) => {
                       const isActive = pathname === href || pathname.startsWith(`${href}/`);
@@ -160,7 +160,7 @@ export default function Header() {
                 <>
                   <button
                     onClick={() => setHelpOpen(true)}
-                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                     aria-label="Help"
                     title="Help"
                   >
@@ -170,8 +170,8 @@ export default function Header() {
                     href="/settings"
                     className={`rounded-md p-2 transition-colors ${
                       pathname === "/settings"
-                        ? "text-amber-400"
-                        : "text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400"
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                     }`}
                     aria-label="Settings"
                     title="Settings"
@@ -194,7 +194,7 @@ export default function Header() {
                   )}
                   <button
                     onClick={() => setContactOpen(true)}
-                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                     aria-label="Contact support"
                     title="Contact support"
                   >
@@ -202,7 +202,7 @@ export default function Header() {
                   </button>
                   <button
                     onClick={() => signOut({ callbackUrl: window.location.origin + "/" })}
-                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                     aria-label="Sign out"
                     title="Sign out"
                   >
@@ -213,7 +213,7 @@ export default function Header() {
                 <>
                   <button
                     onClick={() => setHelpOpen(true)}
-                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                     aria-label="Help"
                     title="Help"
                   >
@@ -242,19 +242,18 @@ export default function Header() {
       {!isAuthPage && mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div
-            className="fixed inset-0 bg-black/50"
+            className="fixed inset-0 bg-black/40"
             onClick={() => setMobileOpen(false)}
           />
           <nav className="fixed top-16 left-0 bottom-0 w-64 bg-card border-r border-border p-4 space-y-1 overflow-y-auto">
-            {/* Pricing first, amber styled */}
             {showPricing && (
               <Link
                 href="/pricing"
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
                   pricingActive
-                    ? "bg-amber-400/15 text-amber-400"
-                    : "text-amber-400 hover:bg-amber-400/10"
+                    ? "bg-primary/10 text-primary"
+                    : "text-primary hover:bg-primary/10"
                 }`}
               >
                 <CreditCard className="h-5 w-5" />
@@ -302,8 +301,8 @@ export default function Header() {
                     onClick={() => setMobileOpen(false)}
                     className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                       pathname === "/settings"
-                        ? "bg-amber-400/15 text-amber-400"
-                        : "text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400"
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                     }`}
                   >
                     <Settings className="h-5 w-5" />
@@ -311,14 +310,14 @@ export default function Header() {
                   </Link>
                   <button
                     onClick={() => { setMobileOpen(false); setHelpOpen(true); }}
-                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                   >
                     <HelpCircle className="h-5 w-5" />
                     Help
                   </button>
                   <button
                     onClick={() => { setMobileOpen(false); setContactOpen(true); }}
-                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                   >
                     <LifeBuoy className="h-5 w-5" />
                     Contact Support
@@ -328,7 +327,7 @@ export default function Header() {
                       setMobileOpen(false);
                       signOut({ callbackUrl: window.location.origin + "/" });
                     }}
-                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                   >
                     <LogOut className="h-5 w-5" />
                     Sign Out
@@ -338,7 +337,7 @@ export default function Header() {
                 <>
                   <button
                     onClick={() => { setMobileOpen(false); setHelpOpen(true); }}
-                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
                   >
                     <HelpCircle className="h-5 w-5" />
                     Help

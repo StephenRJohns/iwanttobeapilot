@@ -62,12 +62,13 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background py-8">
-      <div className="w-full max-w-sm mx-auto p-6">
+      <div className="w-full max-w-md mx-auto p-6">
         <div className="text-center mb-6">
-          <Link href="/" className="text-xl font-bold hover:text-primary transition-colors">
-            I Want To Be A Pilot
+          <Link href="/" className="inline-block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/IWTBAP_logo.png" alt="I Want To Be A Pilot" className="h-12 w-auto mx-auto" />
           </Link>
-          <p className="text-sm text-muted-foreground mt-2">Create your free account</p>
+          <p className="text-sm text-muted-foreground mt-3">Create your free account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -80,7 +81,7 @@ export default function RegisterPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
-              className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+              className="w-full bg-background border border-border ring-1 ring-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary focus:ring-primary/30 transition-colors"
             />
           </div>
 
@@ -93,7 +94,7 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email address"
-              className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+              className="w-full bg-background border border-border ring-1 ring-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary focus:ring-primary/30 transition-colors"
               required
             />
           </div>
@@ -108,7 +109,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 8 characters"
-                className="w-full bg-background border border-border rounded-md px-3 py-2 pr-9 text-sm outline-none focus:border-primary transition-colors"
+                className="w-full bg-background border border-border ring-1 ring-border rounded-md px-3 py-2 pr-9 text-sm outline-none focus:border-primary focus:ring-primary/30 transition-colors"
                 required
               />
               <button
@@ -132,7 +133,7 @@ export default function RegisterPage() {
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="Repeat password"
-                className="w-full bg-background border border-border rounded-md px-3 py-2 pr-9 text-sm outline-none focus:border-primary transition-colors"
+                className="w-full bg-background border border-border ring-1 ring-border rounded-md px-3 py-2 pr-9 text-sm outline-none focus:border-primary focus:ring-primary/30 transition-colors"
                 required
               />
               <button

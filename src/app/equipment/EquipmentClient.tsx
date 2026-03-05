@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Search, X } from "lucide-react";
+import { Search, X, Star as StarIcon } from "lucide-react";
 import {
   EQUIPMENT_ITEMS,
   EQUIPMENT_CATEGORIES,
@@ -60,11 +60,9 @@ function StarRating({
               }),
             });
           }}
-          className={`text-lg leading-none transition-colors ${
-            star <= (hover || rating) ? "text-primary" : "text-muted-foreground/30"
-          }`}
+          className="transition-colors"
         >
-          ★
+          <StarIcon className={`h-4 w-4 ${star <= (hover || rating) ? "text-primary fill-primary" : "text-muted-foreground/30"}`} />
         </button>
       ))}
       <span className="text-xs text-muted-foreground ml-1">Rate</span>
@@ -87,14 +85,14 @@ function ItemCard({
   const imgSrc = item.imageUrl ?? null;
 
   return (
-    <div className="relative rounded-lg border border-border bg-card overflow-hidden hover:border-primary/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md flex flex-col">
+    <div className="relative rounded-lg border border-border bg-card overflow-hidden hover:border-primary/40 hover:shadow-lg transition-all duration-200 flex flex-col">
 
       {/* Product image */}
       <a
         href={url}
         target="_blank"
         rel="noopener noreferrer sponsored"
-        className="relative block h-44 bg-white flex items-center justify-center overflow-hidden"
+        className="relative block h-44 bg-muted flex items-center justify-center overflow-hidden"
       >
         {item.vendor === "sportys" && (
           <div className="absolute top-2 left-2 bg-blue-700/90 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded z-10">

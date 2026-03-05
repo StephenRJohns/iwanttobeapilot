@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ResourceIcon from "./ResourceIcon";
 
 export const metadata: Metadata = {
   title: "Free Pilot Training Resources",
@@ -21,6 +22,7 @@ interface Resource {
 interface ResourceSection {
   title: string;
   icon: string;
+  iconName: string;
   resources: Resource[];
 }
 
@@ -28,6 +30,7 @@ const RESOURCE_SECTIONS: ResourceSection[] = [
   {
     title: "FAA Official Handbooks",
     icon: "📖",
+    iconName: "BookOpen",
     resources: [
       {
         name: "Pilot's Handbook of Aeronautical Knowledge (PHAK)",
@@ -67,6 +70,7 @@ const RESOURCE_SECTIONS: ResourceSection[] = [
   {
     title: "FAA Regulations",
     icon: "⚖",
+    iconName: "Scale",
     resources: [
       {
         name: "FAR/AIM Online",
@@ -93,6 +97,7 @@ const RESOURCE_SECTIONS: ResourceSection[] = [
   {
     title: "Practice Tests & Study Tools",
     icon: "✏",
+    iconName: "PenTool",
     resources: [
       {
         name: "FAA Practice Tests (FAASafety.gov)",
@@ -121,6 +126,7 @@ const RESOURCE_SECTIONS: ResourceSection[] = [
   {
     title: "Weather & Navigation Resources",
     icon: "🌤",
+    iconName: "Cloud",
     resources: [
       {
         name: "Aviation Weather Center",
@@ -150,6 +156,7 @@ const RESOURCE_SECTIONS: ResourceSection[] = [
   {
     title: "FAA Medical & Certification",
     icon: "🏥",
+    iconName: "Heart",
     resources: [
       {
         name: "FAA MedXPress (Medical Application)",
@@ -178,6 +185,7 @@ const RESOURCE_SECTIONS: ResourceSection[] = [
   {
     title: "Career Resources",
     icon: "✈",
+    iconName: "Plane",
     resources: [
       {
         name: "AOPA (Aircraft Owners and Pilots Association)",
@@ -217,7 +225,7 @@ export default function ResourcesPage() {
         {RESOURCE_SECTIONS.map((section) => (
           <section key={section.title}>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">{section.icon}</span>
+              <ResourceIcon name={section.iconName} />
               <h2 className="text-lg font-semibold">{section.title}</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -227,7 +235,7 @@ export default function ResourcesPage() {
                   href={resource.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group rounded-lg border border-border bg-card p-4 hover:border-primary/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                  className="group rounded-lg border border-border bg-card p-4 hover:border-primary/40 hover:shadow-lg transition-all duration-200"
                 >
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <h3 className="text-sm font-medium group-hover:text-primary transition-colors leading-snug">

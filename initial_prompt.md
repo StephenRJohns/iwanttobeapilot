@@ -136,21 +136,34 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 - Light/dark theme toggle (class-based, stored in localStorage under "theme"; dark is default)
 - TailwindCSS v4 (CSS-first config, no tailwind.config.js)
 - Radix UI primitives
+- Global focus-visible ring (2px primary/50) and ::selection color (primary/20) in globals.css
+- Body transitions for smooth theme switching
 - Compact header: h-16, logo h-10, single-row horizontal nav with text-xs links and h-3.5 icons
 - Free nav items (Pricing, Schools, Resources, Costs, Equipment) on the left
-- White vertical divider + "Pro:" label separates free from pro nav items
+- Pricing link styled text-primary (not amber); all header icons use text-muted-foreground hover:text-foreground
+- bg-border vertical divider + "Pro:" label separates free from pro nav items
 - Pro nav items (Progress, DPEs, Stories, Forums) styled white/70, visible only when logged in
 - Pricing link hidden for pro/admin users
 - Right-side: HelpCircle (?), Contact Support (LifeBuoy), admin icon (if admin), Sign In / avatar+Sign Out
 - HelpCircle opens contextual slide-in help panel (HelpPanel.tsx) with page-specific content based on usePathname()
-- Contact Support icon opens modal that sends message to support@iwanttobeapilot.online via /api/support
-- Responsive mobile hamburger drawer with same free/pro split
+- Contact Support icon opens modal that sends message to support@iwanttobeapilot.online via /api/contact
+- Responsive mobile hamburger drawer with same free/pro split, bg-black/40 backdrop
 - Sign Out uses window.location.origin + "/" as callbackUrl (avoids NEXTAUTH_URL port mismatch in dev)
-- Micro-animations: active:scale-[0.97] on CTA buttons, hover:-translate-y-0.5 hover:shadow-md on cards
+- Lucide icons throughout — no emoji icons on homepage, resources, costs, or equipment pages
+- Homepage feature cards and pro feature cards use Lucide icons (GraduationCap, BookOpen, Headphones, DollarSign, BarChart3, Search, Star, Plane, MessageCircle, Trophy)
+- Resources section icons via ResourceIcon.tsx client component (BookOpen, Scale, PenTool, Cloud, Heart, Plane)
+- Costs page: tab underline indicator (not background), ChevronDown/ChevronUp for expand/collapse
+- Equipment: bg-muted product image backgrounds (dark-mode compatible), Lucide Star icons for ratings
+- Card hover: hover:shadow-lg hover:border-primary/40 (no translate)
+- Card component: shadow-sm with dark:shadow-md dark:shadow-black/20 for depth
+- Input component: focus:ring-1 focus:ring-primary/30 for clearer focus state
+- Auth pages: logo image instead of text, Google SVG icon on OAuth button, max-w-md forms, ring-1 ring-border on inputs
+- Micro-animations: active:scale-[0.97] on CTA buttons
 - Loading skeletons (animate-pulse) replace spinners for page-level loading states
 - Reusable EmptyState component for zero-result states
 - Custom error.tsx (global error boundary with "Try Again" + "Go Home") and not-found.tsx (aviation-themed 404)
-- Footer: 4-column grid (Brand, Product, Legal, Support) + bottom copyright bar with HTTPS badge
+- Footer: 4-column grid (Brand, Product, Legal, Support) with text-sm links + compact bottom copyright bar
+- Founder section: Quote icon accent above testimonial text
 
 ---
 

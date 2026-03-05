@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PILOT_LEVELS, HOBBY_PATH_IDS, CAREER_PATH_IDS } from "@/data/pilot-levels";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function CostsClient() {
   const [tab, setTab] = useState<"hobby" | "career">("career");
@@ -23,26 +24,28 @@ export default function CostsClient() {
       </div>
 
       {/* Path toggle */}
-      <div className="flex gap-2 mb-8 border-b border-border pb-4">
+      <div className="flex gap-0 mb-8 border-b border-border">
         <button
           onClick={() => setTab("hobby")}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+          className={`px-4 py-2.5 text-sm font-medium transition-colors relative ${
             tab === "hobby"
-              ? "bg-primary/10 text-primary"
+              ? "text-primary"
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Hobby Path
+          {tab === "hobby" && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t" />}
         </button>
         <button
           onClick={() => setTab("career")}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+          className={`px-4 py-2.5 text-sm font-medium transition-colors relative ${
             tab === "career"
-              ? "bg-primary/10 text-primary"
+              ? "text-primary"
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Career Path
+          {tab === "career" && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t" />}
         </button>
       </div>
 
@@ -125,7 +128,7 @@ export default function CostsClient() {
 
                 {/* Expand indicator */}
                 <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                  <span>{expanded === level.id ? "▲" : "▼"}</span>
+                  {expanded === level.id ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
                   <span>{expanded === level.id ? "Hide details" : "Show what's next"}</span>
                 </div>
               </button>
