@@ -33,6 +33,23 @@ export async function DELETE() {
       }
     }
 
+    // Cancel associated NavLogPro account (non-fatal)
+    if (user?.email) {
+      try {
+        const navlogproUrl = process.env.NAVLOGPRO_URL;
+        const secret = process.env.PARTNER_API_SECRET;
+        if (navlogproUrl && secret) {
+          await fetch(`${navlogproUrl}/api/partner/cancel-account`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-partner-secret": secret },
+            body: JSON.stringify({ email: user.email }),
+          });
+        }
+      } catch (err) {
+        console.error("NavLogPro cancel error (non-fatal):", err);
+      }
+    }
+
     await db.$transaction([
       db.auditLog.deleteMany({ where: { userId } }),
       db.termsAcceptance.deleteMany({ where: { userId } }),
