@@ -50,7 +50,10 @@ export default function Header() {
   const isLoggedIn = status === "authenticated";
   const isAuthPage = pathname.startsWith("/auth/");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const isAdminUser = (sessionData?.user as any)?.role === "admin";
+  const u = sessionData?.user as any;
+  const isAdminUser = u?.role === "admin";
+  const isProUser = u?.tier === "pro" || u?.tier === "beta" || isAdminUser;
+  const showPricing = !isProUser;
 
   const allNavLinks = isLoggedIn
     ? [
@@ -94,19 +97,21 @@ export default function Header() {
             {/* Nav links — Pricing + 4-column grid of gray items */}
             {!isAuthPage && (
               <nav className="hidden md:flex items-center gap-0.5">
-                <Link
-                  href="/pricing"
-                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
-                    pricingActive
-                      ? "bg-amber-400/15 text-amber-400"
-                      : "text-amber-400 hover:bg-amber-400/10"
-                  }`}
-                >
-                  <CreditCard className="h-4 w-4" />
-                  Pricing
-                </Link>
+                {showPricing && (
+                  <Link
+                    href="/pricing"
+                    className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
+                      pricingActive
+                        ? "bg-amber-400/15 text-amber-400"
+                        : "text-amber-400 hover:bg-amber-400/10"
+                    }`}
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    Pricing
+                  </Link>
+                )}
 
-                {/* 4-column grid: row 1 = public links, row 2 = auth links */}
+                {/* 4-column grid: row 1 = public links, row 2 = auth links (amber when pro) */}
                 <div className="grid grid-cols-4 gap-x-0.5 gap-y-0.5">
                   {navLinks.map(({ href, label, icon: Icon }) => {
                     const isActive = pathname === href || pathname.startsWith(`${href}/`);
@@ -134,7 +139,9 @@ export default function Header() {
                         className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                           isActive
                             ? "bg-primary/10 text-primary"
-                            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            : isProUser
+                              ? "text-amber-400/80 hover:bg-amber-400/10 hover:text-amber-400"
+                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                         }`}
                       >
                         <Icon className="h-4 w-4" />
