@@ -127,7 +127,7 @@ export const PILOT_LEVELS: PilotLevel[] = [
       "Hold FAA 3rd class medical",
     ],
     nextSteps: [
-      "Enroll in ground school (Sporty's, King Schools, or local)",
+      "Enroll in ground school (ATP, Sporty's, King Schools, or local)",
       "Log 40+ flight hours with a CFI",
       "Complete required cross-country and night flights",
       "Pass FAA written test",

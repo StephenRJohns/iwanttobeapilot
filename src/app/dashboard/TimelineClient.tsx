@@ -52,6 +52,7 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [equipmentCollapsed, setEquipmentCollapsed] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetch("/api/progress")
@@ -246,37 +247,50 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
                         </ol>
                       </div>
 
-                      {/* Recommended products */}
+                      {/* Recommended products — collapsible, expanded by default */}
                       {level.recommendedProductIds.length > 0 && (() => {
                         const products = level.recommendedProductIds
                           .map(id => EQUIPMENT_ITEMS.find(e => e.id === id))
                           .filter(Boolean) as typeof EQUIPMENT_ITEMS;
+                        const isGearCollapsed = equipmentCollapsed[level.id] ?? false;
                         return (
                           <div>
-                            <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEquipmentCollapsed(prev => ({ ...prev, [level.id]: !isGearCollapsed }));
+                              }}
+                              className="flex items-center gap-1 text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2 hover:text-foreground transition-colors"
+                            >
+                              <span className="text-[10px]">{isGearCollapsed ? "▶" : "▼"}</span>
                               Recommended Gear
-                            </p>
-                            <ul className="space-y-1">
-                              {products.map(product => (
-                                <li key={product.id}>
-                                  <a
-                                    href={getAffiliateUrl(product)}
-                                    target="_blank"
-                                    rel="noopener noreferrer sponsored"
-                                    data-asin={product.asin}
-                                    className="flex items-center justify-between gap-3 rounded px-2 py-1.5 border border-border bg-background hover:border-primary/40 hover:bg-primary/5 transition-colors"
-                                  >
-                                    <span className="text-xs text-foreground truncate">{product.name}</span>
-                                    <span className="text-[10px] text-muted-foreground shrink-0 whitespace-nowrap">
-                                      {getVendorLabel(product)} →
-                                    </span>
-                                  </a>
-                                </li>
-                              ))}
-                            </ul>
-                            <p className="text-[10px] text-muted-foreground/50 mt-1">
-                              Some links are affiliate links — helps support the site at no extra cost to you.
-                            </p>
+                            </button>
+                            {!isGearCollapsed && (
+                              <>
+                                <ul className="space-y-1">
+                                  {products.map(product => (
+                                    <li key={product.id}>
+                                      <a
+                                        href={getAffiliateUrl(product)}
+                                        target="_blank"
+                                        rel="noopener noreferrer sponsored"
+                                        data-asin={product.asin}
+                                        className="flex items-center justify-between gap-3 rounded px-2 py-1.5 border border-border bg-background hover:border-primary/40 hover:bg-primary/5 transition-colors"
+                                      >
+                                        <span className="text-xs text-foreground truncate">{product.name}</span>
+                                        <span className="text-[10px] text-muted-foreground shrink-0 whitespace-nowrap">
+                                          {getVendorLabel(product)} →
+                                        </span>
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <p className="text-[10px] text-muted-foreground/50 mt-1">
+                                  Some links are affiliate links — helps support the site at no extra cost to you.
+                                </p>
+                              </>
+                            )}
                           </div>
                         );
                       })()}

@@ -67,6 +67,10 @@ Leaflet/react-leaflet requires dynamic import with `ssr: false`. Never import Le
 
 Uses `@modelcontextprotocol/sdk` StdioClientTransport to spawn a child process at `DPE_MCP_PATH` for FAA pass rate data (JSON-RPC over stdio).
 
+### Progress Timeline
+
+Dashboard timeline shows pilot certification roadmap per selected goal. Each milestone card expands to show "What You Will Learn," collapsible recommended gear (expanded by default), next steps, and status buttons. Equipment recommendations use affiliate links (Amazon, Sporty's). Ground school references include ATP, Sporty's, King Schools, and local options.
+
 ### Stripe
 
 Subscription flow via `/api/stripe/` endpoints. Customer and subscription IDs stored on User (`stripeCustomerId`, `stripeSubscriptionId`, `stripePriceId`, `stripeCurrentPeriodEnd`).

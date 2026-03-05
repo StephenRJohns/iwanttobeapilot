@@ -128,7 +128,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
       },
       {
         q: "How does the Progress Timeline work?",
-        a: "The Progress Timeline (in Dashboard) shows a visual roadmap of all pilot certification levels. Expand any level card to see a \"What You Will Learn\" summary, recommended gear for that stage, step-by-step milestone guidance, and next steps. Check off milestones as you complete them. It tracks your journey from student pilot to whatever goal you set.",
+        a: "The Progress Timeline (in Dashboard) shows a visual roadmap of all pilot certification levels. Expand any level card to see a \"What You Will Learn\" summary, a collapsible recommended gear section for that stage, step-by-step milestone guidance, and next steps. Check off milestones as you complete them. It tracks your journey from student pilot to whatever goal you set.",
       },
       {
         q: "How does the DPE Finder work?",
