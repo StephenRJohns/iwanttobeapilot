@@ -18,6 +18,10 @@ import {
   Settings,
   LogOut,
   Shield,
+  LifeBuoy,
+  Send,
+  Loader2,
+  CheckCircle,
 } from "lucide-react";
 import HelpPanel from "@/components/help/HelpPanel";
 
@@ -41,6 +45,7 @@ export default function Header() {
   const { status, data: sessionData } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
 
   const isLoggedIn = status === "authenticated";
   const isAuthPage = pathname.startsWith("/auth/");
@@ -120,9 +125,13 @@ export default function Header() {
                     );
                   })}
                 </div>
-                {/* Row 2: auth-only links (Progress, DPEs, Stories, Forums) */}
+                {/* Row 2: auth-only links — invisible Pricing spacer aligns with row 1 */}
                 {isLoggedIn && (
                   <div className="flex items-center gap-0.5">
+                    <span className="invisible pointer-events-none flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold" aria-hidden="true">
+                      <CreditCard className="h-4 w-4" />
+                      Pricing
+                    </span>
                     {[{ href: "/dashboard", label: "Progress", icon: LayoutDashboard }, ...authNavLinks].map(({ href, label, icon: Icon }) => {
                       const isActive = pathname === href || pathname.startsWith(`${href}/`);
                       return (
@@ -176,8 +185,8 @@ export default function Header() {
                       href="/admin"
                       className={`rounded-md p-2 transition-colors ${
                         pathname.startsWith("/admin")
-                          ? "text-red-400"
-                          : "text-red-500/70 hover:bg-red-900/20 hover:text-red-400"
+                          ? "bg-red-600 text-white"
+                          : "bg-red-600/80 text-white hover:bg-red-600"
                       }`}
                       aria-label="Admin"
                       title="Admin"
@@ -185,6 +194,14 @@ export default function Header() {
                       <Shield className="h-5 w-5" />
                     </Link>
                   )}
+                  <button
+                    onClick={() => setContactOpen(true)}
+                    className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
+                    aria-label="Contact support"
+                    title="Contact support"
+                  >
+                    <LifeBuoy className="h-5 w-5" />
+                  </button>
                   <button
                     onClick={() => signOut({ callbackUrl: window.location.origin + "/" })}
                     className="rounded-md p-2 text-amber-400/70 hover:bg-amber-400/10 hover:text-amber-400 transition-colors"
@@ -342,6 +359,98 @@ export default function Header() {
 
       {/* Help panel */}
       <HelpPanel open={helpOpen} onClose={() => setHelpOpen(false)} />
+
+      {/* Contact support modal */}
+      {contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}
     </>
+  );
+}
+
+function ContactModal({ onClose }: { onClose: () => void }) {
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setSending(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject, message }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to send message");
+      }
+      setSent(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to send message. Try again.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-black/60" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-xl">
+        <div className="flex items-center gap-2 mb-4">
+          <LifeBuoy className="h-5 w-5 text-primary" />
+          <h2 className="text-sm font-semibold">Contact Support</h2>
+        </div>
+
+        {sent ? (
+          <div className="text-center py-4">
+            <CheckCircle className="h-8 w-8 text-green-400 mx-auto mb-2" />
+            <p className="text-sm font-medium">Message sent!</p>
+            <p className="text-xs text-muted-foreground mt-1">We&apos;ll get back to you as soon as possible.</p>
+            <button onClick={onClose} className="mt-4 text-xs px-3 py-1.5 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors">
+              Close
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div>
+              <label className="text-xs uppercase tracking-wider text-muted-foreground font-medium block mb-1">Subject</label>
+              <input
+                type="text"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder="What do you need help with?"
+                required
+                className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+              />
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-muted-foreground font-medium block mb-1">Message</label>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Describe your issue or question..."
+                rows={4}
+                required
+                className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary transition-colors resize-none"
+              />
+            </div>
+            {error && (
+              <p className="text-xs text-red-400 bg-red-400/10 border border-red-400/20 rounded p-2">{error}</p>
+            )}
+            <div className="flex gap-2 justify-end pt-1">
+              <button type="button" onClick={onClose} className="text-xs px-3 py-1.5 border border-border rounded-md text-muted-foreground hover:text-foreground transition-colors">
+                Cancel
+              </button>
+              <button type="submit" disabled={sending} className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 transition-colors">
+                {sending ? <><Loader2 className="h-3 w-3 animate-spin" /> Sending…</> : <><Send className="h-3 w-3" /> Send Message</>}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
   );
 }
