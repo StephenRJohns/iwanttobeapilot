@@ -19,7 +19,7 @@ export async function DELETE() {
       select: { stripeSubscriptionId: true, email: true },
     });
 
-    if (user?.email === "admin@iwanttobeapilot.online") {
+    if (user?.email === process.env.ADMIN_EMAIL) {
       return NextResponse.json({ error: "The primary admin account cannot be deleted" }, { status: 400 });
     }
 

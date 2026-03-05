@@ -67,7 +67,7 @@ export async function DELETE(
     const user = await db.user.findUnique({ where: { id }, select: { email: true, role: true } });
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    if (user.email === "admin@iwanttobeapilot.online") {
+    if (user.email === process.env.ADMIN_EMAIL) {
       return NextResponse.json({ error: "The primary admin account cannot be deleted" }, { status: 400 });
     }
 

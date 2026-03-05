@@ -236,8 +236,11 @@ async function main() {
   console.log("✓ Flight schools");
 
   // 4. Admin account
-  const adminEmail = "admin@iwanttobeapilot.online";
-  const adminPassword = "floofs!!QQ1209";
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword) {
+    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment");
+  }
   const hashedPassword = await bcrypt.hash(adminPassword, 12);
 
   await db.user.upsert({

@@ -4,10 +4,16 @@ import bcrypt from "bcryptjs";
 const db = new PrismaClient();
 
 async function main() {
-  const hashedPassword = await bcrypt.hash("floofs!!QQ1209", 12);
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword) {
+    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment");
+  }
+
+  const hashedPassword = await bcrypt.hash(adminPassword, 12);
 
   const admin = await db.user.upsert({
-    where: { email: "admin@iwanttobeapilot.online" },
+    where: { email: adminEmail },
     update: {
       hashedPassword,
       role: "admin",
@@ -17,7 +23,7 @@ async function main() {
       mustChangePassword: false,
     },
     create: {
-      email: "admin@iwanttobeapilot.online",
+      email: adminEmail,
       name: "Admin",
       hashedPassword,
       role: "admin",
@@ -28,7 +34,7 @@ async function main() {
     },
   });
 
-  console.log("Admin account fixed:", admin.email, "status:", admin.status, "emailVerified:", admin.emailVerified);
+  console.log("Admin account fixed:", admin.email, "role:", admin.role, "status:", admin.status, "emailVerified:", admin.emailVerified);
 }
 
 main()

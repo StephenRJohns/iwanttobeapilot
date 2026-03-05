@@ -4,8 +4,12 @@ import bcrypt from "bcryptjs";
 const db = new PrismaClient();
 
 async function main() {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail) throw new Error("ADMIN_EMAIL must be set in environment");
+
   const user = await db.user.findUnique({
-    where: { email: "admin@iwanttobeapilot.online" },
+    where: { email: adminEmail },
     select: {
       id: true,
       email: true,
@@ -28,8 +32,8 @@ async function main() {
   console.log("  role:", user.role);
   console.log("  hashedPassword present:", !!user.hashedPassword);
 
-  if (user.hashedPassword) {
-    const valid = await bcrypt.compare("floofs!!QQ1209", user.hashedPassword);
+  if (user.hashedPassword && adminPassword) {
+    const valid = await bcrypt.compare(adminPassword, user.hashedPassword);
     console.log("  password match:", valid);
   }
 }
