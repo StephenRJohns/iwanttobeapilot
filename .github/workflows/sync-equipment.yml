@@ -1,0 +1,65 @@
+name: Weekly Equipment Sync
+
+on:
+  schedule:
+    - cron: "0 5 * * 0"   # Every Sunday at 00:00 CDT (05:00 UTC)
+  workflow_dispatch:        # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run equipment sync
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: npx tsx scripts/sync-equipment.ts
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ -n "$(git diff --name-only)" ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/equipment.ts src/data/pilot-levels.ts
+          git commit -m "chore: auto-sync equipment items
+
+          Automated weekly equipment validation and discovery.
+          Removes dead links, updates redirects, adds new products."
+          git push
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          curl -s -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"from\": \"noreply@iwanttobeapilot.online\",
+              \"to\": \"jjjjj_enterprises_llc@protonmail.com\",
+              \"subject\": \"[I Want To Be A Pilot] Equipment sync FAILED\",
+              \"html\": \"<pre style='font-family:monospace'>GitHub Actions workflow failed. Check the Actions tab for details.</pre>\"
+            }"

@@ -251,7 +251,8 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
                       {level.recommendedProductIds.length > 0 && (() => {
                         const products = level.recommendedProductIds
                           .map(id => EQUIPMENT_ITEMS.find(e => e.id === id))
-                          .filter(Boolean) as typeof EQUIPMENT_ITEMS;
+                          .filter(Boolean)
+                          .slice(0, 10) as typeof EQUIPMENT_ITEMS;
                         const isGearCollapsed = equipmentCollapsed[level.id] ?? false;
                         return (
                           <div>
