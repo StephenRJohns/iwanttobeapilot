@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -32,9 +33,71 @@ interface School {
 interface SchoolsMapProps {
   schools: School[];
   center: { lat: number; lng: number };
+  onSearchHere?: (center: { lat: number; lng: number }) => void;
+  loading?: boolean;
 }
 
-export default function SchoolsMap({ schools, center }: SchoolsMapProps) {
+function SearchHereControl({
+  onSearchHere,
+  loading,
+}: {
+  onSearchHere: (center: { lat: number; lng: number }) => void;
+  loading: boolean;
+}) {
+  const map = useMap();
+  const [moved, setMoved] = useState(false);
+
+  useMapEvents({
+    dragend: () => setMoved(true),
+    zoomend: () => setMoved(true),
+  });
+
+  // Reset moved when a search completes (loading flips false → parent updated center)
+  useEffect(() => {
+    if (!loading) setMoved(false);
+  }, [loading]);
+
+  const active = moved && !loading;
+
+  return createPortal(
+    <div
+      style={{
+        position: "absolute",
+        top: "12px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 1000,
+      }}
+    >
+      <button
+        disabled={!active}
+        onClick={() => {
+          const c = map.getCenter();
+          setMoved(false);
+          onSearchHere({ lat: c.lat, lng: c.lng });
+        }}
+        style={{
+          background: active ? "#fff" : "rgba(255,255,255,0.6)",
+          color: active ? "#1a1a1a" : "#888",
+          border: "1px solid rgba(0,0,0,0.15)",
+          borderRadius: "6px",
+          padding: "6px 14px",
+          fontSize: "13px",
+          fontWeight: 500,
+          cursor: active ? "pointer" : "not-allowed",
+          boxShadow: active ? "0 2px 6px rgba(0,0,0,0.18)" : "none",
+          transition: "all 0.15s ease",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {loading ? "Searching…" : "Search This Area"}
+      </button>
+    </div>,
+    map.getContainer()
+  );
+}
+
+export default function SchoolsMap({ schools, center, onSearchHere, loading = false }: SchoolsMapProps) {
   // Suppress leaflet hydration warnings
   useEffect(() => {}, []);
 
@@ -48,6 +111,9 @@ export default function SchoolsMap({ schools, center }: SchoolsMapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       />
+      {onSearchHere && (
+        <SearchHereControl onSearchHere={onSearchHere} loading={loading} />
+      )}
       {schools.map((school) => (
         <Marker key={school.id} position={[school.lat, school.lng]}>
           <Popup>

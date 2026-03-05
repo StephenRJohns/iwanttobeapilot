@@ -151,14 +151,21 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const zip = searchParams.get("zip")?.trim();
     const radius = parseFloat(searchParams.get("radius") || "50");
+    const latParam = searchParams.get("lat");
+    const lngParam = searchParams.get("lng");
 
-    if (!zip) {
-      return NextResponse.json({ error: "Zip code is required" }, { status: 400 });
-    }
+    let coords: { lat: number; lng: number } | null = null;
 
-    const coords = await geocodeZip(zip);
-    if (!coords) {
-      return NextResponse.json({ error: "Could not find that zip code" }, { status: 400 });
+    if (latParam && lngParam) {
+      coords = { lat: parseFloat(latParam), lng: parseFloat(lngParam) };
+    } else {
+      if (!zip) {
+        return NextResponse.json({ error: "Zip code is required" }, { status: 400 });
+      }
+      coords = await geocodeZip(zip);
+      if (!coords) {
+        return NextResponse.json({ error: "Could not find that zip code" }, { status: 400 });
+      }
     }
 
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;

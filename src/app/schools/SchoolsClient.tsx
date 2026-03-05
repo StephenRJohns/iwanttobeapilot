@@ -63,6 +63,31 @@ export default function SchoolsClient() {
     setLoading(false);
   }
 
+  async function handleSearchHere({ lat, lng }: { lat: number; lng: number }) {
+    setError("");
+    setLoading(true);
+    setSearched(true);
+    setPage(0);
+
+    try {
+      const res = await fetch(`/api/schools?lat=${lat}&lng=${lng}&radius=${radius}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Search failed. Please try again.");
+        setSchools([]);
+        setCenter(null);
+      } else {
+        setSchools(data.schools);
+        setCenter({ lat, lng });
+      }
+    } catch {
+      setError("Search failed. Please check your connection and try again.");
+    }
+
+    setLoading(false);
+  }
+
   const totalPages = Math.ceil(schools.length / pageSize);
   const pageRows = schools.slice(page * pageSize, (page + 1) * pageSize);
 
@@ -125,7 +150,7 @@ export default function SchoolsClient() {
       {/* Map */}
       {searched && !loading && center && schools.length > 0 && (
         <div className="rounded-lg border border-border overflow-hidden mb-6" style={{ height: "400px" }}>
-          <SchoolsMap schools={schools} center={center} />
+          <SchoolsMap schools={schools} center={center} onSearchHere={handleSearchHere} loading={loading} />
         </div>
       )}
 
@@ -206,7 +231,6 @@ export default function SchoolsClient() {
                       <th className="text-left px-4 py-3 font-medium text-muted-foreground">Name</th>
                       <th className="text-left px-4 py-3 font-medium text-muted-foreground">Address</th>
                       <th className="text-left px-4 py-3 font-medium text-muted-foreground">Phone</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Email</th>
                       <th className="text-left px-4 py-3 font-medium text-muted-foreground">Website</th>
                       <th className="text-right px-4 py-3 font-medium text-muted-foreground">Distance</th>
                     </tr>
@@ -227,15 +251,6 @@ export default function SchoolsClient() {
                           {school.phone ? (
                             <a href={`tel:${school.phone}`} className="text-primary hover:underline whitespace-nowrap">
                               {school.phone}
-                            </a>
-                          ) : (
-                            <span className="text-muted-foreground/50">—</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          {school.email ? (
-                            <a href={`mailto:${school.email}`} className="text-primary hover:underline">
-                              {school.email}
                             </a>
                           ) : (
                             <span className="text-muted-foreground/50">—</span>
