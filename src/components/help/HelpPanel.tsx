@@ -353,6 +353,44 @@ function getPageHelp(pathname: string): PageHelp {
     };
   }
 
+  // FAA Knowledge Tests hub page
+  if (pathname === "/knowledge-tests") {
+    return {
+      title: "FAA Knowledge Tests",
+      sections: [
+        {
+          heading: "Choosing a test",
+          items: [
+            "Tests are organized into four categories: Pilot Certificates (PAR, IRA, CAX, ATP), Add-on Ratings (MEA, AGI), Instructor Certificates (FOI, FIA, FII), and Other (SPG, RPA).",
+            "Each card shows the test code, full name, and the number of questions on the real FAA exam.",
+            "Pick the test that matches your next certificate or rating.",
+          ],
+        },
+        {
+          heading: "Study mode",
+          items: [
+            "Click 'Study' on any test card to enter study mode.",
+            "Select which Areas of Knowledge (AOKs) to focus on, set your question count (10–100), and get instant feedback with explanations after every answer.",
+            "Study sessions are not tracked — practice as many times as you like without pressure.",
+          ],
+        },
+        {
+          heading: "Sample test mode",
+          items: [
+            "Click 'Take Test' to enter the test prep hub for that exam.",
+            "Generate a full-length sample test matching the real FAA format — same question count and 70% passing threshold.",
+            "Answers are hidden until you submit the entire test, just like the real exam.",
+            "Your results are saved with a score breakdown by AOK, and questions you miss 2+ times are tracked in the 'Questions to Work On' tab for focused review.",
+          ],
+        },
+      ],
+      seeAlso: [
+        { label: "Progress Timeline", href: "/dashboard" },
+        { label: "Free Resources", href: "/resources" },
+      ],
+    };
+  }
+
   // Dashboard / Progress Timeline
   if (pathname === "/dashboard") {
     return {
