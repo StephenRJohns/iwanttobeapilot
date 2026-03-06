@@ -15,13 +15,14 @@ export async function PATCH(
 
   try {
     const { id } = await params;
-    const { revoked, maxUses, expiresAt } = await req.json();
+    const { revoked, maxUses, expiresAt, assignedToUserId } = await req.json();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = {};
     if (typeof revoked === "boolean") data.revoked = revoked;
     if (typeof maxUses === "number") data.maxUses = maxUses;
     if (expiresAt !== undefined) data.expiresAt = expiresAt ? new Date(expiresAt) : null;
+    if (assignedToUserId !== undefined) data.assignedToUserId = assignedToUserId || null;
 
     const updated = await db.promoCode.update({ where: { id }, data });
     return NextResponse.json(updated);

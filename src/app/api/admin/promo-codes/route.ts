@@ -40,7 +40,15 @@ export async function GET(req: NextRequest) {
     else if (status === "expired") { where.revoked = false; where.expiresAt = { lte: now }; }
 
     const [codes, total] = await Promise.all([
-      db.promoCode.findMany({ where, orderBy: { createdAt: "desc" }, skip, take: limit }),
+      db.promoCode.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+        include: {
+          assignedTo: { select: { id: true, email: true, name: true } },
+        },
+      }),
       db.promoCode.count({ where }),
     ]);
 
@@ -97,14 +105,21 @@ export async function DELETE(req: NextRequest) {
   if (!(await adminGuard())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
-    const { ids } = await req.json();
+    const body = await req.json();
+    const { ids, force } = body as { ids: string[]; force?: boolean };
     if (!ids?.length) return NextResponse.json({ error: "No IDs provided" }, { status: 400 });
 
     const codes = await db.promoCode.findMany({ where: { id: { in: ids } }, select: { id: true, code: true, uses: true } });
-    const deletable = codes.filter((c) => c.uses === 0).map((c) => c.id);
-    const skipped = codes.filter((c) => c.uses > 0).length;
 
-    if (deletable.length > 0) await db.promoCode.deleteMany({ where: { id: { in: deletable } } });
+    const deletable = force ? codes.map((c) => c.id) : codes.filter((c) => c.uses === 0).map((c) => c.id);
+    const skipped = force ? 0 : codes.filter((c) => c.uses > 0).length;
+
+    if (deletable.length > 0) {
+      if (force) {
+        await db.user.updateMany({ where: { promoCodeId: { in: deletable } }, data: { promoCodeId: null } });
+      }
+      await db.promoCode.deleteMany({ where: { id: { in: deletable } } });
+    }
 
     return NextResponse.json({ deleted: deletable.length, skipped });
   } catch (err) {

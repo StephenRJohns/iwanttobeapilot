@@ -31,16 +31,17 @@ model User {
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
 
-  accounts          Account[]
-  sessions          Session[]
-  termsAcceptances  TermsAcceptance[]
-  progress          UserProgress[]
-  ratings           Rating[]
-  stories           Story[]
-  discussions       DiscussionPost[]
-  discussionReplies DiscussionReply[]
-  testBankAttempts   TestBankAttempt[]
+  accounts             Account[]
+  sessions             Session[]
+  termsAcceptances     TermsAcceptance[]
+  progress             UserProgress[]
+  ratings              Rating[]
+  stories              Story[]
+  discussions          DiscussionPost[]
+  discussionReplies    DiscussionReply[]
+  testBankAttempts     TestBankAttempt[]
   testBankWrongAnswers TestBankWrongAnswer[]
+  distributingCodes    PromoCode[]          @relation("PromoCodeDistributor")
 }
 
 model Account {
@@ -78,16 +79,19 @@ model VerificationToken {
 }
 
 model PromoCode {
-  id             String    @id @default(cuid())
-  code           String    @unique
-  blockName      String?
-  maxUses        Int       @default(1)
-  uses           Int       @default(0)
-  revoked        Boolean   @default(false)
-  discountPct    Int       @default(100)
-  durationMonths Int?
-  expiresAt      DateTime?
-  createdAt      DateTime  @default(now())
+  id               String    @id @default(cuid())
+  code             String    @unique
+  blockName        String?
+  assignedToUserId String?
+  maxUses          Int       @default(1)
+  uses             Int       @default(0)
+  revoked          Boolean   @default(false)
+  discountPct      Int       @default(100)
+  durationMonths   Int?
+  expiresAt        DateTime?
+  createdAt        DateTime  @default(now())
+
+  assignedTo User? @relation("PromoCodeDistributor", fields: [assignedToUserId], references: [id], onDelete: SetNull)
 }
 
 model TermsAcceptance {

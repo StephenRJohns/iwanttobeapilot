@@ -39,8 +39,9 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 
 ### Pricing Page
 - Free tier vs. Pro tier comparison
-- Monthly ($9.99) and annual ($99.99) billing options with 17% savings callout
-- NavLogPro bundle callout (free NavLogPro account included with Pro, a $99/year value)
+- Monthly ($8.99) and annual ($59.99/year, $5.00/mo, 44% savings) billing options
+- NavLogPro bundle callout (free NavLogPro account included with Pro, a $50/year value)
+- NavLogPro Upgrade Pack: existing NavLogPro users can upgrade to iwanttobeapilot Pro for $29.99/year — enter NavLogPro email, verify via partner API, Stripe checkout, account auto-created
 - Promo code redemption form
 
 ---
@@ -51,12 +52,19 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 - Visual timeline of all certification levels with expand/collapse cards
 - Mark milestones as complete at each level
 - Step-by-step guidance at each certification level
+- FAA knowledge test badges (yellow) link to test prep for each milestone
+
+### FAA Knowledge Test Prep
+- Study Mode: pick specific Areas of Knowledge, set question count (10–100), instant feedback with explanations after every answer
+- Sample Test Mode: full-length exam matching real FAA test (e.g., 60 questions for PAR), no peeking, results saved to history with score breakdown by subject
+- "Questions to Work On" tab: tracks questions missed 2+ times, focused mini-test to drill weak spots
+- Test banks: PAR, IRA, CAX, ATP, FOI, FIA, FII, and others synced from official FAA data
+- Accessible via yellow test badges on Progress Timeline milestones
 
 ### DPE Finder
 - Search Designated Pilot Examiners by name, certificate type, and state
 - Show aggregate FAA checkride pass rate data from DPE data unifier MCP service
 - DPE data sourced from FAA Civil Airmen Statistics (public domain per 17 U.S.C. § 105)
-- "Coming soon" banner on directory while awaiting full FAA data release
 
 ### Rate Schools & DPEs
 - Pro users can leave star ratings and written reviews for flight schools and DPEs
@@ -88,26 +96,37 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 
 ### Admin Panel
 - User management (view, edit tier/role, ban)
-- Promo code management (create, toggle active)
+- Promo code management: create single codes or batch blocks, revoke/un-revoke, view redeemers per code, assign codes to distributor users, bulk assign/unassign, force-delete redeemed codes
+  - `GET /api/admin/promo-codes/[id]/users` — list users who redeemed a specific code
+  - `POST /api/admin/promo-codes/assign` — assign/unassign codes to distributor by email; supports codeId or blockName (batch)
 - Audit log viewer
 - Site settings
 
 ### Payments
-- Stripe with monthly and annual Pro plans
+- Stripe with monthly ($8.99) and annual ($59.99) Pro plans
+- NavLogPro upgrade plan ($29.99/year) via STRIPE_NAVLOGPRO_UPGRADE_PRICE_ID
+- `src/lib/stripe.ts` exports `PLANS` object: `pro_monthly`, `pro_yearly`, `navlogpro_upgrade` — all priceIds from env vars
+- Stripe API version: `2026-02-25.clover`
 - Stripe webhook for subscription lifecycle events (created, updated, deleted)
+- NavLogPro upgrade webhook path: find or create user by navlogpro_email metadata; new users get auto-created account + welcome email with forgot-password link
 - Stripe customer portal for self-serve billing management
+- NavLogPro upgrade checkout at /api/stripe/checkout/navlogpro (no auth required); verifies email via NavLogPro partner API before creating session; graceful degradation if NavLogPro is unreachable
 
 ### Email
 - Resend for transactional email
 - Email verification, password reset, welcome emails
+- NavLogPro upgrade welcome email for newly created accounts
 
 ### Partner Integration
-- NavLogPro promo code generation API for Pro subscribers
+- NavLogPro promo code generation API for Pro subscribers (POST /api/partner/navlogpro-code → NavLogPro generates PILOT-XXXXXX code)
+- NavLogPro email verification API for upgrade flow (POST /api/partner/navlogpro-verify → NavLogPro /api/partner/verify-user)
+- Partner calls authenticated via x-partner-secret header (PARTNER_API_SECRET env var)
 - Codes delivered via pricing page after subscription confirmed
+- NavLogPro upgrade checkout at /api/stripe/checkout/navlogpro (no auth required)
 
 ### Database
 - Prisma + PostgreSQL
-- Models: User, Account, Session, VerificationToken, PromoCode, TermsAcceptance, AuditLog, SiteSettings, UserProgress, FlightSchool, DPERecord, Rating, Story, DiscussionCategory, DiscussionPost, DiscussionReply
+- Models: User, Account, Session, VerificationToken, PromoCode (with assignedToUserId distributor relation), TermsAcceptance, AuditLog, SiteSettings, UserProgress, FlightSchool, DPERecord, Rating, Story, DiscussionCategory, DiscussionPost, DiscussionReply, PassRateCache, TestBankAttempt, TestBankWrongAnswer
 
 ### DPE Data
 - MCP service at ~/github/dpe_data_unifier reads FAA Civil Airmen Statistics
@@ -126,7 +145,7 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 - Equipment images: self-hosted only under /public/images/ — all external CDN hotlinks removed
 - Third-party trademarks (Garmin, Sporty's, ForeFlight, etc.): nominative use only for product identification; covered in Terms
 - react-leaflet: Hippocratic License 2.1 (ethics clause, non-copyleft, low risk for legitimate use)
-- IP audit completed March 2026 — overall COMPLIANT
+- IP audit completed March 2026, re-confirmed with new endpoints — overall COMPLIANT (new routes: /api/stripe/checkout/navlogpro, /api/admin/promo-codes/[id]/users, /api/admin/promo-codes/assign)
 - Footer: Terms of Service, Privacy Policy, Aviation Disclaimer links; copyright auto-increments from 2026
 - Full Help & FAQ at /help; contextual per-page help via HelpPanel.tsx (HelpCircle icon in header)
 

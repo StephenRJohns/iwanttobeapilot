@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
@@ -41,6 +41,19 @@ export default function PricingClient() {
   const [navlogCode, setNavlogCode] = useState("");
   const [navlogLoading, setNavlogLoading] = useState(false);
   const [navlogError, setNavlogError] = useState("");
+
+  // NavLogPro upgrade (for non-logged-in NavLogPro users)
+  const [nlpEmail, setNlpEmail] = useState("");
+  const [nlpLoading, setNlpLoading] = useState(false);
+  const [nlpError, setNlpError] = useState("");
+  const [navlogproSuccess, setNavlogproSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("navlogpro_success") === "1") setNavlogproSuccess(true);
+    }
+  }, []);
 
   async function claimNavlogCode() {
     setNavlogLoading(true);
@@ -86,6 +99,29 @@ export default function PricingClient() {
       setCheckoutError("Failed to start checkout. Please try again.");
     }
     setCheckoutLoading(false);
+  }
+
+  async function handleNavlogproUpgrade(e: React.FormEvent) {
+    e.preventDefault();
+    if (!nlpEmail.trim()) return;
+    setNlpLoading(true);
+    setNlpError("");
+    try {
+      const res = await fetch("/api/stripe/checkout/navlogpro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: nlpEmail.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setNlpError(data.error || "Failed to start checkout. Please try again.");
+      } else if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      setNlpError("Failed to connect. Please try again.");
+    }
+    setNlpLoading(false);
   }
 
   async function handlePromo(e: React.FormEvent) {
@@ -328,6 +364,45 @@ export default function PricingClient() {
           {promoSuccess && (
             <p className="text-xs text-primary mt-2">{promoSuccess}</p>
           )}
+        </div>
+      )}
+
+      {/* NavLogPro upgrade */}
+      {!isProUser && (
+        <div className="max-w-md mx-auto mt-6 border border-border rounded-lg p-5">
+          <h3 className="text-sm font-semibold mb-1">Already have a NavLogPro account?</h3>
+          <p className="text-xs text-muted-foreground mb-3">
+            NavLogPro subscribers get iwanttobeapilot Pro for <strong className="text-foreground">$29.99/year</strong> — enter your NavLogPro email and your account will be set up automatically.
+          </p>
+          {navlogproSuccess ? (
+            <div className="bg-primary/10 border border-primary/30 rounded-md px-4 py-3 text-center">
+              <p className="text-sm font-medium text-primary">Payment successful!</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Check your email for instructions to sign in to your new account.{" "}
+                <Link href="/auth/signin" className="text-primary hover:underline">Sign in now</Link>
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleNavlogproUpgrade} className="flex gap-2">
+              <input
+                type="email"
+                value={nlpEmail}
+                onChange={(e) => setNlpEmail(e.target.value)}
+                placeholder="Your NavLogPro email"
+                className="flex-1 bg-background border border-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+                required
+              />
+              <button
+                type="submit"
+                disabled={nlpLoading || !nlpEmail.trim()}
+                className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {nlpLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Upgrade
+              </button>
+            </form>
+          )}
+          {nlpError && <p className="text-xs text-destructive mt-2">{nlpError}</p>}
         </div>
       )}
 

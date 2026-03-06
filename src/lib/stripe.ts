@@ -23,6 +23,12 @@ export const PLANS = {
     price: 59.99,
     interval: "year" as const,
   },
+  navlogpro_upgrade: {
+    priceId: process.env.STRIPE_NAVLOGPRO_UPGRADE_PRICE_ID!,
+    label: "NavLogPro Upgrade",
+    price: 29.99,
+    interval: "year" as const,
+  },
 } as const;
 
 export type PlanKey = keyof typeof PLANS;

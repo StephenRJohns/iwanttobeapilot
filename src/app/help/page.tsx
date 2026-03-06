@@ -103,14 +103,6 @@ const sections: { title: string; items: FAQItem[] }[] = [
         ),
       },
       {
-        q: "How do the FAA Knowledge Test practice exams work?",
-        a: (
-          <>
-            From your <Link href="/dashboard" className="text-primary hover:underline">Progress Timeline</Link>, click the yellow test badge on any milestone (e.g., &ldquo;PAR Required&rdquo;) to access two modes: <strong className="text-foreground">Study Mode</strong> lets you pick specific Areas of Knowledge, set a question count (10–100), and get instant feedback with explanations after every answer — great for learning. <strong className="text-foreground">Sample Test Mode</strong> generates a full-length exam matching the real FAA test (e.g., 60 questions for PAR) with no peeking — results are saved to your history with a score breakdown by subject area. The &ldquo;Questions to Work On&rdquo; tab automatically tracks questions you&apos;ve missed 2+ times so you can drill your weak spots with a focused mini-test. All questions are synced from the official FAA test data banks. Pro subscription required.
-          </>
-        ),
-      },
-      {
         q: "What is on the Equipment Guide?",
         a: (
           <>
@@ -137,6 +129,14 @@ const sections: { title: string; items: FAQItem[] }[] = [
       {
         q: "How does the Progress Timeline work?",
         a: "The Progress Timeline shows a visual roadmap customized to your pilot goal (choose from 8 paths, Hobby Pilot through Major Cargo). Each milestone card expands to show \"What You Will Learn,\" recommended gear for that stage, step-by-step next actions, and links to FAA knowledge test prep. Yellow badges indicate which FAA tests are required (e.g., PAR, IRA, CAX). Mark milestones as In Progress or Complete — your progress is saved automatically with visual indicators (pulsing amber for in-progress, green checkmark for complete).",
+      },
+      {
+        q: "How do the FAA Knowledge Test practice exams work?",
+        a: (
+          <>
+            From your <Link href="/dashboard" className="text-primary hover:underline">Progress Timeline</Link>, click the yellow test badge on any milestone (e.g., &ldquo;PAR Required&rdquo;) to access two modes: <strong className="text-foreground">Study Mode</strong> lets you pick specific Areas of Knowledge, set a question count (10–100), and get instant feedback with explanations after every answer — great for learning. <strong className="text-foreground">Sample Test Mode</strong> generates a full-length exam matching the real FAA test (e.g., 60 questions for PAR) with no peeking — results are saved to your history with a score breakdown by subject area. The &ldquo;Questions to Work On&rdquo; tab automatically tracks questions you&apos;ve missed 2+ times so you can drill your weak spots with a focused mini-test. All questions are synced from the official FAA test data banks. Pro subscription required.
+          </>
+        ),
       },
       {
         q: "How does the DPE Finder work?",
@@ -168,8 +168,16 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "How much does Pro cost?",
         a: (
           <>
-            Pro is $8.99/month or $59.99/year ($5.00/month, saving 44%). See{" "}
-            <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> for current rates. We also offer promo codes for discounted or free access.
+            Pro is $8.99/month or $59.99/year ($5.00/month, saving 44%). NavLogPro subscribers can upgrade for $29.99/year — a special rate available on the{" "}
+            <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> page. We also offer promo codes for discounted or free access.
+          </>
+        ),
+      },
+      {
+        q: "I already have a NavLogPro account. Can I use it to sign up here?",
+        a: (
+          <>
+            Yes. On the <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> page, scroll to &ldquo;Already have a NavLogPro account?&rdquo; and enter your NavLogPro email. You&apos;ll be taken to Stripe checkout for the $29.99/year NavLogPro upgrade price. After payment, your iwanttobeapilot account is created automatically using your NavLogPro email. Check your inbox for a welcome email with instructions to set your password.
           </>
         ),
       },

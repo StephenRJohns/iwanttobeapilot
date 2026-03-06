@@ -117,6 +117,10 @@ export default function PrivacyPage() {
               <strong className="text-foreground">Cloudflare</strong> — DNS, CDN, and DDoS protection. Cloudflare processes network traffic data including IP addresses.{" "}
               <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">cloudflare.com/privacypolicy</a>
             </li>
+            <li>
+              <strong className="text-foreground">NavLogPro (navlogpro.training)</strong> — companion service operated by the same team. When you use the NavLogPro Upgrade flow on the Pricing page, we verify your email against NavLogPro solely to confirm account existence — no passwords or payment data are exchanged between services. When you are a Pro subscriber, we send your email to NavLogPro to generate a complimentary account promo code. See{" "}
+              <a href="https://navlogpro.training/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">navlogpro.training/privacy</a>.
+            </li>
           </ul>
         </section>
 
