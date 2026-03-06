@@ -41,7 +41,7 @@ export default function PrivacyPage() {
             <div>
               <h3 className="font-medium mb-1">Information collected automatically</h3>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li><strong className="text-foreground">Progress data:</strong> your pilot training milestone completion status</li>
+                <li><strong className="text-foreground">Progress data:</strong> your pilot training milestone completion status and knowledge test practice session results</li>
                 <li><strong className="text-foreground">Session data:</strong> authentication tokens stored in secure HTTP-only cookies</li>
                 <li><strong className="text-foreground">Log data:</strong> server logs may include IP address, browser type, pages visited, and timestamps</li>
               </ul>

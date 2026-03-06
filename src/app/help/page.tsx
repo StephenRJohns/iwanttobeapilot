@@ -48,6 +48,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
           <>
             No. The following features are free and require no account:{" "}
             <Link href="/schools" className="text-primary hover:underline">Flight School Search</Link>,{" "}
+            <Link href="/knowledge-tests" className="text-primary hover:underline">FAA Knowledge Test Prep</Link>,{" "}
             <Link href="/resources" className="text-primary hover:underline">Free Resources</Link>,{" "}
             <Link href="/equipment" className="text-primary hover:underline">Equipment Guide</Link>,{" "}
             <Link href="/costs" className="text-primary hover:underline">Cost & Timeline Estimator</Link>, and{" "}
@@ -103,6 +104,14 @@ const sections: { title: string; items: FAQItem[] }[] = [
         ),
       },
       {
+        q: "How do the FAA Knowledge Test practice exams work?",
+        a: (
+          <>
+            The <Link href="/knowledge-tests" className="text-primary hover:underline">Knowledge Tests</Link> page lists every FAA knowledge exam bank (SPG, PAR, IRA, and more). Pick a bank, configure a timed or untimed practice session, and answer questions drawn from the official FAA test data. Your results show which subject areas need more study. No account required.
+          </>
+        ),
+      },
+      {
         q: "What is on the Equipment Guide?",
         a: (
           <>
@@ -119,7 +128,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "What does Pro include?",
         a: (
           <>
-            Pro unlocks: visual progress timeline with milestone guidance, DPE finder with FAA pass rate data, the ability to rate flight schools and DPEs, pilot stories community, discussion forums, and equipment ratings. Pro also includes a free{" "}
+            Pro unlocks: visual progress timeline with milestone guidance, DPE finder with FAA pass rate data, the ability to rate flight schools and DPEs, pilot stories community, discussion forums, equipment ratings, and FAA knowledge test practice exams with official question banks. Pro also includes a free{" "}
             <a href="https://navlogpro.training" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NavLogPro</a>{" "}
             account (FAA cross-country nav log builder, a $50/year value). See{" "}
             <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> for full details.
@@ -160,7 +169,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "How much does Pro cost?",
         a: (
           <>
-            Pro is $9.99/month or $99.99/year ($8.33/month, saving 17%). See{" "}
+            Pro is $8.99/month or $59.99/year ($5.00/month, saving 44%). See{" "}
             <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> for current rates. We also offer promo codes for discounted or free access.
           </>
         ),

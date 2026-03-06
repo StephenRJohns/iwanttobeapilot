@@ -67,6 +67,13 @@ export default function DisclaimerPage() {
         </section>
 
         <section>
+          <h2 className="font-semibold text-base mb-3">FAA Knowledge Test Practice</h2>
+          <p className="text-muted-foreground">
+            Practice test questions are sourced from publicly available FAA knowledge test data banks. While we sync these regularly, the FAA may update, add, or retire questions at any time. Practice results do not predict your score on the actual FAA knowledge exam. Always supplement practice tests with structured ground school instruction and current study materials approved by your CFI.
+          </p>
+        </section>
+
+        <section>
           <h2 className="font-semibold text-base mb-3">Medical Certificate Requirements</h2>
           <p className="text-muted-foreground">
             Aviation medical certification requirements are complex and vary by certificate type, the class of medical certificate sought, your medical history, medications, and other factors. The information on this site about medical requirements is a general overview only.

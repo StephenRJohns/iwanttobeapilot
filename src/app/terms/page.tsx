@@ -32,7 +32,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-semibold text-base mb-3">2. Description of Service</h2>
           <p className="text-muted-foreground">
-            I Want To Be A Pilot is an educational web application that provides information about pilot training, flight schools, aviation equipment, career paths, and community features for aspiring and current pilots. The Service offers both free and paid (&ldquo;Pro&rdquo;) tiers. For background on why this site was built, see the <a href="/about" className="text-primary hover:underline">About</a> page.
+            I Want To Be A Pilot is an educational web application that provides information about pilot training, flight schools, FAA knowledge test practice exams, aviation equipment, career paths, and community features for aspiring and current pilots. The Service offers both free and paid (&ldquo;Pro&rdquo;) tiers. For background on why this site was built, see the <a href="/about" className="text-primary hover:underline">About</a> page.
           </p>
           <p className="text-muted-foreground mt-2">
             <strong className="text-foreground">All content is for educational and informational purposes only.</strong> Nothing on this Service constitutes official FAA guidance, professional flight instruction, legal advice, or financial advice. See our Aviation Disclaimer for full details.
