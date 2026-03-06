@@ -35,7 +35,7 @@ const navLinks = [
 ];
 
 const authNavLinks = [
-  { href: "/knowledge-tests", label: "Knowledge Tests", icon: Brain },
+  { href: "/knowledge-tests", label: "FAA Knowledge Tests", icon: Brain },
   { href: "/dpe-finder", label: "DPEs", icon: ClipboardList },
   { href: "/community/stories", label: "Stories", icon: FileText },
   { href: "/community/discussions", label: "Forums", icon: MessageSquare },

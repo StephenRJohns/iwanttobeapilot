@@ -162,7 +162,7 @@ export default function PricingClient() {
           }`}
         >
           Yearly{" "}
-          <span className="text-xs text-primary font-semibold ml-1">Save 17%</span>
+          <span className="text-xs text-primary font-semibold ml-1">Save 44%</span>
         </button>
       </div>
 
@@ -252,11 +252,11 @@ export default function PricingClient() {
             <div className="mb-4">
               <h2 className="text-lg font-bold">Pro</h2>
               <div className="text-3xl font-bold mt-1">
-                {billing === "monthly" ? "$9.99" : "$8.33"}
+                {billing === "monthly" ? "$8.99" : "$5.00"}
                 <span className="text-base font-normal text-muted-foreground">/mo</span>
               </div>
               {billing === "yearly" && (
-                <p className="text-xs text-muted-foreground mt-1">$99.99 billed annually</p>
+                <p className="text-xs text-muted-foreground mt-1">$59.99 billed annually</p>
               )}
               {billing === "monthly" && (
                 <p className="text-xs text-muted-foreground mt-1">Billed monthly, cancel anytime</p>
