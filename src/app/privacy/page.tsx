@@ -41,7 +41,7 @@ export default function PrivacyPage() {
             <div>
               <h3 className="font-medium mb-1">Information collected automatically</h3>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li><strong className="text-foreground">Progress data:</strong> your pilot training milestone completion status and knowledge test practice session results</li>
+                <li><strong className="text-foreground">Progress data:</strong> your pilot training milestone completion status, FAA knowledge test study session scores, sample test attempt history (date, score, answers), and weak-area tracking data</li>
                 <li><strong className="text-foreground">Session data:</strong> authentication tokens stored in secure HTTP-only cookies</li>
                 <li><strong className="text-foreground">Log data:</strong> server logs may include IP address, browser type, pages visited, and timestamps</li>
               </ul>
@@ -112,6 +112,10 @@ export default function PrivacyPage() {
             <li>
               <strong className="text-foreground">Railway</strong> — cloud application hosting and PostgreSQL database.{" "}
               <a href="https://railway.app/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">railway.app/legal/privacy</a>
+            </li>
+            <li>
+              <strong className="text-foreground">Cloudflare</strong> — DNS, CDN, and DDoS protection. Cloudflare processes network traffic data including IP addresses.{" "}
+              <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">cloudflare.com/privacypolicy</a>
             </li>
           </ul>
         </section>

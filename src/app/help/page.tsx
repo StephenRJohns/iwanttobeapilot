@@ -48,12 +48,11 @@ const sections: { title: string; items: FAQItem[] }[] = [
           <>
             No. The following features are free and require no account:{" "}
             <Link href="/schools" className="text-primary hover:underline">Flight School Search</Link>,{" "}
-            <Link href="/knowledge-tests" className="text-primary hover:underline">FAA Knowledge Test Prep</Link>,{" "}
             <Link href="/resources" className="text-primary hover:underline">Free Resources</Link>,{" "}
             <Link href="/equipment" className="text-primary hover:underline">Equipment Guide</Link>,{" "}
             <Link href="/costs" className="text-primary hover:underline">Cost & Timeline Estimator</Link>, and{" "}
             <Link href="/pricing" className="text-primary hover:underline">Pricing</Link>.
-            Pro features require a free account and a Pro subscription.
+            Pro features — including the progress timeline, FAA knowledge test prep, DPE finder, pilot stories, and discussion forums — require a free account and a Pro subscription.
           </>
         ),
       },
@@ -83,7 +82,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "How does the flight school search work?",
         a: (
           <>
-            Go to <Link href="/schools" className="text-primary hover:underline">Schools</Link> and enter your zip code and search radius. The map will show FAA-certified flight schools near you, and a paginated table below includes each school&apos;s name, address, phone number, website, and distance. You can pan or zoom the map and click the &ldquo;Search This Area&rdquo; button to re-search from the new location. No account required.
+            Go to <Link href="/schools" className="text-primary hover:underline">Schools</Link>, enter your zip code, select a search radius (25, 50, 100, or 200 miles), and click Search. Results appear on an interactive map and in a paginated table showing each school&apos;s name, address, phone number (clickable to call), website link, and distance from you. Pan or zoom the map and click &ldquo;Search here&rdquo; to re-search around a new location. Use the pagination controls to adjust how many results are shown per page. No account required.
           </>
         ),
       },
@@ -107,7 +106,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "How do the FAA Knowledge Test practice exams work?",
         a: (
           <>
-            The <Link href="/knowledge-tests" className="text-primary hover:underline">Knowledge Tests</Link> page lists every FAA knowledge exam bank (SPG, PAR, IRA, and more). Pick a bank, configure a timed or untimed practice session, and answer questions drawn from the official FAA test data. Your results show which subject areas need more study. No account required.
+            From your <Link href="/dashboard" className="text-primary hover:underline">Progress Timeline</Link>, click the yellow test badge on any milestone (e.g., &ldquo;PAR Required&rdquo;) to access two modes: <strong className="text-foreground">Study Mode</strong> lets you pick specific Areas of Knowledge, set a question count (10–100), and get instant feedback with explanations after every answer — great for learning. <strong className="text-foreground">Sample Test Mode</strong> generates a full-length exam matching the real FAA test (e.g., 60 questions for PAR) with no peeking — results are saved to your history with a score breakdown by subject area. The &ldquo;Questions to Work On&rdquo; tab automatically tracks questions you&apos;ve missed 2+ times so you can drill your weak spots with a focused mini-test. All questions are synced from the official FAA test data banks. Pro subscription required.
           </>
         ),
       },
@@ -115,7 +114,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "What is on the Equipment Guide?",
         a: (
           <>
-            The <Link href="/equipment" className="text-primary hover:underline">Equipment Guide</Link> lists gear pilots commonly need — aviation headsets, flight bags, kneeboard apps, E6B calculators, sectional charts, sunglasses, sunscreen, and more. Items link to Amazon or Sporty&apos;s Pilot Shop for purchase. Pro users can rate and review items.
+            The <Link href="/equipment" className="text-primary hover:underline">Equipment Guide</Link> lists gear pilots commonly need across 13 categories — headsets, flight bags, electronics, kneeboards, charts, apps, and more. Use the category filter buttons or search box to find specific products. Each card shows the product image, description, community star rating, and a link to buy on Amazon or Sporty&apos;s. Pro users can rate items 1–5 stars and suggest products we&apos;re missing via the &ldquo;Suggest Equipment&rdquo; button.
           </>
         ),
       },
@@ -128,7 +127,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "What does Pro include?",
         a: (
           <>
-            Pro unlocks: visual progress timeline with milestone guidance, DPE finder with FAA pass rate data, the ability to rate flight schools and DPEs, pilot stories community, discussion forums, equipment ratings, and FAA knowledge test practice exams with official question banks. Pro also includes a free{" "}
+            Pro unlocks: visual progress timeline with milestone tracking, FAA knowledge test prep (study mode with instant feedback and full-length sample tests with score history and weak-area tracking), DPE finder with FAA pass rate data, the ability to rate flight schools and DPEs, pilot stories community, discussion forums, and equipment ratings. Pro also includes a free{" "}
             <a href="https://navlogpro.training" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NavLogPro</a>{" "}
             account (FAA cross-country nav log builder, a $50/year value). See{" "}
             <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> for full details.
@@ -137,19 +136,19 @@ const sections: { title: string; items: FAQItem[] }[] = [
       },
       {
         q: "How does the Progress Timeline work?",
-        a: "The Progress Timeline (in Dashboard) shows a visual roadmap of all pilot certification levels. Expand any level card to see a \"What You Will Learn\" summary, a collapsible recommended gear section for that stage, step-by-step milestone guidance, and next steps. Check off milestones as you complete them. It tracks your journey from student pilot to whatever goal you set.",
+        a: "The Progress Timeline shows a visual roadmap customized to your pilot goal (choose from 8 paths, Hobby Pilot through Major Cargo). Each milestone card expands to show \"What You Will Learn,\" recommended gear for that stage, step-by-step next actions, and links to FAA knowledge test prep. Yellow badges indicate which FAA tests are required (e.g., PAR, IRA, CAX). Mark milestones as In Progress or Complete — your progress is saved automatically with visual indicators (pulsing amber for in-progress, green checkmark for complete).",
       },
       {
         q: "How does the DPE Finder work?",
-        a: "The DPE Finder lets you search for FAA Designated Pilot Examiners by name, certificate type, and state. Where available, it displays aggregate checkride pass rate data from FAA Civil Airmen Statistics records so you can make an informed choice. DPE directory data is sourced from public FAA records and may not reflect real-time availability — always verify directly with the examiner.",
+        a: "Enter your zip code, select a search radius (25–200 miles), and optionally filter by certificate type. Results appear on an interactive map and in a paginated table with name, location, distance, phone, email, and community star rating. Pro users can rate DPEs 1–5 stars. The pass rate panel shows aggregate FAA checkride statistics by year and certificate type, color-coded green (80%+), amber (60–79%), or red (below 60%). DPE data is sourced from public FAA records — always verify directly with the examiner.",
       },
       {
         q: "What are Pilot Stories?",
-        a: "Pilot Stories is a community feature where Pro users can share their personal training journey — including certification levels achieved, how long each took, total costs, and current salary. You can read stories from other pilots to set realistic expectations for your own path.",
+        a: "Pilot Stories is a community feature where Pro users share their real training journeys. Each story includes certification levels achieved, training duration, total cost, and current salary range. Use the pilot level filter to find stories from private pilots, instrument-rated pilots, commercial pilots, or airline captains. Click any story card to read the full account. You can share your own story and edit or delete it anytime.",
       },
       {
         q: "What are Discussion Forums?",
-        a: "Discussion forums let Pro users ask questions, share advice, and connect with other pilots by topic — license types, school experiences, DPE experiences, job searching, and more. Create posts, reply to threads, and build your pilot network.",
+        a: "Discussion forums let Pro users ask questions, share advice, and connect with other pilots. Categories are organized by topic — license types, flight school experiences, DPE reviews, career advice, and more. Each category shows post count and latest activity. Click into a category to browse posts, then click any thread to read replies. You can create new posts with descriptive titles and reply to existing threads.",
       },
       {
         q: "How do I claim my free NavLogPro account?",

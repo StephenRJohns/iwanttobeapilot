@@ -67,9 +67,12 @@ export default function DisclaimerPage() {
         </section>
 
         <section>
-          <h2 className="font-semibold text-base mb-3">FAA Knowledge Test Practice</h2>
+          <h2 className="font-semibold text-base mb-3">FAA Knowledge Test Prep</h2>
           <p className="text-muted-foreground">
-            Practice test questions are sourced from publicly available FAA knowledge test data banks. While we sync these regularly, the FAA may update, add, or retire questions at any time. Practice results do not predict your score on the actual FAA knowledge exam. Always supplement practice tests with structured ground school instruction and current study materials approved by your CFI.
+            Study mode and sample test questions are sourced from publicly available FAA knowledge test data banks (PAR, IRA, CAX, ATP, FOI, FIA, FII, and others). While we sync these regularly from the FAA, questions may be updated, added, or retired at any time without notice. Study mode scores, sample test results, and weak-area tracking are tools for self-assessment only — they do not predict your score on the actual FAA knowledge exam.
+          </p>
+          <p className="text-muted-foreground mt-2">
+            Always supplement practice with structured ground school instruction and current study materials approved by your CFI. The 70% passing threshold used in our sample tests mirrors the FAA standard, but the actual exam may differ in content distribution and difficulty.
           </p>
         </section>
 

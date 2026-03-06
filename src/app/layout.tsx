@@ -102,6 +102,16 @@ export const metadata: Metadata = {
     "zero to airline pilot",
     "ATP 1500 hours",
     "regional to major airline",
+    "FAA knowledge test practice",
+    "PAR practice test",
+    "IRA practice test",
+    "commercial pilot practice test",
+    "ATP practice test",
+    "FAA written exam practice",
+    "pilot knowledge test study",
+    "FAA test bank",
+    "private pilot practice exam",
+    "instrument rating practice exam",
   ],
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://iwanttobeapilot.online"),
   alternates: {
@@ -177,12 +187,11 @@ const jsonLd = [
       email: "support@iwanttobeapilot.online",
       contactType: "customer support",
     },
-    sameAs: [],
     founder: {
       "@type": "Organization",
       name: "JJJJJ Enterprises, LLC",
     },
-    description: "Founded by a parent of two pilots who wanted to build the resource that would have made their training journeys easier.",
+    description: "Everything you need to become a pilot — flight school search, cost estimator, FAA knowledge test prep, DPE finder, and pilot community.",
   },
 ];
 

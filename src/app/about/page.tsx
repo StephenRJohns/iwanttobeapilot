@@ -22,7 +22,7 @@ export default function AboutPage() {
         </div>
         <h1 className="text-3xl font-bold tracking-tight mb-3">Why This Exists</h1>
         <p className="text-muted-foreground text-sm">
-          A parent&apos;s experience turned into a tool for every aspiring pilot.
+          A parent&apos;s experience turned into a complete platform for every aspiring pilot.
         </p>
       </div>
 
@@ -62,21 +62,45 @@ export default function AboutPage() {
           </p>
         </div>
 
+        <h2 className="text-lg font-semibold text-foreground mt-10 mb-2">What We Offer</h2>
+
         <p>
-          Our{" "}
-          <Link href="/knowledge-tests" className="text-primary hover:underline">
-            knowledge test prep
-          </Link>{" "}
-          uses the official FAA test data banks — the same question pools used to create the actual
-          FAA knowledge exams. We download and sync these directly from the FAA so your practice
-          questions are always current and authentic.
+          <strong className="text-foreground">Free tools</strong> — our{" "}
+          <Link href="/schools" className="text-primary hover:underline">flight school search</Link>,{" "}
+          <Link href="/costs" className="text-primary hover:underline">cost &amp; timeline estimator</Link>,{" "}
+          <Link href="/equipment" className="text-primary hover:underline">equipment guide</Link>, and{" "}
+          <Link href="/resources" className="text-primary hover:underline">free resources</Link>{" "}
+          are available to everyone, no account required. These are free because they should be.
         </p>
 
         <p>
-          The free tools — school search, cost estimator, equipment guide, FAA resources — are free
-          because they should be. The Pro features exist to keep the lights on and to fund continued
-          development. If this site has helped you, a Pro account is the best way to say thanks and
-          make sure it stays around.
+          <strong className="text-foreground">FAA knowledge test prep</strong> — our{" "}
+          <Link href="/dashboard" className="text-primary hover:underline">
+            study and sample test system
+          </Link>{" "}
+          uses the official FAA test data banks — the same question pools used to create the actual
+          FAA knowledge exams. We sync these directly from the FAA so your practice
+          questions are always current and authentic. Study mode gives instant feedback on every question.
+          Sample test mode simulates the real exam with full-length tests, score tracking, and a
+          weak-area analyzer that targets the questions you miss most.
+        </p>
+
+        <p>
+          <strong className="text-foreground">Pro features</strong> — the progress timeline, DPE finder with pass rate data,
+          pilot stories, discussion forums, and equipment ratings exist to keep the lights on and fund continued
+          development. Pro also includes a free{" "}
+          <a href="https://navlogpro.training" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NavLogPro</a>{" "}
+          account for VFR cross-country flight planning. If this site has helped you, a Pro account is
+          the best way to say thanks and make sure it stays around.
+        </p>
+
+        <h2 className="text-lg font-semibold text-foreground mt-10 mb-2">Who We Are</h2>
+
+        <p>
+          I Want To Be A Pilot is operated by JJJJJ Enterprises, LLC. We&apos;re an independent
+          educational resource — not a flight school, not an FAA authority, and not affiliated with any
+          airline or training organization. Our goal is simple: give aspiring pilots the clearest
+          possible picture of what the journey looks like, from first flight to career.
         </p>
       </div>
 
