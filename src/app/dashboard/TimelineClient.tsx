@@ -203,7 +203,7 @@ export default function TimelineClient({ userId, pilotGoal }: TimelineClientProp
                               key={tb.code}
                               href={`/study/${tb.code.toLowerCase()}`}
                               onClick={(e) => e.stopPropagation()}
-                              className="text-xs px-2 py-0.5 rounded-full border bg-muted text-muted-foreground border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-colors"
+                              className="text-xs px-2 py-0.5 rounded-full border bg-yellow-500/10 text-yellow-400 border-yellow-500/20 hover:bg-yellow-500/20 hover:text-yellow-300 hover:border-yellow-500/40 transition-colors"
                             >
                               {tb.code} Required
                             </Link>
