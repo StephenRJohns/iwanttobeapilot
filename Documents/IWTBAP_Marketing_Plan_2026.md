@@ -32,7 +32,7 @@ CONFIDENTIAL — INTERNAL USE ONLY
 
 ## 1  Executive Summary
 
-**I Want To Be A Pilot** (iwanttobeapilot.online) is a freemium web platform that guides aspiring pilots from first interest through airline career. Built by a parent who watched two children earn their wings, the site combines free tools — flight school search, cost estimator, equipment guide, and FAA resources — with a Pro subscription ($8.99/mo or $59.99/yr) that unlocks a progress tracker with FAA knowledge test prep, DPE finder with FAA pass rates, community features, and a free NavLogPro account.
+**I Want To Be A Pilot** (iwanttobeapilot.online) is a freemium web platform that guides aspiring pilots from first interest through airline career. Built by a parent who watched two children earn their wings, the site combines free tools — flight school search, cost estimator, equipment guide, and FAA resources — with a Pro subscription ($8.99/mo or $59.99/yr) that unlocks a progress tracker with FAA knowledge test prep, DPE finder with FAA pass rates, community features, and a free NavLog Pro account.
 
 This 12-month marketing plan targets **5,000 registered users** and **500 Pro subscribers** by Q1 2027, generating approximately **$30,000–$45,000 in ARR** from subscriptions plus supplemental affiliate revenue from Amazon Associates and Sporty's Pilot Shop partnerships.
 
@@ -58,7 +58,7 @@ This 12-month marketing plan targets **5,000 registered users** and **500 Pro su
 | Real FAA data (schools, DPEs, pass rates) | No mobile app (web only) |
 | FAA knowledge test prep with official question banks | Community content requires critical mass |
 | Affiliate revenue supplements subscriptions | |
-| NavLogPro bundle adds tangible Pro value | |
+| NavLog Pro bundle adds tangible Pro value | |
 | Direct family connections to active CFIs and charter pilots | |
 
 | Opportunities | Threats |
@@ -288,7 +288,7 @@ The platform launched with a complete feature set that positions it well ahead o
 
 - **Amazon Associates:** Already integrated. Optimize by promoting seasonal gear guides and "what's in my flight bag" content.
 - **Sporty's Pilot Shop:** Already integrated. Expand with exclusive discount codes for Pro members.
-- **NavLogPro:** Continue bundling free account with Pro. Cross-promote on NavLogPro's platform.
+- **NavLog Pro:** Continue bundling free account with Pro. Cross-promote on NavLog Pro's platform.
 - **Ground school providers:** Approach Sporty's, King Schools, and Gleim for affiliate or partner deals.
 
 ---
@@ -409,7 +409,7 @@ The platform launched with a complete feature set that positions it well ahead o
 |---|---|---|---|
 | Low initial organic traffic | Medium | High | Supplement with paid ads earlier; leverage family network and aviation communities for initial traction |
 | Community doesn't reach critical mass | Medium | Medium | Seed content with family pilot stories; recruit ambassadors; cross-promote from social platforms |
-| High churn on Pro subscriptions | Low | High | Push annual plans; continuously add Pro value; NavLogPro bundle increases stickiness; knowledge test prep drives ongoing engagement |
+| High churn on Pro subscriptions | Low | High | Push annual plans; continuously add Pro value; NavLog Pro bundle increases stickiness; knowledge test prep drives ongoing engagement |
 | Competitor launches similar tool | Low | Medium | Move fast on community and DPE data moats; authentic brand story is hard to replicate |
 | FAA data source changes | Low | Medium | Monitor FAA API/data endpoints; maintain flexible DPE sync architecture; diversify data sources |
 | Economic downturn reduces flight training demand | Low | High | Emphasize free tier value and cost-saving tools; position as essential research before large investment |

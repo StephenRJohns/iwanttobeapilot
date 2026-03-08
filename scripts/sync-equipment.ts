@@ -156,7 +156,7 @@ function writeEquipmentFile(items: EquipmentItem[]): void {
   searchQuery?: string;
   // Sporty's
   sportysUrl?: string;   // full product page URL on sportys.com
-  // Generic external (NavLogPro, ForeFlight, etc.)
+  // Generic external (NavLog Pro, ForeFlight, etc.)
   externalUrl?: string;
   // Optional explicit product image URL (must be self-hosted or licensed)
   imageUrl?: string;

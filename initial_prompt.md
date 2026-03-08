@@ -1,6 +1,6 @@
 # I Want To Be A Pilot — Build Prompt
 
-Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin, users, auth tokens, and intellectual property like the NavLogPro site. Use Next.js 15 App Router, TailwindCSS v4, Prisma + PostgreSQL, NextAuth v5 JWT, Stripe, and Resend.
+Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin, users, auth tokens, and intellectual property like the NavLog Pro site. Use Next.js 15 App Router, TailwindCSS v4, Prisma + PostgreSQL, NextAuth v5 JWT, Stripe, and Resend.
 
 ---
 
@@ -24,7 +24,7 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 - Curated list of gear pilots need: aviation headsets, flight bags, kneeboard apps, E6B calculators, sectional charts, foggles, iPads, iPad holders, thigh boards, sunglasses, sunscreen, clothes, luggage, and more
 - Category filter pills and text search (filters by name and description)
 - Result count display; "Suggest Equipment" modal for community submissions
-- Include NavLogPro (navlogpro.training) and PlaneFacts (planefacts.online) as featured tools
+- Include NavLog Pro (navlogpro.training) and PlaneFacts (planefacts.online) as featured tools
 - Include ForeFlight, Garmin Pilot, and other popular apps
 - Product images: ONLY self-hosted images under /public/images/ (owner-permitted). Never hotlink Amazon CDN, Sporty's BigCommerce CDN, or any third-party retailer CDN — TOS violation. Items without a licensed image show a styled "No Image Available" placeholder.
 - Affiliate links via Amazon Associates and Sporty's Pilot Shop
@@ -40,8 +40,8 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 ### Pricing Page
 - Free tier vs. Pro tier comparison
 - Monthly ($8.99) and annual ($59.99/year, $5.00/mo, 44% savings) billing options
-- NavLogPro bundle callout (free NavLogPro account included with Pro, a $50/year value)
-- NavLogPro Upgrade Pack: existing NavLogPro users can upgrade to iwanttobeapilot Pro for $29.99/year — enter NavLogPro email, verify via partner API, Stripe checkout, account auto-created
+- NavLog Pro bundle callout (free NavLog Pro account included with Pro, a $50/year value)
+- NavLog Pro Upgrade Pack: existing NavLog Pro users can upgrade to iwanttobeapilot Pro for $29.99/year — enter NavLog Pro email, verify via partner API, Stripe checkout, account auto-created
 - Promo code redemption form
 
 ---
@@ -104,25 +104,25 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 
 ### Payments
 - Stripe with monthly ($8.99) and annual ($59.99) Pro plans
-- NavLogPro upgrade plan ($29.99/year) via STRIPE_NAVLOGPRO_UPGRADE_PRICE_ID
+- NavLog Pro upgrade plan ($29.99/year) via STRIPE_NAVLOGPRO_UPGRADE_PRICE_ID
 - `src/lib/stripe.ts` exports `PLANS` object: `pro_monthly`, `pro_yearly`, `navlogpro_upgrade` — all priceIds from env vars
 - Stripe API version: `2026-02-25.clover`
 - Stripe webhook for subscription lifecycle events (created, updated, deleted)
-- NavLogPro upgrade webhook path: find or create user by navlogpro_email metadata; new users get auto-created account + welcome email with forgot-password link
+- NavLog Pro upgrade webhook path: find or create user by navlogpro_email metadata; new users get auto-created account + welcome email with forgot-password link
 - Stripe customer portal for self-serve billing management
-- NavLogPro upgrade checkout at /api/stripe/checkout/navlogpro (no auth required); verifies email via NavLogPro partner API before creating session; graceful degradation if NavLogPro is unreachable
+- NavLog Pro upgrade checkout at /api/stripe/checkout/navlogpro (no auth required); verifies email via NavLog Pro partner API before creating session; graceful degradation if NavLog Pro is unreachable
 
 ### Email
 - Resend for transactional email
 - Email verification, password reset, welcome emails
-- NavLogPro upgrade welcome email for newly created accounts
+- NavLog Pro upgrade welcome email for newly created accounts
 
 ### Partner Integration
-- NavLogPro promo code generation API for Pro subscribers (POST /api/partner/navlogpro-code → NavLogPro generates PILOT-XXXXXX code)
-- NavLogPro email verification API for upgrade flow (POST /api/partner/navlogpro-verify → NavLogPro /api/partner/verify-user)
+- NavLog Pro promo code generation API for Pro subscribers (POST /api/partner/navlogpro-code → NavLog Pro generates PILOT-XXXXXX code)
+- NavLog Pro email verification API for upgrade flow (POST /api/partner/navlogpro-verify → NavLog Pro /api/partner/verify-user)
 - Partner calls authenticated via x-partner-secret header (PARTNER_API_SECRET env var)
 - Codes delivered via pricing page after subscription confirmed
-- NavLogPro upgrade checkout at /api/stripe/checkout/navlogpro (no auth required)
+- NavLog Pro upgrade checkout at /api/stripe/checkout/navlogpro (no auth required)
 
 ### Database
 - Prisma + PostgreSQL
@@ -140,7 +140,7 @@ Build a freemium pilot training web app at iwanttobeapilot.online. Handle admin,
 - License: UNLICENSED (proprietary)
 - Author: Stephen Johns
 - Amazon affiliate tag via env var only (no hardcoded fallback)
-- NavLogPro and PlaneFacts screenshots permitted (owner of both sites)
+- NavLog Pro and PlaneFacts screenshots permitted (owner of both sites)
 - FAA data: public domain per 17 U.S.C. § 105
 - Equipment images: self-hosted only under /public/images/ — all external CDN hotlinks removed
 - Third-party trademarks (Garmin, Sporty's, ForeFlight, etc.): nominative use only for product identification; covered in Terms

@@ -638,7 +638,7 @@ function getPageHelp(pathname: string): PageHelp {
           heading: "Comparing plans",
           items: [
             "Free: Flight school search, cost & timeline estimator, equipment guide, and free FAA resources — no account required.",
-            "Pro: Everything in Free, plus the progress timeline with FAA knowledge test prep (study mode and full sample tests), DPE finder with pass rates, pilot stories, discussion forums, equipment ratings, and a free NavLogPro account.",
+            "Pro: Everything in Free, plus the progress timeline with FAA knowledge test prep (study mode and full sample tests), DPE finder with pass rates, pilot stories, discussion forums, equipment ratings, and a free NavLog Pro account.",
             "Toggle between Monthly and Yearly billing at the top — yearly saves 44%.",
           ],
         },
@@ -651,10 +651,10 @@ function getPageHelp(pathname: string): PageHelp {
           ],
         },
         {
-          heading: "NavLogPro bundle",
+          heading: "NavLog Pro bundle",
           items: [
-            "Every Pro subscription includes a free NavLogPro account (normally $50/year) for VFR cross-country flight planning.",
-            "Already subscribed? Click 'Get your free NavLogPro code' on this page to generate your one-time promo code, then redeem it at navlogpro.training.",
+            "Every Pro subscription includes a free NavLog Pro account (normally $50/year) for VFR cross-country flight planning.",
+            "Already subscribed? Click 'Get your free NavLog Pro code' on this page to generate your one-time promo code, then redeem it at navlogpro.training.",
           ],
         },
       ],
@@ -866,7 +866,7 @@ function getPageHelp(pathname: string): PageHelp {
           "Progress Timeline — personalized training roadmap with milestone tracking and FAA knowledge test prep (study mode with instant feedback + full sample exams with history tracking).",
           "DPE Finder — search for Designated Pilot Examiners by location with pass rate data and community ratings.",
           "Community — share and read real training stories, and discuss topics in category-based forums.",
-          "Includes a free NavLogPro account for VFR cross-country flight planning.",
+          "Includes a free NavLog Pro account for VFR cross-country flight planning.",
         ],
       },
     ],

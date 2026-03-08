@@ -125,9 +125,9 @@ export default function DisclaimerPage() {
         </section>
 
         <section>
-          <h2 className="font-semibold text-base mb-3">NavLogPro Integration</h2>
+          <h2 className="font-semibold text-base mb-3">NavLog Pro Integration</h2>
           <p className="text-muted-foreground">
-            NavLogPro (navlogpro.training) is a companion service operated by the same team. Features that connect to NavLogPro — including the complimentary account benefit for Pro subscribers and the NavLogPro Upgrade Pack — depend on the availability of NavLogPro&apos;s API. NavLogPro&apos;s own Terms of Service and Aviation Disclaimer govern your use of that service.
+            NavLog Pro (navlogpro.training) is a companion service operated by the same team. Features that connect to NavLog Pro — including the complimentary account benefit for Pro subscribers and the NavLog Pro Upgrade Pack — depend on the availability of NavLog Pro&apos;s API. NavLog Pro&apos;s own Terms of Service and Aviation Disclaimer govern your use of that service.
           </p>
         </section>
 

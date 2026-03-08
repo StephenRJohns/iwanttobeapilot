@@ -66,12 +66,12 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="font-semibold text-base mb-3">5. Partner Benefits (NavLogPro)</h2>
+          <h2 className="font-semibold text-base mb-3">5. Partner Benefits (NavLog Pro)</h2>
           <p className="text-muted-foreground mb-2">
-            Pro subscribers may be eligible for a complimentary NavLogPro account as a bundled benefit. NavLogPro (navlogpro.training) is a companion service operated by the same team. This benefit is subject to availability and may be modified or discontinued at any time. NavLogPro&apos;s own terms and privacy policy govern your use of that service.
+            Pro subscribers may be eligible for a complimentary NavLog Pro account as a bundled benefit. NavLog Pro (navlogpro.training) is a companion service operated by the same team. This benefit is subject to availability and may be modified or discontinued at any time. NavLog Pro&apos;s own terms and privacy policy govern your use of that service.
           </p>
           <p className="text-muted-foreground">
-            <strong className="text-foreground">NavLogPro Upgrade Pack:</strong> Existing NavLogPro users may purchase an annual iwanttobeapilot Pro subscription at a special rate ($29.99/year) via the Pricing page. When you complete this purchase, we use your NavLogPro email address to automatically create or upgrade your iwanttobeapilot account. We verify your email with NavLogPro&apos;s partner API solely to confirm account existence — no passwords or payment data are exchanged between the services. Standard subscription terms (auto-renewal, cancellation policy, no partial refunds) apply.
+            <strong className="text-foreground">NavLog Pro Upgrade Pack:</strong> Existing NavLog Pro users may purchase an annual iwanttobeapilot Pro subscription at a special rate ($29.99/year) via the Pricing page. When you complete this purchase, we use your NavLog Pro email address to automatically create or upgrade your iwanttobeapilot account. We verify your email with NavLog Pro&apos;s partner API solely to confirm account existence — no passwords or payment data are exchanged between the services. Standard subscription terms (auto-renewal, cancellation policy, no partial refunds) apply.
           </p>
         </section>
 

@@ -25,7 +25,7 @@ export const PLANS = {
   },
   navlogpro_upgrade: {
     priceId: process.env.STRIPE_NAVLOGPRO_UPGRADE_PRICE_ID!,
-    label: "NavLogPro Upgrade",
+    label: "NavLog Pro Upgrade",
     price: 29.99,
     interval: "year" as const,
   },

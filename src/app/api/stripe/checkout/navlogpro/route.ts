@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 /**
  * POST /api/stripe/checkout/navlogpro
  *
- * Stripe checkout for NavLogPro users upgrading to iwanttobeapilot Pro.
+ * Stripe checkout for NavLog Pro users upgrading to iwanttobeapilot Pro.
  * Does NOT require an existing iwanttobeapilot account.
  * After checkout, the webhook creates or upgrades the account by email.
  *
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const emailLower = email.trim().toLowerCase();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
 
-    // Verify the email belongs to a NavLogPro user
+    // Verify the email belongs to a NavLog Pro user
     const navlogproUrl = process.env.NAVLOGPRO_URL;
     const partnerSecret = process.env.PARTNER_API_SECRET;
     if (navlogproUrl && partnerSecret) {
@@ -35,15 +35,15 @@ export async function POST(req: NextRequest) {
       if (verifyRes.ok) {
         const data = await verifyRes.json();
         if (!data.exists) {
-          return NextResponse.json({ error: "No NavLogPro account found with that email. Please check the email you use on NavLogPro." }, { status: 404 });
+          return NextResponse.json({ error: "No NavLog Pro account found with that email. Please check the email you use on NavLog Pro." }, { status: 404 });
         }
       }
-      // If NavLogPro is unreachable, proceed anyway (graceful degradation)
+      // If NavLog Pro is unreachable, proceed anyway (graceful degradation)
     }
 
     const priceId = process.env.STRIPE_NAVLOGPRO_UPGRADE_PRICE_ID;
     if (!priceId) {
-      return NextResponse.json({ error: "NavLogPro upgrade not configured" }, { status: 503 });
+      return NextResponse.json({ error: "NavLog Pro upgrade not configured" }, { status: 503 });
     }
 
     const checkoutSession = await getStripe().checkout.sessions.create({
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: checkoutSession.url });
   } catch (err) {
-    console.error("NavLogPro checkout error:", err);
+    console.error("NavLog Pro checkout error:", err);
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
   }
 }

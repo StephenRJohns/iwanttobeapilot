@@ -120,7 +120,7 @@ const sections: { title: string; items: FAQItem[] }[] = [
         a: (
           <>
             Pro unlocks: visual progress timeline with milestone tracking, FAA knowledge test prep (study mode with instant feedback and full-length sample tests with score history and weak-area tracking), DPE finder with FAA pass rate data, the ability to rate flight schools and DPEs, pilot stories community, discussion forums, and equipment ratings. Pro also includes a free{" "}
-            <a href="https://navlogpro.training" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NavLogPro</a>{" "}
+            <a href="https://navlogpro.training" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NavLog Pro</a>{" "}
             account (FAA cross-country nav log builder, a $50/year value). See{" "}
             <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> for full details.
           </>
@@ -151,10 +151,10 @@ const sections: { title: string; items: FAQItem[] }[] = [
         a: "Discussion forums let Pro users ask questions, share advice, and connect with other pilots. Categories are organized by topic — license types, flight school experiences, DPE reviews, career advice, and more. Each category shows post count and latest activity. Click into a category to browse posts, then click any thread to read replies. You can create new posts with descriptive titles and reply to existing threads.",
       },
       {
-        q: "How do I claim my free NavLogPro account?",
+        q: "How do I claim my free NavLog Pro account?",
         a: (
           <>
-            Once you&apos;re on a Pro plan, go to the <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> page and click &ldquo;Get your free NavLogPro code.&rdquo; You&apos;ll receive a promo code to activate a free account at{" "}
+            Once you&apos;re on a Pro plan, go to the <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> page and click &ldquo;Get your free NavLog Pro code.&rdquo; You&apos;ll receive a promo code to activate a free account at{" "}
             <a href="https://navlogpro.training/pricing" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">navlogpro.training/pricing</a>.
           </>
         ),
@@ -168,16 +168,16 @@ const sections: { title: string; items: FAQItem[] }[] = [
         q: "How much does Pro cost?",
         a: (
           <>
-            Pro is $8.99/month or $59.99/year ($5.00/month, saving 44%). NavLogPro subscribers can upgrade for $29.99/year — a special rate available on the{" "}
+            Pro is $8.99/month or $59.99/year ($5.00/month, saving 44%). NavLog Pro subscribers can upgrade for $29.99/year — a special rate available on the{" "}
             <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> page. We also offer promo codes for discounted or free access.
           </>
         ),
       },
       {
-        q: "I already have a NavLogPro account. Can I use it to sign up here?",
+        q: "I already have a NavLog Pro account. Can I use it to sign up here?",
         a: (
           <>
-            Yes. On the <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> page, scroll to &ldquo;Already have a NavLogPro account?&rdquo; and enter your NavLogPro email. You&apos;ll be taken to Stripe checkout for the $29.99/year NavLogPro upgrade price. After payment, your iwanttobeapilot account is created automatically using your NavLogPro email. Check your inbox for a welcome email with instructions to set your password.
+            Yes. On the <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> page, scroll to &ldquo;Already have a NavLog Pro account?&rdquo; and enter your NavLog Pro email. You&apos;ll be taken to Stripe checkout for the $29.99/year NavLog Pro upgrade price. After payment, your iwanttobeapilot account is created automatically using your NavLog Pro email. Check your inbox for a welcome email with instructions to set your password.
           </>
         ),
       },

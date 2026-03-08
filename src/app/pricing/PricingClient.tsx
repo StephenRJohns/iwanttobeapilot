@@ -24,7 +24,7 @@ const PRO_FEATURES = [
   "Read & write pilot stories",
   "Discussion forums",
   "Rate and review equipment",
-  "Free NavLogPro account included",
+  "Free NavLog Pro account included",
 ];
 
 export default function PricingClient() {
@@ -42,7 +42,7 @@ export default function PricingClient() {
   const [navlogLoading, setNavlogLoading] = useState(false);
   const [navlogError, setNavlogError] = useState("");
 
-  // NavLogPro upgrade (for non-logged-in NavLogPro users)
+  // NavLog Pro upgrade (for non-logged-in NavLog Pro users)
   const [nlpEmail, setNlpEmail] = useState("");
   const [nlpLoading, setNlpLoading] = useState(false);
   const [nlpError, setNlpError] = useState("");
@@ -159,13 +159,13 @@ export default function PricingClient() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
-      {/* NavLogPro bundle callout */}
+      {/* NavLog Pro bundle callout */}
       <div className="mb-8 rounded-lg bg-rose-600/15 border border-rose-600/40 px-5 py-4 text-center">
         <p className="text-sm font-semibold text-rose-400">
-          Pro includes a free NavLogPro account — a $50/year value
+          Pro includes a free NavLog Pro account — a $50/year value
         </p>
         <p className="text-xs text-rose-400/80 mt-1">
-          NavLogPro is the FAA cross-country nav log builder used by student pilots nationwide.
+          NavLog Pro is the FAA cross-country nav log builder used by student pilots nationwide.
           Get both tools for the price of one.
         </p>
       </div>
@@ -216,16 +216,16 @@ export default function PricingClient() {
             Go to Dashboard
           </Link>
 
-          {/* NavLogPro claim */}
+          {/* NavLog Pro claim */}
           <div className="mt-5 pt-5 border-t border-border">
             <p className="text-xs text-rose-400 font-medium mb-3">
-              Your plan includes a free NavLogPro account
+              Your plan includes a free NavLog Pro account
             </p>
             {navlogCode === "ALREADY_PRO" ? (
-              <p className="text-xs text-primary">Your email already has a NavLogPro account.</p>
+              <p className="text-xs text-primary">Your email already has a NavLog Pro account.</p>
             ) : navlogCode ? (
               <div className="bg-rose-600/10 border border-rose-600/30 rounded-md px-4 py-3">
-                <p className="text-xs text-muted-foreground mb-1">Your NavLogPro promo code:</p>
+                <p className="text-xs text-muted-foreground mb-1">Your NavLog Pro promo code:</p>
                 <p className="text-lg font-mono font-bold text-rose-400 tracking-widest">{navlogCode}</p>
                 <p className="text-xs text-muted-foreground mt-2">
                   Go to{" "}
@@ -243,7 +243,7 @@ export default function PricingClient() {
                   className="inline-flex items-center gap-2 text-sm bg-rose-600/20 text-rose-400 border border-rose-600/30 rounded-md px-4 py-2 hover:bg-rose-600/30 transition-colors disabled:opacity-50"
                 >
                   {navlogLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-                  {navlogLoading ? "Generating..." : "Get your free NavLogPro code"}
+                  {navlogLoading ? "Generating..." : "Get your free NavLog Pro code"}
                 </button>
                 {navlogError && <p className="text-xs text-destructive mt-2">{navlogError}</p>}
               </>
@@ -302,10 +302,10 @@ export default function PricingClient() {
             <ul className="space-y-2 mb-6">
               {PRO_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">
-                  <span className={f === "Free NavLogPro account included" ? "text-rose-400 mt-0.5" : "text-primary mt-0.5"}>✓</span>
+                  <span className={f === "Free NavLog Pro account included" ? "text-rose-400 mt-0.5" : "text-primary mt-0.5"}>✓</span>
                   <span className={
                     f === "Everything in Free" ? "text-muted-foreground" :
-                    f === "Free NavLogPro account included" ? "text-rose-400 font-medium" : ""
+                    f === "Free NavLog Pro account included" ? "text-rose-400 font-medium" : ""
                   }>{f}</span>
                 </li>
               ))}
@@ -367,12 +367,12 @@ export default function PricingClient() {
         </div>
       )}
 
-      {/* NavLogPro upgrade */}
+      {/* NavLog Pro upgrade */}
       {!isProUser && (
         <div className="max-w-md mx-auto mt-6 border border-border rounded-lg p-5">
-          <h3 className="text-sm font-semibold mb-1">Already have a NavLogPro account?</h3>
+          <h3 className="text-sm font-semibold mb-1">Already have a NavLog Pro account?</h3>
           <p className="text-xs text-muted-foreground mb-3">
-            NavLogPro subscribers get iwanttobeapilot Pro for <strong className="text-foreground">$29.99/year</strong> — enter your NavLogPro email and your account will be set up automatically.
+            NavLog Pro subscribers get iwanttobeapilot Pro for <strong className="text-foreground">$29.99/year</strong> — enter your NavLog Pro email and your account will be set up automatically.
           </p>
           {navlogproSuccess ? (
             <div className="bg-primary/10 border border-primary/30 rounded-md px-4 py-3 text-center">
@@ -388,7 +388,7 @@ export default function PricingClient() {
                 type="email"
                 value={nlpEmail}
                 onChange={(e) => setNlpEmail(e.target.value)}
-                placeholder="Your NavLogPro email"
+                placeholder="Your NavLog Pro email"
                 className="flex-1 bg-background border border-border rounded-md px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
                 required
               />

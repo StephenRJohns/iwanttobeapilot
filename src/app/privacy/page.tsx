@@ -118,7 +118,7 @@ export default function PrivacyPage() {
               <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">cloudflare.com/privacypolicy</a>
             </li>
             <li>
-              <strong className="text-foreground">NavLogPro (navlogpro.training)</strong> — companion service operated by the same team. When you use the NavLogPro Upgrade flow on the Pricing page, we verify your email against NavLogPro solely to confirm account existence — no passwords or payment data are exchanged between services. When you are a Pro subscriber, we send your email to NavLogPro to generate a complimentary account promo code. See{" "}
+              <strong className="text-foreground">NavLog Pro (navlogpro.training)</strong> — companion service operated by the same team. When you use the NavLog Pro Upgrade flow on the Pricing page, we verify your email against NavLog Pro solely to confirm account existence — no passwords or payment data are exchanged between services. When you are a Pro subscriber, we send your email to NavLog Pro to generate a complimentary account promo code. See{" "}
               <a href="https://navlogpro.training/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">navlogpro.training/privacy</a>.
             </li>
           </ul>

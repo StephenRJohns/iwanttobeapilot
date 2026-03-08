@@ -33,7 +33,7 @@ export async function DELETE() {
       }
     }
 
-    // Cancel associated NavLogPro account (non-fatal)
+    // Cancel associated NavLog Pro account (non-fatal)
     if (user?.email) {
       try {
         const navlogproUrl = process.env.NAVLOGPRO_URL;
@@ -46,7 +46,7 @@ export async function DELETE() {
           });
         }
       } catch (err) {
-        console.error("NavLogPro cancel error (non-fatal):", err);
+        console.error("NavLog Pro cancel error (non-fatal):", err);
       }
     }
 

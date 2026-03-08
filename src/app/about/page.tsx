@@ -89,21 +89,21 @@ export default function AboutPage() {
           <strong className="text-foreground">Pro features</strong> — the progress timeline, DPE finder with pass rate data,
           pilot stories, discussion forums, and equipment ratings exist to keep the lights on and fund continued
           development. Pro also includes a free{" "}
-          <a href="https://navlogpro.training" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NavLogPro</a>{" "}
+          <a href="https://navlogpro.training" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NavLog Pro</a>{" "}
           account for VFR cross-country flight planning — our companion tool, also operated by us. If this site has helped you, a Pro account is
           the best way to say thanks and make sure it stays around.
         </p>
 
         <p>
-          <strong className="text-foreground">Already a NavLogPro user?</strong> You can upgrade to iwanttobeapilot Pro for{" "}
-          <strong className="text-foreground">$29.99/year</strong> using your existing NavLogPro email — your account is set up automatically. See the{" "}
+          <strong className="text-foreground">Already a NavLog Pro user?</strong> You can upgrade to iwanttobeapilot Pro for{" "}
+          <strong className="text-foreground">$29.99/year</strong> using your existing NavLog Pro email — your account is set up automatically. See the{" "}
           <Link href="/pricing" className="text-primary hover:underline">Pricing</Link> page for details.
         </p>
 
         <h2 className="text-lg font-semibold text-foreground mt-10 mb-2">Who We Are</h2>
 
         <p>
-          I Want To Be A Pilot and NavLogPro are both operated by JJJJJ Enterprises, LLC. We&apos;re an independent
+          I Want To Be A Pilot and NavLog Pro are both operated by JJJJJ Enterprises, LLC. We&apos;re an independent
           educational resource — not a flight school, not an FAA authority, and not affiliated with any
           airline or training organization. Our goal is simple: give aspiring pilots the clearest
           possible picture of what the journey looks like, from first flight to career.

@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
           stripeCurrentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
         };
 
-        // NavLogPro upgrade flow — find or create account by email
+        // NavLog Pro upgrade flow — find or create account by email
         const navlogproEmail = session.metadata?.navlogpro_email;
         if (navlogproEmail) {
           const existing = await db.user.findFirst({
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
               html: `
                 <div style="font-family:sans-serif;max-width:500px;margin:auto">
                   <h2 style="color:#0ea5e9">Welcome to IWantToBeAPilot Pro!</h2>
-                  <p>Your account has been created using your NavLogPro email address.</p>
+                  <p>Your account has been created using your NavLog Pro email address.</p>
                   <p>To sign in, you'll need to set a password. Click below to get started:</p>
                   <a href="${appUrl}/auth/forgot-password" style="display:inline-block;background:#0ea5e9;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;margin-top:16px">Set Your Password</a>
                   <p style="color:#64748b;margin-top:24px">Enter your email (<strong>${navlogproEmail}</strong>) on the forgot password page to receive a reset code.</p>

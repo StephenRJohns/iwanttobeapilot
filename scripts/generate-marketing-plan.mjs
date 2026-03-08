@@ -195,7 +195,7 @@ const htmlContent = `<!DOCTYPE html>
 
 <!-- 1. EXECUTIVE SUMMARY -->
 <h2><span class="section-num">1</span> Executive Summary</h2>
-<p><strong>I Want To Be A Pilot</strong> (iwanttobeapilot.online) is a freemium web platform that guides aspiring pilots from first interest through airline career. Built by a parent who watched two children earn their wings, the site combines free tools&mdash;flight school search, cost estimator, equipment guide, and FAA resources&mdash;with a Pro subscription ($9.99/mo or $99.99/yr) that unlocks a progress tracker, DPE finder with FAA pass rates, community features, and a free NavLogPro account.</p>
+<p><strong>I Want To Be A Pilot</strong> (iwanttobeapilot.online) is a freemium web platform that guides aspiring pilots from first interest through airline career. Built by a parent who watched two children earn their wings, the site combines free tools&mdash;flight school search, cost estimator, equipment guide, and FAA resources&mdash;with a Pro subscription ($9.99/mo or $99.99/yr) that unlocks a progress tracker, DPE finder with FAA pass rates, community features, and a free NavLog Pro account.</p>
 
 <p>This 12-month marketing plan targets <strong>5,000 registered users</strong> and <strong>500 Pro subscribers</strong> by Q1 2027, generating approximately <strong>$50,000&ndash;$60,000 in ARR</strong> from subscriptions plus supplemental affiliate revenue from Amazon Associates and Sporty's Pilot Shop partnerships.</p>
 
@@ -223,7 +223,7 @@ const htmlContent = `<!DOCTYPE html>
       &bull; Comprehensive free toolset drives organic discovery<br>
       &bull; Real FAA data (schools, DPEs, pass rates)<br>
       &bull; Affiliate revenue supplements subscriptions<br>
-      &bull; NavLogPro bundle adds tangible Pro value<br>
+      &bull; NavLog Pro bundle adds tangible Pro value<br>
       &bull; Direct family connections to active CFIs and charter pilots
     </td>
     <td>
@@ -548,7 +548,7 @@ const htmlContent = `<!DOCTYPE html>
 <ul>
   <li><strong>Amazon Associates:</strong> Already integrated. Optimize by promoting seasonal gear guides and "what&rsquo;s in my flight bag" content.</li>
   <li><strong>Sporty&rsquo;s Pilot Shop:</strong> Already integrated. Expand with exclusive discount codes for Pro members.</li>
-  <li><strong>NavLogPro:</strong> Continue bundling free account with Pro. Cross-promote on NavLogPro&rsquo;s platform.</li>
+  <li><strong>NavLog Pro:</strong> Continue bundling free account with Pro. Cross-promote on NavLog Pro&rsquo;s platform.</li>
   <li><strong>Ground school providers:</strong> Approach Sporty's, King Schools, and Gleim for affiliate or partner deals.</li>
 </ul>
 
@@ -703,7 +703,7 @@ const htmlContent = `<!DOCTYPE html>
     <td>High churn on Pro subscriptions</td>
     <td>Low</td>
     <td>High</td>
-    <td>Push annual plans; continuously add Pro value; NavLogPro bundle increases stickiness</td>
+    <td>Push annual plans; continuously add Pro value; NavLog Pro bundle increases stickiness</td>
   </tr>
   <tr>
     <td>Competitor launches similar tool</td>
