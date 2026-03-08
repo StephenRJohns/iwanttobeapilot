@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About — Our Story",
   description:
-    "The story behind I Want To Be A Pilot — built by a parent who watched two kids navigate flight training and wanted to make the journey easier for every aspiring pilot.",
+    "The story behind I Want To Be A Pilot — built by a parent who watched two kids navigate flight training. Free flight school search, cost estimator, FAA knowledge test prep, DPE finder, and more.",
   alternates: { canonical: "/about" },
   openGraph: {
     title: "About — Our Story | I Want To Be A Pilot",
@@ -74,15 +74,16 @@ export default function AboutPage() {
         </p>
 
         <p>
-          <strong className="text-foreground">FAA knowledge test prep</strong> — our{" "}
+          <strong className="text-foreground">FAA knowledge test prep</strong> — the{" "}
           <Link href="/dashboard" className="text-primary hover:underline">
             study and sample test system
           </Link>{" "}
-          uses the official FAA test data banks — the same question pools used to create the actual
-          FAA knowledge exams. We sync these directly from the FAA so your practice
-          questions are always current and authentic. Study mode gives instant feedback on every question.
-          Sample test mode simulates the real exam with full-length tests, score tracking, and a
-          weak-area analyzer that targets the questions you miss most.
+          pulls directly from the official FAA test data banks — the same question pools used to build
+          the actual exams (PAR, IRA, CAX, ATP, FOI, FIA, and more). Study mode gives you instant
+          feedback after every question. Sample Test mode generates a full-length, timed exam and
+          saves your score to a history you can review anytime. A weak-area tracker automatically
+          surfaces questions you miss most so you can drill them in a focused mini-test. All question
+          banks are synced regularly from the FAA so what you practice is always current.
         </p>
 
         <p>

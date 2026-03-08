@@ -15,7 +15,7 @@ export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
       <h1 className="text-2xl font-bold mb-2">Privacy Policy</h1>
-      <p className="text-sm text-muted-foreground mb-8">Last updated: March 2026</p>
+      <p className="text-sm text-muted-foreground mb-8">Last updated: March 7, 2026</p>
 
       <p className="text-sm text-muted-foreground mb-8">
         This Privacy Policy describes how I Want To Be A Pilot (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) collects, uses, and shares information about you when you use our website at iwanttobeapilot.online (the &ldquo;Service&rdquo;). By using the Service, you agree to the practices described in this policy.

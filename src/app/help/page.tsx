@@ -151,6 +151,14 @@ const sections: { title: string; items: FAQItem[] }[] = [
         a: "Discussion forums let Pro users ask questions, share advice, and connect with other pilots. Categories are organized by topic — license types, flight school experiences, DPE reviews, career advice, and more. Each category shows post count and latest activity. Click into a category to browse posts, then click any thread to read replies. You can create new posts with descriptive titles and reply to existing threads.",
       },
       {
+        q: "Which FAA knowledge tests are available?",
+        a: (
+          <>
+            The following test banks are available in both Study Mode and Sample Test Mode: <strong className="text-foreground">PAR</strong> (Private Pilot Airplane), <strong className="text-foreground">IRA</strong> (Instrument Rating), <strong className="text-foreground">CAX</strong> (Commercial Pilot Airplane), <strong className="text-foreground">ATP</strong> (Airline Transport Pilot), <strong className="text-foreground">FOI</strong> (Fundamentals of Instructing), <strong className="text-foreground">FIA</strong> (Flight Instructor Airplane), and <strong className="text-foreground">FII</strong> (Flight Instructor Instrument). All banks are synced directly from the official FAA test data source. Pro subscription required.
+          </>
+        ),
+      },
+      {
         q: "How do I claim my free NavLog Pro account?",
         a: (
           <>
